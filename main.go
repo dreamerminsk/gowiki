@@ -9,6 +9,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type Season struct {
+	Year int
+	Wiki string
+}
+
 func main() {
 	res, err := http.Get("https://en.wikipedia.org/wiki/Template:ATP_seasons")
 	if err != nil {
