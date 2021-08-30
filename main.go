@@ -10,11 +10,20 @@ import (
 )
 
 type Season struct {
-	Year int
+	Year int64
 	Wiki string
 }
 
-func getSeason() {
+func getSeason(s *goquery.Selection) *Season {
+	var season = new(Season)
+	txt := s.Text()
+	if year, err := strconv.ParseInt(txt, 10, 32); err == nil {
+		season.Year = year
+	}
+	if ref, ok := s.Attr("href"); ok {
+		season.Wiki = ref
+	}
+	return season
 }
 
 func main() {
