@@ -14,6 +14,9 @@ type Season struct {
 	Wiki string
 }
 
+func getSeason() {
+}
+
 func main() {
 	res, err := http.Get("https://en.wikipedia.org/wiki/Template:ATP_seasons")
 	if err != nil {
