@@ -9,6 +9,9 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const nnmbooks = "https://nnmclub.to/forum/portal.php?c=5"
+const nnmmusic = "https://nnmclub.to/forum/portal.php?c=12"
+
 type Season struct {
 	Year int64
 	Wiki string
