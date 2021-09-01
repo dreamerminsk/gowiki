@@ -1,12 +1,13 @@
+package main
+
 import (
-	"fmt"
+	//"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
 )
-
 
 type Season struct {
 	Year int64
