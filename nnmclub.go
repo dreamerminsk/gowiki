@@ -1,12 +1,14 @@
 package main
 
 import (
+"fmt"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -15,9 +17,17 @@ const nnmbooks = 5
 const nnmmusic = 12
 
 type Topic struct {
-	ID    int64
-	Title string
+	ID        int64
+	Title     string
+	Author    string
+	Published time.Time
 }
+
+const timeLayout = "02 Jan 2006 15:04:05"
+
+var secondsEastOfUTC = int((3 * time.Hour).Seconds())
+var beijing = time.FixedZone("Beijing Time",
+	secondsEastOfUTC)
 
 func getTopic(s *goquery.Selection) *Topic {
 	var topic = new(Topic)
@@ -31,6 +41,17 @@ func getTopic(s *goquery.Selection) *Topic {
 			m, _ := url.ParseQuery(u.RawQuery)
 			topic.ID, _ = strconv.ParseInt(m["t"][0], 10, 64)
 		}
+	})
+	s.Find("tbody > tr:nth-child(2) > td > span.genmed > b").Each(func(i int, sl *goquery.Selection) {
+		topic.Author = sl.Text()
+	})
+	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
+		timeString := strings.Split(sl.Text(), "|")[1]
+		Published, err := time.ParseInLocation(timeLayout, timeString, beijing)
+		if err != nil {
+			fmt.Println(err)
+		}
+		topic.Published = Published
 	})
 	return topic
 }

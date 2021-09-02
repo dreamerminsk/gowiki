@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"log"
 )
 
 func wiki() {
@@ -19,6 +18,10 @@ func wiki() {
 func main() {
 	topics := getTopics(nnmmusic)
 	for key, topic := range topics {
-		fmt.Println("ID: ", key, "Topic: ", topic.Title)
+		fmt.Println("ID: ", key)
+		fmt.Println("Topic: ", topic.Title)
+		fmt.Println("Author: ", topic.Author)
+		fmt.Println("Published: ", topic.Published)
+		fmt.Println("-------------------------")
 	}
 }
