@@ -1,11 +1,12 @@
 package main
 
 import (
-"fmt"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -24,6 +25,7 @@ type Topic struct {
 }
 
 const timeLayout = "02 Jan 2006 15:04:05"
+const timePattern = `.*?(?P<Day>\d{2}) (?P<Month>\D{3}) (?P<Year>\d{4}) (?P<Hours>\d{2}):(?P<Minutes>\d{2}):(?P<Seconds>\d{2})`
 
 var secondsEastOfUTC = int((3 * time.Hour).Seconds())
 var beijing = time.FixedZone("Beijing Time",
@@ -47,11 +49,15 @@ func getTopic(s *goquery.Selection) *Topic {
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
 		timeString := strings.Split(sl.Text(), "|")[1]
-		Published, err := time.ParseInLocation(timeLayout, timeString, beijing)
-		if err != nil {
-			fmt.Println(err)
+		var compRegEx = regexp.MustCompile(timePattern)
+		match := compRegEx.FindStringSubmatch(timeString)
+		for i, name := range compRegEx.SubexpNames() {
+			if i > 0 && i <= len(match) {
+				fmt.Println(name, ": ", match[i])
+			}
 		}
-		topic.Published = Published
+		t := time.Date(2021, time.Month(2), 21, 1, 10, 30, 0, time.UTC)
+		topic.Published = t
 	})
 	return topic
 }
