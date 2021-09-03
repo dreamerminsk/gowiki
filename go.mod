@@ -2,7 +2,10 @@ module github.com/dreamerminsk/gowiki
 
 go 1.17
 
-require github.com/PuerkitoBio/goquery v1.7.1
+require (
+	github.com/PuerkitoBio/goquery v1.7.1
+	golang.org/x/text v0.3.6
+)
 
 require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect

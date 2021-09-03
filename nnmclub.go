@@ -1,7 +1,6 @@
 package main
 
 import (
-"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -9,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/text/encoding/charmap"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -23,18 +24,14 @@ type Topic struct {
 	Published time.Time
 }
 
-const timeLayout = "02 Jan 2006 15:04:05"
-
-var secondsEastOfUTC = int((3 * time.Hour).Seconds())
-var beijing = time.FixedZone("Beijing Time",
-	secondsEastOfUTC)
-
 func getTopic(s *goquery.Selection) *Topic {
 	var topic = new(Topic)
+	decoder := charmap.Windows1251.NewDecoder()
 	topic.ID = -1 * rand.Int63n(100000)
 	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
 		if title, ok := sl.Attr("title"); ok {
-			topic.Title = title
+			titleString, _ := decoder.String(title)
+			topic.Title = titleString
 		}
 		if href, ok := sl.Attr("href"); ok {
 			u, _ := url.Parse(href)
@@ -43,15 +40,13 @@ func getTopic(s *goquery.Selection) *Topic {
 		}
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed > b").Each(func(i int, sl *goquery.Selection) {
-		topic.Author = sl.Text()
+		authorString, _ := decoder.String(sl.Text())
+		topic.Author = authorString
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
-		timeString := strings.Split(sl.Text(), "|")[1]
-		Published, err := time.ParseInLocation(timeLayout, timeString, beijing)
-		if err != nil {
-			fmt.Println(err)
-		}
-		topic.Published = Published
+		text := strings.Split(sl.Text(), "|")[1]
+		timeString, _ := decoder.String(text)
+		topic.Published = parseTime(timeString)
 	})
 	return topic
 }
