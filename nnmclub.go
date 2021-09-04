@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -14,6 +13,26 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type NnmClubCategory int
+
+const (
+	Sunday NnmClubCategory = iota + 1
+	Monday
+	Tuesday
+	Wednesday
+	Thursday
+	Friday
+	Saturday
+)
+
+func (w NnmClubCategory) String() string {
+	return [...]string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}[w-1]
+}
+
+func (w NnmClubCategory) EnumIndex() int {
+	return int(w)
+}
+
 const nnmbooks = 5
 const nnmmusic = 12
 
@@ -22,12 +41,13 @@ type Topic struct {
 	Title     string
 	Author    string
 	Published time.Time
+	Magnet    string
+	Likes     int64
 }
 
 func getTopic(s *goquery.Selection) *Topic {
 	var topic = new(Topic)
 	decoder := charmap.Windows1251.NewDecoder()
-	topic.ID = -1 * rand.Int63n(100000)
 	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
 		if title, ok := sl.Attr("title"); ok {
 			titleString, _ := decoder.String(title)
@@ -44,8 +64,7 @@ func getTopic(s *goquery.Selection) *Topic {
 		topic.Author = authorString
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
-		text := strings.Split(sl.Text(), "|")[1]
-		timeString, _ := decoder.String(text)
+		timeString, _ := decoder.String(sl.Text())
 		topic.Published = parseTime(timeString)
 	})
 	return topic

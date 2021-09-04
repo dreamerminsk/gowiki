@@ -3,3 +3,30 @@ table.pline
 	tbody > tr:nth-child(2) > td > span.genmed > b
 	tbody > tr:nth-child(2) > td > span.genmed [ | 01 Сен 2021 19:24:55]
 	<span class="pcomm bold" id="VT1177430">12</span>
+
+
+<a class="genmed" href="portal.php?c=1" title="Аниме и Манга">Аниме и Манга</a>
+<a class="genmed" href="portal.php?c=2" title="Музыка HD">Музыка HD</a>
+<a class="genmed" href="portal.php?c=3" title="Зарубежные сериалы">Зарубежные сериалы</a>
+<a class="genmed" href="portal.php?c=4" title="Наши сериалы">Наши сериалы</a>
+<a class="genmed" href="portal.php?c=5" title="Книги и медиаматериалы">Книги и медиаматериалы</a>
+<a class="genmed" href="portal.php?c=6" title="Зарубежное кино">Зарубежное кино</a>
+<a class="genmed" href="portal.php?c=7" title="Детям и родителям">Детям и родителям</a>
+<a class="genmed" href="portal.php?c=8" title="Разное">Разное</a>
+<a class="genmed" href="portal.php?c=9" title="Игры для ПК">Игры для ПК</a>
+<a class="genmed" href="portal.php?c=10" title="Новинки кино">Новинки кино</a>
+<a class="genmed" href="portal.php?c=11" title="HD, UHD и 3D Кино">HD, UHD и 3D Кино</a>
+<a class="genmed" href="portal.php?c=12" title="Музыка">Музыка</a>
+<a class="genmed" href="portal.php?c=13" title="Наше кино">Наше кино</a>
+<a class="genmed" href="portal.php?c=14" title="Android, Mobile">Android, Mobile</a>
+<a class="genmed" href="portal.php?c=15" title="Всё для Apple">Всё для Apple</a>
+<a class="genmed" href="portal.php?c=16" title="Мультимедиа, Дизайн, Графика">Мультимедиа, Дизайн, Графика</a>
+
+<a class="genmed" href="portal.php?c=18" title="Все для *NIX систем">Все для *NIX систем</a>
+<a class="genmed" href="portal.php?c=19" title="Программы">Программы</a>
+<a class="genmed" href="portal.php?c=20" title="Игры для консолей">Игры для консолей</a>
+<a class="genmed" href="portal.php?c=21" title="Театр, МузВидео, Разное">Театр, МузВидео, Разное</a>
+<a class="genmed" href="portal.php?c=22" title="Док. TV-бренды">Док. TV-бренды</a>
+<a class="genmed" href="portal.php?c=23" title="Док. и телепередачи">Док. и телепередачи</a>
+<a class="genmed" href="portal.php?c=24" title="Спорт и Юмор">Спорт и Юмор</a>
+<a class="genmed" href="portal.php?c=25" title="Музыка (сборники)">Музыка (сборники)</a>
