@@ -16,21 +16,64 @@ import (
 type NnmClubCategory int
 
 const (
-	Sunday NnmClubCategory = iota + 1
-	Monday
-	Tuesday
-	Wednesday
-	Thursday
-	Friday
-	Saturday
+	Anime NnmClubCategory = iota + 1
+	MusicHD
+	Series
+	RuSeries
+	Books
+	Movies
+	Children
+	Other
+	Games
+	Latest
+	HDMovies
+	Music
+	RuMovies
+	Android
+	Apple
+	Multimedia
+	_
+	Unix
+	Applications
+	Consoles
+	Theater
+	Documentary
+	TV
+	Sports
+	MusicVA
 )
 
-func (w NnmClubCategory) String() string {
-	return [...]string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}[w-1]
+func (c NnmClubCategory) String() string {
+	return [...]string{
+		"Аниме и Манга",
+		"Музыка HD",
+		"Зарубежные сериалы",
+		"Наши сериалы",
+		"Книги и медиаматериалы",
+		"Зарубежное кино",
+		"Детям и родителям",
+		"Разное",
+		"Игры для ПК",
+		"Новинки кино",
+		"HD, UHD и 3D Кино",
+		"Музыка",
+		"Наше кино",
+		"Android, Mobile",
+		"Всё для Apple",
+		"Мультимедиа, Дизайн, Графика",
+		"_",
+		"Все для *NIX систем",
+		"Программы",
+		"Игры для консолей",
+		"Театр, МузВидео, Разное",
+		"Док. TV-бренды",
+		"Док. и телепередачи",
+		"Спорт и Юмор",
+		"Музыка (сборники)"}[c-1]
 }
 
-func (w NnmClubCategory) EnumIndex() int {
-	return int(w)
+func (c NnmClubCategory) EnumIndex() int {
+	return int(c)
 }
 
 const nnmbooks = 5
