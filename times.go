@@ -58,8 +58,10 @@ var longMonthNames = []string{
 
 const timePattern = `.*?(?P<Day>\d{2}) (?P<Month>\D{3}) (?P<Year>\d{4}) (?P<Hours>\d{2}):(?P<Minutes>\d{2}):(?P<Seconds>\d{2}).*?`
 
+var timeRegEx = regexp.MustCompile(timePattern)
+
 func parseTime(timeString string) time.Time {
-	timeRegEx := regexp.MustCompile(timePattern)
+
 	match := timeRegEx.FindStringSubmatch(timeString)
 	d, _ := strconv.ParseInt(match[1], 10, 32)
 	y, _ := strconv.ParseInt(match[3], 10, 32)
