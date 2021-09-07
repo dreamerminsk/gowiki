@@ -107,6 +107,11 @@ func getTopic(s *goquery.Selection) *Topic {
 		timeString, _ := decoder.String(sl.Text())
 		topic.Published = parseTime(timeString)
 	})
+	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
+		if votes, ok := sl.Attr("id"); ok {
+			topic.Likes, _ = strconv.ParseInt(votes, 10, 64)
+		}
+	})
 	return topic
 }
 
