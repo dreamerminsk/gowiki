@@ -72,7 +72,7 @@ func deleteUser(db *sql.DB, id2 int) {
 	tx.Commit()
 }
 
-func main() {
+func test() {
 	db, _ := sql.Open("sqlite3", "database/godb.db")
 	db.Exec("create table if not exists testTable (id integer,username text, surname text,age Integer,university text)")
 
