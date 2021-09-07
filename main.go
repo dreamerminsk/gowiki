@@ -13,6 +13,7 @@ func main() {
 		fmt.Println("Title: ", topic.Title)
 		fmt.Println("Author: ", topic.Author)
 		fmt.Println("Published: ", topic.Published)
+		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("-------------------------")
 	}
 }
