@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/PuerkitoBio/goquery v1.7.1
+	github.com/mattn/go-sqlite3 v1.14.8
 	golang.org/x/text v0.3.6
 )
 

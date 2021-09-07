@@ -2,3 +2,7 @@ table.pline
     td.pcatHead a.pgenmed - 
 	tbody > tr:nth-child(2) > td > span.genmed > b
 	tbody > tr:nth-child(2) > td > span.genmed [ | 01 Сен 2021 19:24:55]
+	<span class="pcomm bold" id="VT1177430">12</span>
+
+
+<a class="genmed" href="portal.php?c=1" title="Аниме и Манга">Аниме и Манга</a>

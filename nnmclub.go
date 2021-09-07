@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -14,20 +13,81 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const nnmbooks = 5
-const nnmmusic = 12
+type NnmClubCategory int
+
+const (
+	AnimeAndManga NnmClubCategory = iota + 1
+	HDMusic
+	ForeignTVSeries
+	DomesticTVSeries
+	BooksAndMediaMaterials
+	ForeignMovies
+	ForChildrenAndParents
+	Various
+	PCGames
+	NewMovies
+	HDUHDAnd3DMovies
+	Music
+	DomesticMovies
+	AndroidMobile
+	EverythingForApple
+	MultimediaDesignGraphics
+	_
+	EverythingForNIXSystems
+	Applications
+	GamesForConsoles
+	TheaterMusicVideoMiscellaneous
+	DocTVBrands
+	DocAndTVShows
+	SportsAndHumor
+	MusicCollections
+)
+
+func (c NnmClubCategory) String() string {
+	return [...]string{
+		"Аниме и Манга",
+		"Музыка HD",
+		"Зарубежные сериалы",
+		"Наши сериалы",
+		"Книги и медиаматериалы",
+		"Зарубежное кино",
+		"Детям и родителям",
+		"Разное",
+		"Игры для ПК",
+		"Новинки кино",
+		"HD, UHD и 3D Кино",
+		"Музыка",
+		"Наше кино",
+		"Android, Mobile",
+		"Всё для Apple",
+		"Мультимедиа, Дизайн, Графика",
+		"_",
+		"Все для *NIX систем",
+		"Программы",
+		"Игры для консолей",
+		"Театр, МузВидео, Разное",
+		"Док. TV-бренды",
+		"Док. и телепередачи",
+		"Спорт и Юмор",
+		"Музыка (сборники)"}[c-1]
+}
+
+func (c NnmClubCategory) EnumIndex() int {
+	return int(c)
+}
 
 type Topic struct {
 	ID        int64
 	Title     string
 	Author    string
 	Published time.Time
+	Magnet    string
+	Likes     int64
 }
 
 func getTopic(s *goquery.Selection) *Topic {
 	var topic = new(Topic)
 	decoder := charmap.Windows1251.NewDecoder()
-	topic.ID = -1 * rand.Int63n(100000)
 	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
 		if title, ok := sl.Attr("title"); ok {
 			titleString, _ := decoder.String(title)
@@ -44,17 +104,28 @@ func getTopic(s *goquery.Selection) *Topic {
 		topic.Author = authorString
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
-		text := strings.Split(sl.Text(), "|")[1]
-		timeString, _ := decoder.String(text)
+		timeString, _ := decoder.String(sl.Text())
 		topic.Published = parseTime(timeString)
+	})
+	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
+		if _, ok := sl.Attr("id"); ok {
+			topic.Likes, _ = strconv.ParseInt(sl.Text(), 10, 64)
+		}
+	})
+	s.Find("a").Each(func(i int, sl *goquery.Selection) {
+		if ref, ok := sl.Attr("href"); ok {
+			if strings.HasPrefix(ref, "magnet:") {
+				topic.Magnet = ref
+			}
+		}
 	})
 	return topic
 }
 
-func getTopics(topicID int64) map[int64]*Topic {
+func getTopics(catID NnmClubCategory) map[int64]*Topic {
 	topics := make(map[int64]*Topic)
 
-	res, err := http.Get("https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(topicID, 10))
+	res, err := http.Get("https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(int64(catID.EnumIndex()), 10))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,18 +140,22 @@ func getTopics(topicID int64) map[int64]*Topic {
 	}
 
 	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
-		isTopic := false
-		s.Find("a").Each(func(i int, sl *goquery.Selection) {
-			if ref, ok := sl.Attr("href"); ok {
-				if strings.HasPrefix(ref, "magnet:") {
-					isTopic = true
-				}
-			}
-		})
-		return isTopic
+		return isTopic(s)
 	}).Each(func(i int, s *goquery.Selection) {
 		topic := getTopic(s)
 		topics[topic.ID] = topic
 	})
 	return topics
+}
+
+func isTopic(s *goquery.Selection) bool {
+	isTopic := false
+	s.Find("a").Each(func(i int, sl *goquery.Selection) {
+		if ref, ok := sl.Attr("href"); ok {
+			if strings.HasPrefix(ref, "magnet:") {
+				isTopic = true
+			}
+		}
+	})
+	return isTopic
 }
