@@ -76,8 +76,6 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-const nnmmusic = 12
-
 type Topic struct {
 	ID        int64
 	Title     string
