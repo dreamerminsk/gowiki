@@ -8,6 +8,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+
+type Storage struct {
+  db *sql.DB
+}
+
+func NewStorage() *Storage {
+return &Storage{}
+} 
+
 type User struct {
 	id         int
 	username   string
