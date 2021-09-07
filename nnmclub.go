@@ -112,6 +112,13 @@ func getTopic(s *goquery.Selection) *Topic {
 			topic.Likes, _ = strconv.ParseInt(sl.Text(), 10, 64)
 		}
 	})
+	s.Find("a").Each(func(i int, sl *goquery.Selection) {
+		if ref, ok := sl.Attr("href"); ok {
+			if strings.HasPrefix(ref, "magnet:") {
+				topic.Magnet = ref
+			}
+		}
+	})
 	return topic
 }
 

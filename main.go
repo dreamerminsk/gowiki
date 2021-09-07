@@ -14,6 +14,7 @@ func main() {
 		fmt.Println("Author: ", topic.Author)
 		fmt.Println("Published: ", topic.Published)
 		fmt.Println("Likes: ", topic.Likes)
+		fmt.Println("Magnet: ", topic.Magnet)
 		fmt.Println("-------------------------")
 	}
 }
