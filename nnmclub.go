@@ -16,31 +16,31 @@ import (
 type NnmClubCategory int
 
 const (
-	Anime NnmClubCategory = iota + 1
-	MusicHD
-	Series
-	RuSeries
-	Books
-	Movies
-	Children
-	Other
-	Games
-	Latest
-	HDMovies
+	AnimeAndManga NnmClubCategory = iota + 1
+	HDMusic
+	ForeignTVSeries
+	DomesticTVSeries
+	BooksAndMediaMaterials
+	ForeignMovies
+	ForChildrenAndParents
+	Various
+	PCGames
+	NewMovies
+	HDUHDAnd3DMovies
 	Music
-	RuMovies
-	Android
-	Apple
-	Multimedia
+	DomesticMovies
+	AndroidMobile
+	EverythingForApple
+	MultimediaDesignGraphics
 	_
-	Unix
+	EverythingForNIXSystems
 	Applications
-	Consoles
-	Theater
-	Documentary
-	TV
-	Sports
-	MusicVA
+	GamesForConsoles
+	TheaterMusicVideoMiscellaneous
+	DocTVBrands
+	DocAndTVShows
+	SportsAndHumor
+	MusicCollections
 )
 
 func (c NnmClubCategory) String() string {
@@ -76,7 +76,6 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-const nnmbooks = 5
 const nnmmusic = 12
 
 type Topic struct {
@@ -113,10 +112,10 @@ func getTopic(s *goquery.Selection) *Topic {
 	return topic
 }
 
-func getTopics(topicID int64) map[int64]*Topic {
+func getTopics(catID NnmClubCategory) map[int64]*Topic {
 	topics := make(map[int64]*Topic)
 
-	res, err := http.Get("https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(topicID, 10))
+	res, err := http.Get("https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(int64(catID.EnumIndex()), 10))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -131,18 +130,22 @@ func getTopics(topicID int64) map[int64]*Topic {
 	}
 
 	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
-		isTopic := false
-		s.Find("a").Each(func(i int, sl *goquery.Selection) {
-			if ref, ok := sl.Attr("href"); ok {
-				if strings.HasPrefix(ref, "magnet:") {
-					isTopic = true
-				}
-			}
-		})
-		return isTopic
+		return isTopic(s)
 	}).Each(func(i int, s *goquery.Selection) {
 		topic := getTopic(s)
 		topics[topic.ID] = topic
 	})
 	return topics
+}
+
+func isTopic(s *goquery.Selection) bool {
+	isTopic := false
+	s.Find("a").Each(func(i int, sl *goquery.Selection) {
+		if ref, ok := sl.Attr("href"); ok {
+			if strings.HasPrefix(ref, "magnet:") {
+				isTopic = true
+			}
+		}
+	})
+	return isTopic
 }
