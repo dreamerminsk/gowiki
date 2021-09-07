@@ -14,8 +14,16 @@ type Storage struct {
 }
 
 func NewStorage() *Storage {
-return &Storage{}
+db, _ := sql.Open("sqlite3", "database/godb.db")
+db.Exec("create table if not exists testTable (id integer,username text, surname text,age Integer,university text)")
+s := &Storage{}
+s.db = db
+return s
 } 
+
+func (s *Storage) Close() {
+s.db.Close()
+}
 
 type User struct {
 	id         int
