@@ -13,7 +13,7 @@ func main() {
 		fmt.Printf("Storage: %s", err.Error())
 	}
 	defer s.Close()
-	for i := 0; i < 200; i++ {
+	for i := 5; i < 200; i++ {
 		processTopicPage(s, Music, i)
 		time.Sleep(75 * time.Second)
 	}

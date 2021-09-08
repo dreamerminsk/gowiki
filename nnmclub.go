@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -128,10 +129,13 @@ func getTopics(catID NnmClubCategory, page int) map[int64]*Topic {
 	urlBuilder.WriteString(strconv.FormatInt(int64(catID.EnumIndex()), 10))
 	if page > 1 {
 		urlBuilder.WriteString("&start=")
-		urlBuilder.WriteString(strconv.FormatInt(int64(page), 10))
+		urlBuilder.WriteString(strconv.FormatInt(int64(page-1)*20, 10))
 		urlBuilder.WriteString("#pagestart")
 	}
-	res, err := http.Get(urlBuilder.String())
+	url := urlBuilder.String()
+	fmt.Println()
+	fmt.Println(url)
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
