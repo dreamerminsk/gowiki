@@ -121,11 +121,13 @@ func getTopic(s *goquery.Selection) *Topic {
 	})
 	return topic
 }
-
-func getTopics(catID NnmClubCategory) map[int64]*Topic {
+func getTopics(catID NnmClubCategory, page int) map[int64]*Topic {
 	topics := make(map[int64]*Topic)
-
-	res, err := http.Get("https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(int64(catID.EnumIndex()), 10))
+	url := "https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(int64(catID.EnumIndex()), 10)
+	if page > 1 {
+		url = url + "&start=" + strconv.FormatInt(int64(page), 10) + "#pagestart"
+	}
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}

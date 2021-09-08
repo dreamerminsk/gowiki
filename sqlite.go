@@ -2,8 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -12,91 +10,66 @@ type Storage struct {
 	db *sql.DB
 }
 
-func NewStorage() *Storage {
-	db, _ := sql.Open("sqlite3", "database/godb.db")
-	db.Exec("create table if not exists testTable (id integer,username text, surname text,age Integer,university text)")
-	s := &Storage{}
-	s.db = db
-	return s
+func NewStorage() (*Storage, error) {
+	db, err := sql.Open("sqlite3", "nnmclub.sqlite3.db")
+	if err != nil {
+		return nil, err
+	}
+	db.Exec("create table if not exists topics (id integer primary key, title text, author text, published text, magnet text, likes integer)")
+	s := &Storage{db: db}
+	return s, nil
+}
+
+func (s *Storage) addTopic(t *Topic) error {
+	tx, _ := s.db.Begin()
+	stmt, _ := tx.Prepare("insert into topics (id,title,author,published,magnet,likes) values (?,?,?,?,?,?)")
+	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
+	if err != nil {
+		tx.Commit()
+		return err
+	}
+	return tx.Commit()
+}
+
+func (s *Storage) getTopics() ([]*Topic, error) {
+	rows, err := s.db.Query("select * from topics")
+	if err != nil {
+		return []*Topic{}, err
+	}
+	topics := []*Topic{}
+	for rows.Next() {
+		var t Topic
+		err = rows.Scan(&t.ID, &t.Title, &t.Author, &t.Published, &t.Magnet, &t.Likes)
+		if err != nil {
+			return topics, err
+		}
+		topics = append(topics, &t)
+	}
+	return topics, nil
+}
+
+func (s *Storage) updateTopic(t *Topic) error {
+	tx, _ := s.db.Begin()
+	stmt, _ := tx.Prepare("update topics set title=?,author=?,published=?,magnet=?,likes=? where id=?")
+	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
+	if err != nil {
+		tx.Commit()
+		return err
+	}
+	return tx.Commit()
+}
+
+func (s *Storage) deleteTopic(topicId int) error {
+	tx, _ := s.db.Begin()
+	stmt, _ := tx.Prepare("delete from topics where id=?")
+	_, err := stmt.Exec(topicId)
+	if err != nil {
+		tx.Commit()
+		return err
+	}
+	return tx.Commit()
 }
 
 func (s *Storage) Close() {
 	s.db.Close()
-}
-
-type User struct {
-	id         int
-	username   string
-	surname    string
-	age        int
-	university string
-
-	//I created a struct with a struct to select the rows in the table and add data.
-}
-
-func checkError(err error) {
-	if err != nil {
-		panic(err)
-	}
-
-	// catch to error.
-
-}
-
-func addUser(db *sql.DB, username string, surname string, age int, university string) {
-	tx, _ := db.Begin()
-	stmt, _ := tx.Prepare("insert into testTable (username,surname,age,university) values (?,?,?,?)")
-	_, err := stmt.Exec(username, surname, age, university)
-	checkError(err)
-	tx.Commit()
-}
-
-func getUsers(db *sql.DB, id2 int) User {
-	rows, err := db.Query("select * from testTable")
-	checkError(err)
-	for rows.Next() {
-		var tempUser User
-		err =
-			rows.Scan(&tempUser.id, &tempUser.username, &tempUser.surname, &tempUser.age, &tempUser.university)
-		checkError(err)
-		if tempUser.id == id2 {
-			return tempUser
-		}
-
-	}
-	return User{}
-}
-
-func updateUser(db *sql.DB, id2 int, username string, surname string, age int, university string) {
-	sage := strconv.Itoa(age) // int to string
-	sid := strconv.Itoa(id2)  // int to string
-	tx, _ := db.Begin()
-
-	stmt, _ := tx.Prepare("update testTable set username=?,surname=?,age=?,university=? where id=?")
-	_, err := stmt.Exec(username, surname, sage, university, sid)
-	checkError(err)
-	tx.Commit()
-}
-
-func deleteUser(db *sql.DB, id2 int) {
-	sid := strconv.Itoa(id2) // int to string
-	tx, _ := db.Begin()
-
-	stmt, _ := tx.Prepare("delete from testTable where id=?")
-	_, err := stmt.Exec(sid)
-	checkError(err)
-	tx.Commit()
-}
-
-func test() {
-	db, _ := sql.Open("sqlite3", "database/godb.db")
-	db.Exec("create table if not exists testTable (id integer,username text, surname text,age Integer,university text)")
-
-	addUser(db, "fevzi omur ", "tekin", 24, "Sakarya University") // added data to database
-
-	updateUser(db, 2, "Ken", "Thompson", 75, "California university") //update data to database
-
-	deleteUser(db, 1) // delete data to database
-
-	fmt.Println(getUsers(db, 2)) // printing the user
 }
