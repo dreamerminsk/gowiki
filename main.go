@@ -33,6 +33,10 @@ func processTopicPage(s *Storage, catID NnmClubCategory, page int) {
 		err := s.addTopic(topic)
 		if err != nil {
 			fmt.Println("ERROR: ", reflect.TypeOf(err), err)
+			err2 := s.updateTopic(topic)
+			if err2 != nil {
+				fmt.Println("ERROR: ", reflect.TypeOf(err2), err2)
+			}
 		}
 		fmt.Println("-------------------------")
 	}
