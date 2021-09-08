@@ -8,21 +8,20 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-
 type Storage struct {
-  db *sql.DB
+	db *sql.DB
 }
 
 func NewStorage() *Storage {
-db, _ := sql.Open("sqlite3", "database/godb.db")
-db.Exec("create table if not exists testTable (id integer,username text, surname text,age Integer,university text)")
-s := &Storage{}
-s.db = db
-return s
-} 
+	db, _ := sql.Open("sqlite3", "database/godb.db")
+	db.Exec("create table if not exists testTable (id integer,username text, surname text,age Integer,university text)")
+	s := &Storage{}
+	s.db = db
+	return s
+}
 
 func (s *Storage) Close() {
-s.db.Close()
+	s.db.Close()
 }
 
 type User struct {
