@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -31,7 +32,7 @@ func processTopicPage(s *Storage, catID NnmClubCategory, page int) {
 		fmt.Println("Magnet: ", topic.Magnet)
 		err := s.addTopic(topic)
 		if err != nil {
-			fmt.Println("ERROR: ", err)
+			fmt.Println("ERROR: ", reflect.TypeOf(err), err)
 		}
 		fmt.Println("-------------------------")
 	}
