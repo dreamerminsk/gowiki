@@ -10,29 +10,37 @@ type Storage struct {
 	db *sql.DB
 }
 
+const (
+	topicCreateSQL = `create table if not exists topics (id integer primary key, title text, author text, published text, magnet text, likes integer)`
+	topicSelectSQL = `select * from topics`
+	topicInsertSQL = `insert into topics (id,title,author,published,magnet,likes) values (?,?,?,?,?,?)`
+	topicUpdateSQL = `update topics set title=?,author=?,published=?,magnet=?,likes=? where id=?`
+	topicDeleteSQL = `"delete from topics where id=?"`
+)
+
 func NewStorage() (*Storage, error) {
 	db, err := sql.Open("sqlite3", "nnmclub.sqlite3.db")
 	if err != nil {
 		return nil, err
 	}
-	db.Exec("create table if not exists topics (id integer primary key, title text, author text, published text, magnet text, likes integer)")
+	db.Exec(topicCreateSQL)
 	s := &Storage{db: db}
 	return s, nil
 }
 
 func (s *Storage) addTopic(t *Topic) error {
 	tx, _ := s.db.Begin()
-	stmt, _ := tx.Prepare("insert into topics (id,title,author,published,magnet,likes) values (?,?,?,?,?,?)")
+	stmt, _ := tx.Prepare(topicInsertSQL)
 	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
 	if err != nil {
-		tx.Commit()
+		tx.Rollback()
 		return err
 	}
 	return tx.Commit()
 }
 
 func (s *Storage) getTopics() ([]*Topic, error) {
-	rows, err := s.db.Query("select * from topics")
+	rows, err := s.db.Query(topicSelectSQL)
 	if err != nil {
 		return []*Topic{}, err
 	}
@@ -50,10 +58,10 @@ func (s *Storage) getTopics() ([]*Topic, error) {
 
 func (s *Storage) updateTopic(t *Topic) error {
 	tx, _ := s.db.Begin()
-	stmt, _ := tx.Prepare("update topics set title=?,author=?,published=?,magnet=?,likes=? where id=?")
+	stmt, _ := tx.Prepare(topicUpdateSQL)
 	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
 	if err != nil {
-		tx.Commit()
+		tx.Rollback()
 		return err
 	}
 	return tx.Commit()
@@ -61,10 +69,10 @@ func (s *Storage) updateTopic(t *Topic) error {
 
 func (s *Storage) deleteTopic(topicId int) error {
 	tx, _ := s.db.Begin()
-	stmt, _ := tx.Prepare("delete from topics where id=?")
+	stmt, _ := tx.Prepare(topicDeleteSQL)
 	_, err := stmt.Exec(topicId)
 	if err != nil {
-		tx.Commit()
+		tx.Rollback()
 		return err
 	}
 	return tx.Commit()
