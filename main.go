@@ -27,15 +27,23 @@ func processTopicPage(s *Storage, catID NnmClubCategory, page int) {
 		fmt.Println("ID: ", key)
 		fmt.Println("Title: ", topic.Title)
 		fmt.Println("Author: ", topic.Author)
-		fmt.Println("Published: ", topic.Published)
+		fmt.Println("Published: ", topic.Published.Format(time.RFC3339))
 		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("Magnet: ", topic.Magnet)
-		err := s.addTopic(topic)
-		if err != nil {
-			fmt.Println("ERROR: ", reflect.TypeOf(err), err)
-			err2 := s.updateTopic(topic)
-			if err2 != nil {
-				fmt.Println("ERROR: ", reflect.TypeOf(err2), err2)
+		oldTopic, selectErr := s.getTopic(int(topic.ID))
+		if selectErr != nil {
+			fmt.Println("SELECT ERROR: ", reflect.TypeOf(selectErr), selectErr)
+		}
+		if oldTopic.ID == 0 {
+			insertErr := s.addTopic(topic)
+			if insertErr != nil {
+				fmt.Println("INSERT ERROR: ", reflect.TypeOf(insertErr), insertErr)
+			}
+		} else if topic.Likes > oldTopic.Likes {
+			fmt.Printf("\tDIFF LIKES: %d\r\n", topic.Likes-oldTopic.Likes)
+			updateErr := s.updateTopic(topic)
+			if updateErr != nil {
+				fmt.Println("UPDATE ERROR: ", reflect.TypeOf(updateErr), updateErr)
 			}
 		}
 		fmt.Println("-------------------------")

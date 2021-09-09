@@ -11,11 +11,12 @@ type Storage struct {
 }
 
 const (
-	topicCreateSQL = `create table if not exists topics (id integer primary key, title text, author text, published text, magnet text, likes integer)`
-	topicSelectSQL = `select * from topics`
-	topicInsertSQL = `insert into topics (id,title,author,published,magnet,likes) values (?,?,?,?,?,?)`
-	topicUpdateSQL = `update topics set title=?,author=?,published=?,magnet=?,likes=? where id=?`
-	topicDeleteSQL = `"delete from topics where id=?"`
+	topicCreateSQL    = `create table if not exists topics (id integer primary key, title text, author text, published datetime, magnet text, likes integer)`
+	topicSelectAllSQL = `select * from topics`
+	topicSelectOneSQL = `select * from topics where id=?`
+	topicInsertSQL    = `insert into topics (id,title,author,published,magnet,likes) values (?,?,?,?,?,?)`
+	topicUpdateSQL    = `update topics set title=?,author=?,published=?,magnet=?,likes=? where id=?`
+	topicDeleteSQL    = `"delete from topics where id=?"`
 )
 
 func NewStorage() (*Storage, error) {
@@ -28,19 +29,8 @@ func NewStorage() (*Storage, error) {
 	return s, nil
 }
 
-func (s *Storage) addTopic(t *Topic) error {
-	tx, _ := s.db.Begin()
-	stmt, _ := tx.Prepare(topicInsertSQL)
-	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-	return tx.Commit()
-}
-
 func (s *Storage) getTopics() ([]*Topic, error) {
-	rows, err := s.db.Query(topicSelectSQL)
+	rows, err := s.db.Query(topicSelectAllSQL)
 	if err != nil {
 		return []*Topic{}, err
 	}
@@ -54,6 +44,30 @@ func (s *Storage) getTopics() ([]*Topic, error) {
 		topics = append(topics, &t)
 	}
 	return topics, nil
+}
+
+func (s *Storage) getTopic(id int) (*Topic, error) {
+	t := &Topic{}
+	err := s.db.QueryRow(topicSelectOneSQL, id).Scan(&t.ID, &t.Title, &t.Author, &t.Published, &t.Magnet, &t.Likes)
+	switch {
+	case err == sql.ErrNoRows:
+		return t, nil
+	case err != nil:
+		return nil, err
+	default:
+		return t, nil
+	}
+}
+
+func (s *Storage) addTopic(t *Topic) error {
+	tx, _ := s.db.Begin()
+	stmt, _ := tx.Prepare(topicInsertSQL)
+	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 func (s *Storage) updateTopic(t *Topic) error {
