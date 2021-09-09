@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"reflect"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	s, err := NewStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
@@ -16,7 +18,9 @@ func main() {
 	defer s.Close()
 	for i := 1; i < 200; i++ {
 		processTopicPage(s, Music, i)
+		time.Sleep(75 * time.Second)
 		processTopicPage(s, HDMusic, i)
+		time.Sleep(75 * time.Second)
 		processTopicPage(s, MusicCollections, i)
 		time.Sleep(75 * time.Second)
 	}
