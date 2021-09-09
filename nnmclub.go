@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -121,11 +122,20 @@ func getTopic(s *goquery.Selection) *Topic {
 	})
 	return topic
 }
-
-func getTopics(catID NnmClubCategory) map[int64]*Topic {
+func getTopics(catID NnmClubCategory, page int) map[int64]*Topic {
 	topics := make(map[int64]*Topic)
-
-	res, err := http.Get("https://nnmclub.to/forum/portal.php?c=" + strconv.FormatInt(int64(catID.EnumIndex()), 10))
+	var urlBuilder strings.Builder
+	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
+	urlBuilder.WriteString(strconv.FormatInt(int64(catID.EnumIndex()), 10))
+	if page > 1 {
+		urlBuilder.WriteString("&start=")
+		urlBuilder.WriteString(strconv.FormatInt(int64(page-1)*20, 10))
+		urlBuilder.WriteString("#pagestart")
+	}
+	url := urlBuilder.String()
+	fmt.Println()
+	fmt.Println(url)
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
