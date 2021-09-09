@@ -28,7 +28,7 @@ func main() {
 }
 
 func processTopicPage(s *Storage, catID NnmClubCategory, page int) {
-	topics := getTopics(Music, page)
+	topics := getTopics(catID, page)
 	for key, topic := range topics {
 		fmt.Println("ID: ", key)
 		fmt.Println("Title: ", topic.Title)
