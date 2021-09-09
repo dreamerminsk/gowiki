@@ -18,11 +18,11 @@ func main() {
 	defer s.Close()
 	for i := 1; i < 200; i++ {
 		processTopicPage(s, Music, i)
-		time.Sleep(75 * time.Second)
+		time.Sleep(RandInt(32, 128) * time.Second)
 		processTopicPage(s, HDMusic, i)
-		time.Sleep(75 * time.Second)
+		time.Sleep(RandInt(32, 128) * time.Second)
 		processTopicPage(s, MusicCollections, i)
-		time.Sleep(75 * time.Second)
+		time.Sleep(RandInt(32, 128) * time.Second)
 	}
 
 }
@@ -58,4 +58,9 @@ func insertOrUpdate(s *Storage, topic *Topic) {
 			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(updateErr), updateErr)
 		}
 	}
+}
+
+func RandInt(min, max int) time.Duration {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return time.Second * time.Duration((r.Intn(max-min) + min))
 }
