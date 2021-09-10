@@ -23,6 +23,10 @@ func main() {
 		time.Sleep(RandDuration(32, 128))
 		processTopicPage(s, MusicCollections, i)
 		time.Sleep(RandDuration(32, 128))
+		processTopicPage(s, AnimeAndManga, i)
+		time.Sleep(RandDuration(32, 128))
+		processTopicPage(s, BooksAndMediaMaterials, i)
+		time.Sleep(RandDuration(32, 128))
 	}
 
 }
