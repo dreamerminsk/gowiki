@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -12,7 +11,10 @@ import (
 	"golang.org/x/text/encoding/charmap"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/dreamerminsk/gowiki/web"
 )
+
+var client *web.WebClient = web.NewWebClient()
 
 type NnmClubCategory int
 
@@ -135,7 +137,7 @@ func getTopics(catID NnmClubCategory, page int) map[int64]*Topic {
 	url := urlBuilder.String()
 	fmt.Println()
 	fmt.Println(url)
-	res, err := http.Get(url)
+	res, err := client.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
