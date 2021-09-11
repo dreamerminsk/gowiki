@@ -1,4 +1,0 @@
-var netClient = &http.Client{
-  Timeout: time.Second * 10,
-}
-response, _ := netClient.Get(url)
