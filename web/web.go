@@ -1,6 +1,7 @@
 package web
 
 import (
+	"io"
 	"net/http"
 	"time"
 )
@@ -22,5 +23,15 @@ func (wc *WebClient) Get(url string) (resp *http.Response, err error) {
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Add("User-Agent", "")
+	return wc.Client.Do(req)
+}
+func (wc *WebClient) Post(url, contentType string, body io.Reader) (resp *http.Response, err error) {
+	req, err := http.NewRequest("POST", url, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", contentType)
+	req.Header.Add("User-Agent", "")
 	return wc.Client.Do(req)
 }
