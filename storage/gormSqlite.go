@@ -16,6 +16,8 @@ func NewStorage() (*Storage, error) {
 		return nil, err
 	}
 	s := &Storage{db: db}
+	db.AutoMigrate(&model.Category{})
+	db.AutoMigrate(&model.Forum{})
 	db.AutoMigrate(&model.Topic{})
 	return s, nil
 }
