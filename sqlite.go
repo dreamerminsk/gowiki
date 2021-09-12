@@ -74,7 +74,7 @@ func (s *SqliteStorage) addTopic(t *model.Topic) error {
 func (s *SqliteStorage) updateTopic(t *model.Topic) error {
 	tx, _ := s.db.Begin()
 	stmt, _ := tx.Prepare(topicUpdateSQL)
-	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
+	_, err := stmt.Exec(t.Title, t.Author, t.Published, t.Magnet, t.Likes, t.ID)
 	if err != nil {
 		tx.Rollback()
 		return err
