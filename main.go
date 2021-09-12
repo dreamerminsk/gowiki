@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/dreamerminsk/gowiki/model"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -45,7 +46,7 @@ func processTopicPage(s *SqliteStorage, catID NnmClubCategory, page int) {
 	}
 }
 
-func insertOrUpdate(s *SqliteStorage, topic *Topic) {
+func insertOrUpdate(s *SqliteStorage, topic *model.Topic) {
 	oldTopic, selectErr := s.getTopic(int(topic.ID))
 	if selectErr != nil {
 		fmt.Println("SELECT ERROR: ", reflect.TypeOf(selectErr), selectErr)

@@ -6,11 +6,11 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	"golang.org/x/text/encoding/charmap"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/web"
 )
 
@@ -79,17 +79,8 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-type Topic struct {
-	ID        int64
-	Title     string
-	Author    string
-	Published time.Time
-	Magnet    string
-	Likes     int64
-}
-
-func getTopic(s *goquery.Selection) *Topic {
-	var topic = new(Topic)
+func getTopic(s *goquery.Selection) *model.Topic {
+	var topic = new(model.Topic)
 	decoder := charmap.Windows1251.NewDecoder()
 	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
 		if title, ok := sl.Attr("title"); ok {
@@ -99,7 +90,8 @@ func getTopic(s *goquery.Selection) *Topic {
 		if href, ok := sl.Attr("href"); ok {
 			u, _ := url.Parse(href)
 			m, _ := url.ParseQuery(u.RawQuery)
-			topic.ID, _ = strconv.ParseInt(m["t"][0], 10, 64)
+			topicID, _ := strconv.ParseInt(m["t"][0], 10, 32)
+			topic.ID = uint(topicID)
 		}
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed > b").Each(func(i int, sl *goquery.Selection) {
@@ -124,8 +116,8 @@ func getTopic(s *goquery.Selection) *Topic {
 	})
 	return topic
 }
-func getTopics(catID NnmClubCategory, page int) map[int64]*Topic {
-	topics := make(map[int64]*Topic)
+func getTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
+	topics := make(map[uint]*model.Topic)
 	var urlBuilder strings.Builder
 	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
 	urlBuilder.WriteString(strconv.FormatInt(int64(catID.EnumIndex()), 10))

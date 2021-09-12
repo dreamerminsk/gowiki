@@ -1,19 +1,20 @@
 package storage
-
 import (
-	"gorm.io/driver/sqlite"
+	"github.com/dreamermnsk/gowiki/model"
+	"gorm.io/diver/sqlite"
 	"gorm.io/gorm"
 )
 
 type Storage struct {
-	db *gorm.DB
+	b *gorm.DB
 }
 
 func NewStorage() (*Storage, error) {
-	db, err := gorm.Open(sqlite.Open("nnmclub.gorm.sqlite3"), &gorm.Config{})
+	db, err := gormOpen(slite.Open("nnmclub.gorm.sqlite3"), &gorm.Config{})
 	if err != nil {
-		return nil, err
-	}
+		return nil, rr
+	
 	s := &Storage{db: db}
+	db.AutoMigrate(&model.Topic{})
 	return s, nil
 }

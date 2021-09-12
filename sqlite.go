@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 
+	"github.com/dreamerminsk/gowiki/model"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -29,14 +30,14 @@ func NewStorage() (*SqliteStorage, error) {
 	return s, nil
 }
 
-func (s *SqliteStorage) getTopics() ([]*Topic, error) {
+func (s *SqliteStorage) getTopics() ([]*model.Topic, error) {
 	rows, err := s.db.Query(topicSelectAllSQL)
 	if err != nil {
-		return []*Topic{}, err
+		return []*model.Topic{}, err
 	}
-	topics := []*Topic{}
+	topics := []*model.Topic{}
 	for rows.Next() {
-		var t Topic
+		var t model.Topic
 		err = rows.Scan(&t.ID, &t.Title, &t.Author, &t.Published, &t.Magnet, &t.Likes)
 		if err != nil {
 			return topics, err
@@ -46,8 +47,8 @@ func (s *SqliteStorage) getTopics() ([]*Topic, error) {
 	return topics, nil
 }
 
-func (s *SqliteStorage) getTopic(id int) (*Topic, error) {
-	t := &Topic{}
+func (s *SqliteStorage) getTopic(id int) (*model.Topic, error) {
+	t := &model.Topic{}
 	err := s.db.QueryRow(topicSelectOneSQL, id).Scan(&t.ID, &t.Title, &t.Author, &t.Published, &t.Magnet, &t.Likes)
 	switch {
 	case err == sql.ErrNoRows:
@@ -59,7 +60,7 @@ func (s *SqliteStorage) getTopic(id int) (*Topic, error) {
 	}
 }
 
-func (s *SqliteStorage) addTopic(t *Topic) error {
+func (s *SqliteStorage) addTopic(t *model.Topic) error {
 	tx, _ := s.db.Begin()
 	stmt, _ := tx.Prepare(topicInsertSQL)
 	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
@@ -70,7 +71,7 @@ func (s *SqliteStorage) addTopic(t *Topic) error {
 	return tx.Commit()
 }
 
-func (s *SqliteStorage) updateTopic(t *Topic) error {
+func (s *SqliteStorage) updateTopic(t *model.Topic) error {
 	tx, _ := s.db.Begin()
 	stmt, _ := tx.Prepare(topicUpdateSQL)
 	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
