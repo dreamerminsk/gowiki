@@ -31,7 +31,7 @@ func main() {
 
 }
 
-func processTopicPage(s *Storage, catID NnmClubCategory, page int) {
+func processTopicPage(s *SqliteStorage, catID NnmClubCategory, page int) {
 	topics := getTopics(catID, page)
 	for key, topic := range topics {
 		fmt.Println("ID: ", key)
@@ -45,7 +45,7 @@ func processTopicPage(s *Storage, catID NnmClubCategory, page int) {
 	}
 }
 
-func insertOrUpdate(s *Storage, topic *Topic) {
+func insertOrUpdate(s *SqliteStorage, topic *Topic) {
 	oldTopic, selectErr := s.getTopic(int(topic.ID))
 	if selectErr != nil {
 		fmt.Println("SELECT ERROR: ", reflect.TypeOf(selectErr), selectErr)
