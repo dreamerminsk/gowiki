@@ -3,7 +3,7 @@ package storage
 import (
 	"gorm.io/gorm"
 
-	"github.com/deamermnsk/gowiki/model"
+	"github.com/dreamerminsk/gowiki/model"
 )
 
 type Storage struct {
