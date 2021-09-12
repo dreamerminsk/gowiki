@@ -6,6 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type Category struct {
+	gorm.Model
+	Title string
+}
+
+type Forum struct {
+	gorm.Model
+	Title string
+}
+
 type Topic struct {
 	gorm.Model
 	Title     string
