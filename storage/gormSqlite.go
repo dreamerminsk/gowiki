@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"github.com/dreamerminsk/gowiki/model"

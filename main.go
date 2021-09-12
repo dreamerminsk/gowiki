@@ -17,6 +17,7 @@ func main() {
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
 	}
+	fmt.Printf("Storage: %s", g)
 	s, err := NewStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())

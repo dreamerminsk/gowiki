@@ -11,6 +11,7 @@ require (
 require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
+	gorm.io/driver/sqlite v1.1.5
 	gorm.io/gorm v1.21.15
 )
 
