@@ -7,11 +7,16 @@ import (
 	"time"
 
 	"github.com/dreamerminsk/gowiki/model"
+	"github.com/dreamerminsk/gowiki/storage"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+	g, err := storage.NewStorage()
+	if err != nil {
+		fmt.Printf("Storage: %s", err.Error())
+	}
 	s, err := NewStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
