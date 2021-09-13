@@ -79,6 +79,12 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
+func getCategories() map[uint]*model.Category {
+	categories := make(map[uint]*model.Category)
+
+	return categories
+}
+
 func getTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
 	topics := make(map[uint]*model.Topic)
 	var urlBuilder strings.Builder
