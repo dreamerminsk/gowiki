@@ -17,11 +17,25 @@ func main() {
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
 	}
-	cats, _ := getCategories()
-	for _, cat := range cats {
-		g.DB.Create(&cat)
+
+	cats, err := getCategories()
+	if err != nil {
+		fmt.Println("ERROR : ", err)
 	}
-	fmt.Println("Storage: ", g)
+	for _, cat := range cats {
+		fmt.Println("Title: ", cat.Title)
+		g.DB.Create(cat)
+	}
+
+	forums, err := getForums()
+	if err != nil {
+		fmt.Println("ERROR : ", err)
+	}
+	for _, forum := range forums {
+		fmt.Println("Title: ", forum.Title)
+		g.DB.Create(forum)
+	}
+
 	s, err := NewStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())

@@ -94,20 +94,54 @@ func getCategories() (map[uint]*model.Category, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	decoder := charmap.Windows1251.NewDecoder()
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		if ref, ok := s.Attr("href"); ok {
-			if strings.Contains(ref, "/forum/index.php?c=") {
+			if strings.Contains(ref, "index.php?c=") {
 				u, _ := url.Parse(ref)
 				m, _ := url.ParseQuery(u.RawQuery)
 				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
+				categoryTitle, _ := decoder.String(s.Text())
 				categories[uint(categoryID)] = &model.Category{
 					Model: gorm.Model{ID: uint(categoryID)},
+					Title: categoryTitle,
 				}
 			}
 		}
 	})
 	return categories, nil
+}
+
+func getForums() (map[uint]*model.Forum, error) {
+	forums := make(map[uint]*model.Forum)
+	res, err := client.Get("https://nnmclub.to/forum/index.php")
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return nil, err
+	}
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	decoder := charmap.Windows1251.NewDecoder()
+	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+		if ref, ok := s.Attr("href"); ok {
+			if strings.Contains(ref, "viewforum.php?f=") {
+				u, _ := url.Parse(ref)
+				m, _ := url.ParseQuery(u.RawQuery)
+				forumID, _ := strconv.ParseInt(m["f"][0], 10, 32)
+				forumTitle, _ := decoder.String(s.Text())
+				forums[uint(forumID)] = &model.Forum{
+					Model: gorm.Model{ID: uint(forumID)},
+					Title: forumTitle,
+				}
+			}
+		}
+	})
+	return forums, nil
 }
 
 func getTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
