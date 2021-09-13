@@ -23,6 +23,6 @@ func NewStorage() (*Storage, error) {
 	return s, nil
 }
 
-func (s *Storage) Create(value interface{}) (tx *DB) {
+func (s *Storage) Create(value interface{}) (tx *gorm.DB) {
 return s.DB.Create(value)
 }
