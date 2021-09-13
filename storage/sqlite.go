@@ -8,7 +8,7 @@ import (
 )
 
 type Storage struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func NewStorage() (*Storage, error) {
@@ -16,7 +16,7 @@ func NewStorage() (*Storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &Storage{db: db}
+	s := &Storage{DB: db}
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Forum{})
 	db.AutoMigrate(&model.Topic{})

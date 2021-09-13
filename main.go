@@ -17,6 +17,10 @@ func main() {
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
 	}
+	cats, _ := getCategories()
+	for _, cat := range cats {
+		g.DB.Create(&cat)
+	}
 	fmt.Println("Storage: ", g)
 	s, err := NewStorage()
 	if err != nil {
