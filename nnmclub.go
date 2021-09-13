@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"golang.org/x/text/encoding/charmap"
+	"gorm.io/gorm"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/model"
@@ -79,10 +80,34 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-func getCategories() map[uint]*model.Category {
+func getCategories() (map[uint]*model.Category, error) {
 	categories := make(map[uint]*model.Category)
+	res, err := client.Get("https://nnmclub.to/forum/index.php")
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return nil, err
+	}
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	return categories
+	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+		if ref, ok := s.Attr("href"); ok {
+			if strings.Contains(ref, "/forum/index.php?c=") {
+				u, _ := url.Parse(ref)
+				m, _ := url.ParseQuery(u.RawQuery)
+				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
+				categories[uint(categoryID)] = &model.Category{
+					Model: gorm.Model{ID: uint(categoryID)},
+				}
+			}
+		}
+	})
+	return categories, nil
 }
 
 func getTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
