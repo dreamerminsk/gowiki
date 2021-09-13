@@ -79,43 +79,6 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-func getTopic(s *goquery.Selection) *model.Topic {
-	var topic = new(model.Topic)
-	decoder := charmap.Windows1251.NewDecoder()
-	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
-		if title, ok := sl.Attr("title"); ok {
-			titleString, _ := decoder.String(title)
-			topic.Title = titleString
-		}
-		if href, ok := sl.Attr("href"); ok {
-			u, _ := url.Parse(href)
-			m, _ := url.ParseQuery(u.RawQuery)
-			topicID, _ := strconv.ParseInt(m["t"][0], 10, 32)
-			topic.ID = uint(topicID)
-		}
-	})
-	s.Find("tbody > tr:nth-child(2) > td > span.genmed > b").Each(func(i int, sl *goquery.Selection) {
-		authorString, _ := decoder.String(sl.Text())
-		topic.Author = authorString
-	})
-	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
-		timeString, _ := decoder.String(sl.Text())
-		topic.Published = parseTime(timeString)
-	})
-	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
-		if _, ok := sl.Attr("id"); ok {
-			topic.Likes, _ = strconv.ParseInt(sl.Text(), 10, 64)
-		}
-	})
-	s.Find("a").Each(func(i int, sl *goquery.Selection) {
-		if ref, ok := sl.Attr("href"); ok {
-			if strings.HasPrefix(ref, "magnet:") {
-				topic.Magnet = ref
-			}
-		}
-	})
-	return topic
-}
 func getTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
 	topics := make(map[uint]*model.Topic)
 	var urlBuilder strings.Builder
@@ -162,4 +125,42 @@ func isTopic(s *goquery.Selection) bool {
 		}
 	})
 	return isTopic
+}
+
+func getTopic(s *goquery.Selection) *model.Topic {
+	var topic = new(model.Topic)
+	decoder := charmap.Windows1251.NewDecoder()
+	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
+		if title, ok := sl.Attr("title"); ok {
+			titleString, _ := decoder.String(title)
+			topic.Title = titleString
+		}
+		if href, ok := sl.Attr("href"); ok {
+			u, _ := url.Parse(href)
+			m, _ := url.ParseQuery(u.RawQuery)
+			topicID, _ := strconv.ParseInt(m["t"][0], 10, 32)
+			topic.ID = uint(topicID)
+		}
+	})
+	s.Find("tbody > tr:nth-child(2) > td > span.genmed > b").Each(func(i int, sl *goquery.Selection) {
+		authorString, _ := decoder.String(sl.Text())
+		topic.Author = authorString
+	})
+	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
+		timeString, _ := decoder.String(sl.Text())
+		topic.Published = parseTime(timeString)
+	})
+	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
+		if _, ok := sl.Attr("id"); ok {
+			topic.Likes, _ = strconv.ParseInt(sl.Text(), 10, 64)
+		}
+	})
+	s.Find("a").Each(func(i int, sl *goquery.Selection) {
+		if ref, ok := sl.Attr("href"); ok {
+			if strings.HasPrefix(ref, "magnet:") {
+				topic.Magnet = ref
+			}
+		}
+	})
+	return topic
 }
