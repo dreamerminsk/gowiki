@@ -6,7 +6,7 @@ import (
 	"github.com/dreamerminsk/gowiki/storage"
 )
 
-func updateCategories() {
+func UpdateCategories() {
 	cats, err := GetCategories()
 	if err != nil {
 		fmt.Println("ERROR : ", err)
@@ -17,6 +17,6 @@ func updateCategories() {
 	}
 	for _, cat := range cats {
 		fmt.Println("Title: ", cat.Title)
-		g.DB.Create(cat)
+		g.Create(cat)
 	}
 }
