@@ -19,14 +19,7 @@ func main() {
 		fmt.Printf("Storage: %s", err.Error())
 	}
 
-	cats, err := tasks.GetCategories()
-	if err != nil {
-		fmt.Println("ERROR : ", err)
-	}
-	for _, cat := range cats {
-		fmt.Println("Title: ", cat.Title)
-		g.DB.Create(cat)
-	}
+	tasks.UpdateCategories()
 
 	forums, err := tasks.GetForums()
 	if err != nil {
