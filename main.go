@@ -7,28 +7,16 @@ import (
 	"time"
 
 	"github.com/dreamerminsk/gowiki/model"
-	"github.com/dreamerminsk/gowiki/storage"
 	"github.com/dreamerminsk/gowiki/tasks"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	g, err := storage.NewStorage()
-	if err != nil {
-		fmt.Printf("Storage: %s", err.Error())
-	}
 
 	tasks.UpdateCategories()
 
-	forums, err := tasks.GetForums()
-	if err != nil {
-		fmt.Println("ERROR : ", err)
-	}
-	for _, forum := range forums {
-		fmt.Println("Title: ", forum.Title)
-		g.DB.Create(forum)
-	}
+	tasks.UpdateForums()
 
 	s, err := NewStorage()
 	if err != nil {
