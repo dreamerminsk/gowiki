@@ -22,3 +22,7 @@ func NewStorage() (*Storage, error) {
 	db.AutoMigrate(&model.Topic{})
 	return s, nil
 }
+
+func (s *Storage) Create(value interface{}) (tx *gorm.DB) {
+	return s.DB.Create(value)
+}

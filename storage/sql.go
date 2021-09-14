@@ -1,4 +1,4 @@
-package main
+package storage
 
 import (
 	"database/sql"
@@ -20,7 +20,7 @@ const (
 	topicDeleteSQL    = `"delete from topics where id=?"`
 )
 
-func NewStorage() (*SqliteStorage, error) {
+func NewSqliteStorage() (*SqliteStorage, error) {
 	db, err := sql.Open("sqlite3", "nnmclub.sqlite3.db")
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func NewStorage() (*SqliteStorage, error) {
 	return s, nil
 }
 
-func (s *SqliteStorage) getTopics() ([]*model.Topic, error) {
+func (s *SqliteStorage) GetTopics() ([]*model.Topic, error) {
 	rows, err := s.db.Query(topicSelectAllSQL)
 	if err != nil {
 		return []*model.Topic{}, err
@@ -47,7 +47,7 @@ func (s *SqliteStorage) getTopics() ([]*model.Topic, error) {
 	return topics, nil
 }
 
-func (s *SqliteStorage) getTopic(id int) (*model.Topic, error) {
+func (s *SqliteStorage) GetTopic(id int) (*model.Topic, error) {
 	t := &model.Topic{}
 	err := s.db.QueryRow(topicSelectOneSQL, id).Scan(&t.ID, &t.Title, &t.Author, &t.Published, &t.Magnet, &t.Likes)
 	switch {
@@ -60,7 +60,7 @@ func (s *SqliteStorage) getTopic(id int) (*model.Topic, error) {
 	}
 }
 
-func (s *SqliteStorage) addTopic(t *model.Topic) error {
+func (s *SqliteStorage) AddTopic(t *model.Topic) error {
 	tx, _ := s.db.Begin()
 	stmt, _ := tx.Prepare(topicInsertSQL)
 	_, err := stmt.Exec(t.ID, t.Title, t.Author, t.Published, t.Magnet, t.Likes)
@@ -71,7 +71,7 @@ func (s *SqliteStorage) addTopic(t *model.Topic) error {
 	return tx.Commit()
 }
 
-func (s *SqliteStorage) updateTopic(t *model.Topic) error {
+func (s *SqliteStorage) UpdateTopic(t *model.Topic) error {
 	tx, _ := s.db.Begin()
 	stmt, _ := tx.Prepare(topicUpdateSQL)
 	_, err := stmt.Exec(t.Title, t.Author, t.Published, t.Magnet, t.Likes, t.ID)
@@ -82,7 +82,7 @@ func (s *SqliteStorage) updateTopic(t *model.Topic) error {
 	return tx.Commit()
 }
 
-func (s *SqliteStorage) deleteTopic(topicId int) error {
+func (s *SqliteStorage) DeleteTopic(topicId int) error {
 	tx, _ := s.db.Begin()
 	stmt, _ := tx.Prepare(topicDeleteSQL)
 	_, err := stmt.Exec(topicId)
