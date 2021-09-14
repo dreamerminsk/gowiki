@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"regexp"
@@ -60,7 +60,7 @@ const timePattern = `.*?(?P<Day>\d{2}) (?P<Month>\D{3}) (?P<Year>\d{4}) (?P<Hour
 
 var timeRegEx = regexp.MustCompile(timePattern)
 
-func parseTime(timeString string) time.Time {
+func ParseTime(timeString string) time.Time {
 
 	match := timeRegEx.FindStringSubmatch(timeString)
 	d, _ := strconv.ParseInt(match[1], 10, 32)

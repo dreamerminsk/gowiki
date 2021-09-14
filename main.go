@@ -8,6 +8,7 @@ import (
 
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/storage"
+	"github.com/dreamerminsk/gowiki/tasks"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -18,7 +19,7 @@ func main() {
 		fmt.Printf("Storage: %s", err.Error())
 	}
 
-	cats, err := getCategories()
+	cats, err := tasks.GetCategories()
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
@@ -27,7 +28,7 @@ func main() {
 		g.DB.Create(cat)
 	}
 
-	forums, err := getForums()
+	forums, err := tasks.GetForums()
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
@@ -42,22 +43,22 @@ func main() {
 	}
 	defer s.Close()
 	for i := 1; i < 200; i++ {
-		processTopicPage(s, Music, i)
+		processTopicPage(s, tasks.Music, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, HDMusic, i)
+		processTopicPage(s, tasks.HDMusic, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, MusicCollections, i)
+		processTopicPage(s, tasks.MusicCollections, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, AnimeAndManga, i)
+		processTopicPage(s, tasks.AnimeAndManga, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, BooksAndMediaMaterials, i)
+		processTopicPage(s, tasks.BooksAndMediaMaterials, i)
 		time.Sleep(RandDuration(32, 128))
 	}
 
 }
 
-func processTopicPage(s *SqliteStorage, catID NnmClubCategory, page int) {
-	topics := getTopics(catID, page)
+func processTopicPage(s *SqliteStorage, catID tasks.NnmClubCategory, page int) {
+	topics := tasks.GetTopics(catID, page)
 	for key, topic := range topics {
 		fmt.Println("ID: ", key)
 		fmt.Println("Title: ", topic.Title)

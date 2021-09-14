@@ -1,4 +1,4 @@
-package main
+package tasks
 
 import (
 	"fmt"
@@ -12,6 +12,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/model"
+	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
 )
 
@@ -80,7 +81,7 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-func getCategories() (map[uint]*model.Category, error) {
+func GetCategories() (map[uint]*model.Category, error) {
 	categories := make(map[uint]*model.Category)
 	res, err := client.Get("https://nnmclub.to/forum/index.php")
 	if err != nil {
@@ -112,7 +113,7 @@ func getCategories() (map[uint]*model.Category, error) {
 	return categories, nil
 }
 
-func getForums() (map[uint]*model.Forum, error) {
+func GetForums() (map[uint]*model.Forum, error) {
 	forums := make(map[uint]*model.Forum)
 	res, err := client.Get("https://nnmclub.to/forum/index.php")
 	if err != nil {
@@ -144,7 +145,7 @@ func getForums() (map[uint]*model.Forum, error) {
 	return forums, nil
 }
 
-func getTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
+func GetTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
 	topics := make(map[uint]*model.Topic)
 	var urlBuilder strings.Builder
 	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
@@ -213,7 +214,7 @@ func getTopic(s *goquery.Selection) *model.Topic {
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
 		timeString, _ := decoder.String(sl.Text())
-		topic.Published = parseTime(timeString)
+		topic.Published = utils.ParseTime(timeString)
 	})
 	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
 		if _, ok := sl.Attr("id"); ok {
