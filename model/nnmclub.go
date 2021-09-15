@@ -8,8 +8,8 @@ import (
 
 type Category struct {
 	gorm.Model
-	Title string
-	Forum []Forum `gorm:"foreignKey:CatID"`
+	Title  string
+	Forums []Forum `gorm:"foreignKey:CatID"`
 }
 
 type Forum struct {
