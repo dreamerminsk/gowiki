@@ -6,7 +6,7 @@ import (
 	"github.com/dreamerminsk/gowiki/storage"
 )
 
-func UpdateCategories() {
+func NewCategories() {
 	cats, err := GetCategories()
 	if err != nil {
 		fmt.Println("ERROR : ", err)
