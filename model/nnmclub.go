@@ -13,7 +13,8 @@ type Category struct {
 
 type Forum struct {
 	gorm.Model
-	Title string
+	Category Category
+	Title    string
 }
 
 type Topic struct {
