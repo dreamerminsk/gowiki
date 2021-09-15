@@ -11,10 +11,7 @@ func UpdateCategories() {
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
-	g, err := storage.NewStorage()
-	if err != nil {
-		fmt.Printf("Storage: %s", err.Error())
-	}
+	g := storage.New()
 	for _, cat := range cats {
 		fmt.Println("Title: ", cat.Title)
 		g.Create(cat)
