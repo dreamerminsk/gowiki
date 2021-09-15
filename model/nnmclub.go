@@ -14,7 +14,7 @@ type Category struct {
 
 type Forum struct {
 	gorm.Model
-	CatID Category
+	CatID uint
 	Title string
 }
 
