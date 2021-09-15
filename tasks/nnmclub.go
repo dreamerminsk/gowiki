@@ -136,9 +136,9 @@ func GetForums() (map[uint]*model.Forum, error) {
 				forumID, _ := strconv.ParseInt(m["f"][0], 10, 32)
 				forumTitle, _ := decoder.String(s.Text())
 				forums[uint(forumID)] = &model.Forum{
-					Model:      gorm.Model{ID: uint(forumID)},
-					CategoryID: model.Category{},
-					Title:      forumTitle,
+					Model: gorm.Model{ID: uint(forumID)},
+					CatID: model.Category{},
+					Title: forumTitle,
 				}
 			}
 		}

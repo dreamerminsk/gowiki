@@ -9,13 +9,13 @@ import (
 type Category struct {
 	gorm.Model
 	Title string
-	Forum []Forum
+	Forum []Forum `gorm:"foreignKey:CatID"`
 }
 
 type Forum struct {
 	gorm.Model
-	CategoryID Category
-	Title      string
+	CatID Category
+	Title string
 }
 
 type Topic struct {
