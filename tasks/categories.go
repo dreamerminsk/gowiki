@@ -17,3 +17,7 @@ func NewCategories() {
 		g.Create(cat)
 	}
 }
+
+func UpdateCategories() {
+
+}
