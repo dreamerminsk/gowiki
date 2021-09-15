@@ -9,6 +9,7 @@ import (
 type Category struct {
 	gorm.Model
 	Title string
+	Forum []Forum
 }
 
 type Forum struct {
