@@ -17,3 +17,5 @@ func NewForums() {
 		g.Create(forum)
 	}
 }
+
+func UpdateForums() {}
