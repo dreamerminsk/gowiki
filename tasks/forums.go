@@ -6,7 +6,7 @@ import (
 	"github.com/dreamerminsk/gowiki/storage"
 )
 
-func UpdateForums() {
+func NewForums() {
 	forums, err := GetForums()
 	if err != nil {
 		fmt.Println("ERROR : ", err)

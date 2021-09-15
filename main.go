@@ -21,7 +21,7 @@ func main() {
 
 	go tasks.NewCategories()
 
-	go tasks.UpdateForums()
+	go tasks.NewForums()
 
 	go tasks.UpdateTopics()
 
