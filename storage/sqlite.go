@@ -10,7 +10,8 @@ import (
 )
 
 type storage struct {
-	DB *gorm.DB
+	DB   *gorm.DB
+	lock *sync.Mutex
 }
 
 type Storage interface {
@@ -27,7 +28,7 @@ func NewStorage() (*storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &storage{DB: db}
+	s := &storage{DB: db, lock: &sync.Mutex{}}
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Forum{})
 	db.AutoMigrate(&model.Topic{})
@@ -43,5 +44,7 @@ func New() Storage {
 }
 
 func (s *storage) Create(value interface{}) (tx *gorm.DB) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
 	return s.DB.Create(value)
 }
