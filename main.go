@@ -25,13 +25,16 @@ func main() {
 
 	go tasks.UpdateTopics()
 
+	start := time.Now()
+
 	for {
 		select {
 		case <-keyChan:
-			fmt.Println("CTRL-C: Завершаю работу. Всего записей: ")
+			fmt.Println("\nCTRL-C: Завершаю работу.")
 			return
 		case <-ticker.C:
-			fmt.Printf("Всего  / Повторов  ( записей/сек) \n")
+			current := time.Now()
+			fmt.Println("Всего  / Повторов  ( записей/сек) \n", (current.Sub(start)))
 
 		}
 	}
