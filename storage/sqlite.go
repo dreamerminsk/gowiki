@@ -10,13 +10,14 @@ import (
 )
 
 type storage struct {
-	DB   *gorm.DB
-	lock *sync.Mutex
+	DB *gorm.DB
+	mu *sync.Mutex
 }
 
 type Storage interface {
 	Create(value interface{}) (tx *gorm.DB)
 	GetCategoryByID(ID uint) (*model.Category, error)
+	GetForumByID(ID uint) (*model.Forum, error)
 }
 
 var (
@@ -29,7 +30,7 @@ func newStorage() (*storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &storage{DB: db, lock: &sync.Mutex{}}
+	s := &storage{DB: db, mu: &sync.Mutex{}}
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Forum{})
 	db.AutoMigrate(&model.Topic{})
@@ -45,17 +46,27 @@ func New() Storage {
 }
 
 func (s *storage) Create(value interface{}) (tx *gorm.DB) {
-	s.lock.Lock()
-	defer s.lock.Unlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return s.DB.Create(value)
 }
 
 func (s *storage) GetCategoryByID(ID uint) (*model.Category, error) {
-	s.lock.Lock()
-	defer s.lock.Unlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	cat := &model.Category{}
 	if err := s.DB.Model(&model.Category{}).First(&cat).Error; err != nil {
 		return nil, err
 	}
 	return cat, nil
+}
+
+func (s *storage) GetForumByID(ID uint) (*model.Forum, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	forum := &model.Forum{}
+	if err := s.DB.Model(&model.Forum{}).First(&forum).Error; err != nil {
+		return nil, err
+	}
+	return forum, nil
 }
