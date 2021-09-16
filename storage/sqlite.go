@@ -16,6 +16,7 @@ type storage struct {
 
 type Storage interface {
 	Create(value interface{}) (tx *gorm.DB)
+	GetCategoryByID(ID uint) (*model.Category, error)
 }
 
 var (
@@ -47,4 +48,14 @@ func (s *storage) Create(value interface{}) (tx *gorm.DB) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	return s.DB.Create(value)
+}
+
+func (s *storage) GetCategoryByID(ID uint) (*model.Category, error) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	cat := &model.Category{}
+	if err := s.DB.Model(&model.Category{}).First(&cat).Error; err != nil {
+		return nil, err
+	}
+	return cat, nil
 }
