@@ -2,8 +2,8 @@ package web
 
 import (
 	"io"
-"sync"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -11,20 +11,33 @@ const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/5
 
 type webClient struct {
 	client *http.Client
-        mu sync.Mutex
+	mu     sync.Mutex
 }
 
-type WebReader interface{
-Get(url string) (resp *http.Response, err error)
-Post(url, contentType string, body io.Reader) (resp *http.Response, err error)
+type WebReader interface {
+	Get(url string) (resp *http.Response, err error)
+	Post(url, contentType string, body io.Reader) (resp *http.Response, err error)
 }
 
-func New() *WebReader {
+var (
+	instance *webClient
+	once     sync.Once
+)
+
+func newReader() *webClient {
 	return &webClient{
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
 	}
+}
+
+func New() WebReader {
+	once.Do(func() {
+		instance = newReader()
+	})
+
+	return instance
 }
 
 func (wc *webClient) Get(url string) (resp *http.Response, err error) {

@@ -16,7 +16,7 @@ import (
 	"github.com/dreamerminsk/gowiki/web"
 )
 
-var client *web.WebClient = web.NewWebClient()
+var client web.WebReader = web.New()
 
 type NnmClubCategory int
 
