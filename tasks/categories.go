@@ -1,9 +1,11 @@
 package tasks
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/dreamerminsk/gowiki/storage"
+	"gorm.io/gorm"
 )
 
 func InitOrUpdateCategories() {
@@ -14,8 +16,10 @@ func InitOrUpdateCategories() {
 	g := storage.New()
 	for _, cat := range cats {
 		if _, err := g.GetCategoryByID(cat.ID); err != nil {
-			g.Create(cat)
-			fmt.Println("Title: ", cat.Title)
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				g.Create(cat)
+				fmt.Println("INSERT CATEGORY: ", cat.ID, " - ", cat.Title)
+			}
 		}
 	}
 }
