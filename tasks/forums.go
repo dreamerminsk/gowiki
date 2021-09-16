@@ -15,7 +15,7 @@ func InitOrUpdateForums() {
 	}
 	g := storage.New()
 	for _, forum := range forums {
-		if _, err := g.GetCategoryByID(forum.ID); err != nil {
+		if _, err := g.GetForumByID(forum.ID); err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				g.Create(forum)
 				fmt.Println("INSERT FORUM: ", forum.ID, " - ", forum.Title)

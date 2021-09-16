@@ -55,7 +55,7 @@ func (s *storage) GetCategoryByID(ID uint) (*model.Category, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	cat := &model.Category{}
-	if err := s.DB.Model(&model.Category{}).First(&cat).Error; err != nil {
+	if err := s.DB.Model(&model.Category{}).First(&cat, ID).Error; err != nil {
 		return nil, err
 	}
 	return cat, nil
@@ -65,7 +65,7 @@ func (s *storage) GetForumByID(ID uint) (*model.Forum, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	forum := &model.Forum{}
-	if err := s.DB.Model(&model.Forum{}).First(&forum).Error; err != nil {
+	if err := s.DB.Model(&model.Forum{}).First(&forum, ID).Error; err != nil {
 		return nil, err
 	}
 	return forum, nil
