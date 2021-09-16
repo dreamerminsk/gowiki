@@ -23,7 +23,7 @@ var (
 	once     sync.Once
 )
 
-func NewStorage() (*storage, error) {
+func newStorage() (*storage, error) {
 	db, err := gorm.Open(sqlite.Open("nnmclub.gorm.sqlite3"), &gorm.Config{})
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func NewStorage() (*storage, error) {
 
 func New() Storage {
 	once.Do(func() {
-		instance, _ = NewStorage()
+		instance, _ = newStorage()
 	})
 
 	return instance

@@ -18,4 +18,5 @@ require (
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.2 // indirect
+	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 )

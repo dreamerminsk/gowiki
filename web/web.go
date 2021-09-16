@@ -1,40 +1,75 @@
 package web
 
 import (
+	"context"
 	"io"
 	"net/http"
+	"sync"
 	"time"
+
+	"golang.org/x/time/rate"
 )
 
 const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
 
-type WebClient struct {
-	Client *http.Client
+type webClient struct {
+	client      *http.Client
+	mu          sync.Mutex
+	rateLimiter *rate.Limiter
 }
 
-func NewWebClient() *WebClient {
-	return &WebClient{
-		Client: &http.Client{
+type WebReader interface {
+	Get(url string) (resp *http.Response, err error)
+	Post(url, contentType string, body io.Reader) (resp *http.Response, err error)
+}
+
+var (
+	instance *webClient
+	once     sync.Once
+)
+
+func newReader() *webClient {
+	return &webClient{
+		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
+		rateLimiter: rate.NewLimiter(rate.Every(60*time.Second), 1),
 	}
 }
 
-func (wc *WebClient) Get(url string) (resp *http.Response, err error) {
+func New() WebReader {
+	once.Do(func() {
+		instance = newReader()
+	})
+
+	return instance
+}
+
+func (wc *webClient) Get(url string) (*http.Response, error) {
+	ctx := context.Background()
+	err := wc.rateLimiter.Wait(ctx)
+	if err != nil {
+		return nil, err
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Client.Do(req)
+	return wc.client.Do(req)
 }
 
-func (wc *WebClient) Post(url, contentType string, body io.Reader) (resp *http.Response, err error) {
+func (wc *webClient) Post(url, contentType string, body io.Reader) (*http.Response, error) {
+	ctx := context.Background()
+	err := wc.rateLimiter.Wait(ctx)
+	if err != nil {
+		return nil, err
+	}
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Client.Do(req)
+	return wc.client.Do(req)
 }
