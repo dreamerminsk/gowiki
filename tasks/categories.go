@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -8,8 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitCategories() {
-	cats, err := GetCategories()
+func InitCategories(ctx context.Context) {
+	cats, err := GetCategories(ctx)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}

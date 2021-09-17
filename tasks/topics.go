@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"reflect"
@@ -10,28 +11,28 @@ import (
 	"github.com/dreamerminsk/gowiki/storage"
 )
 
-func UpdateTopics() {
+func UpdateTopics(ctx context.Context) {
 	s, err := storage.NewSqliteStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
 	}
 	defer s.Close()
 	for i := 1; i < 200; i++ {
-		processTopicPage(s, Music, i)
+		processTopicPage(ctx, s, Music, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, HDMusic, i)
+		processTopicPage(ctx, s, HDMusic, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, MusicCollections, i)
+		processTopicPage(ctx, s, MusicCollections, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, AnimeAndManga, i)
+		processTopicPage(ctx, s, AnimeAndManga, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(s, BooksAndMediaMaterials, i)
+		processTopicPage(ctx, s, BooksAndMediaMaterials, i)
 		time.Sleep(RandDuration(32, 128))
 	}
 }
 
-func processTopicPage(s *storage.SqliteStorage, catID NnmClubCategory, page int) {
-	topics := GetTopics(catID, page)
+func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID NnmClubCategory, page int) {
+	topics := GetTopics(ctx, catID, page)
 	for key, topic := range topics {
 		fmt.Println("ID: ", key)
 		fmt.Println("Title: ", topic.Title)

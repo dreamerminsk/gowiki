@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -8,8 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitForums() {
-	forums, err := GetForums()
+func InitForums(ctx context.Context) {
+	forums, err := GetForums(ctx)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}

@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/url"
@@ -81,9 +82,9 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-func GetCategories() (map[uint]*model.Category, error) {
+func GetCategories(ctx context.Context) (map[uint]*model.Category, error) {
 	categories := make(map[uint]*model.Category)
-	res, err := client.Get("https://nnmclub.to/forum/index.php")
+	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
 		return nil, err
 	}
@@ -113,9 +114,9 @@ func GetCategories() (map[uint]*model.Category, error) {
 	return categories, nil
 }
 
-func GetForums() (map[uint]*model.Forum, error) {
+func GetForums(ctx context.Context) (map[uint]*model.Forum, error) {
 	forums := make(map[uint]*model.Forum)
-	res, err := client.Get("https://nnmclub.to/forum/index.php")
+	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +147,7 @@ func GetForums() (map[uint]*model.Forum, error) {
 	return forums, nil
 }
 
-func GetTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
+func GetTopics(ctx context.Context, catID NnmClubCategory, page int) map[uint]*model.Topic {
 	topics := make(map[uint]*model.Topic)
 	var urlBuilder strings.Builder
 	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
@@ -159,7 +160,7 @@ func GetTopics(catID NnmClubCategory, page int) map[uint]*model.Topic {
 	url := urlBuilder.String()
 	fmt.Println()
 	fmt.Println(url)
-	res, err := client.Get(url)
+	res, err := client.Get(ctx, url)
 	if err != nil {
 		log.Fatal(err)
 	}

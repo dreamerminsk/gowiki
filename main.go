@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
@@ -19,11 +20,14 @@ func main() {
 	keyChan := make(chan os.Signal, 1)
 	signal.Notify(keyChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	go tasks.InitCategories()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	go tasks.InitForums()
+	go tasks.InitCategories(ctx)
 
-	go tasks.UpdateTopics()
+	go tasks.InitForums(ctx)
+
+	go tasks.UpdateTopics(ctx)
 
 	start := time.Now()
 
@@ -34,7 +38,7 @@ func main() {
 			return
 		case <-ticker.C:
 			current := time.Now()
-			fmt.Println("Всего  / Повторов  ( записей/сек) \n", (current.Sub(start)))
+			fmt.Println("working ", (current.Sub(start)))
 
 		}
 	}
