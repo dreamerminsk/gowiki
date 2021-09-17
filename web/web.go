@@ -33,7 +33,7 @@ func newReader() *webClient {
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
-		rateLimiter: rate.NewLimiter(rate.Every(60*time.Second), 1),
+		rateLimiter: rate.NewLimiter(rate.Every(20*time.Second), 1),
 	}
 }
 
