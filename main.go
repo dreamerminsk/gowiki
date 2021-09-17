@@ -26,6 +26,8 @@ func main() {
 	go tasks.InitCategories(ctx)
 
 	go tasks.InitForums(ctx)
+	
+	go tasks.UpdateForums(ctx)
 
 	go tasks.UpdateTopics(ctx)
 
