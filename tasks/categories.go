@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitOrUpdateCategories() {
+func InitCategories() {
 	cats, err := GetCategories()
 	if err != nil {
 		fmt.Println("ERROR : ", err)

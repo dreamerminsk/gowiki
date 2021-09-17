@@ -19,9 +19,9 @@ func main() {
 	keyChan := make(chan os.Signal, 1)
 	signal.Notify(keyChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	go tasks.InitOrUpdateCategories()
+	go tasks.InitCategories()
 
-	go tasks.InitOrUpdateForums()
+	go tasks.InitForums()
 
 	go tasks.UpdateTopics()
 

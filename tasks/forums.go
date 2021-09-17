@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitOrUpdateForums() {
+func InitForums() {
 	forums, err := GetForums()
 	if err != nil {
 		fmt.Println("ERROR : ", err)
