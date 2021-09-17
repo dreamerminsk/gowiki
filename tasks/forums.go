@@ -26,4 +26,12 @@ func InitForums(ctx context.Context) {
 }
 
 func UpdateForums(ctx context.Context) {
+	g := storage.New()
+	forums, err := g.GetForums()
+	if err != nil {
+		fmt.Println("ERROR : ", err)
+	}
+	for _, forum := range forums {
+		fmt.Println("FORUM : ", forum)
+	}
 }

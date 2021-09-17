@@ -20,7 +20,7 @@ type webClient struct {
 type WebReader interface {
 	Get(ctx context.Context, url string) (*http.Response, error)
 	Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error)
-        Do(ctx context.Context, req *http.Request) (*http.Response, error)
+	Do(ctx context.Context, req *http.Request) (*http.Response, error)
 }
 
 var (
@@ -46,30 +46,22 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	err := wc.rateLimiter.Wait(ctx)
-	if err != nil {
-		return nil, err
-	}
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.client.Do(req)
+	return wc.Do(ctx, req)
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
-	err := wc.rateLimiter.Wait(ctx)
-	if err != nil {
-		return nil, err
-	}
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.client.Do(req)
+	return wc.Do(ctx, req)
 }
 
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {

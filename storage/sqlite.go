@@ -18,6 +18,7 @@ type Storage interface {
 	Create(value interface{}) (tx *gorm.DB)
 	GetCategoryByID(ID uint) (*model.Category, error)
 	GetForumByID(ID uint) (*model.Forum, error)
+	GetForums() ([]*model.Forum, error)
 }
 
 var (
@@ -69,4 +70,14 @@ func (s *storage) GetForumByID(ID uint) (*model.Forum, error) {
 		return nil, err
 	}
 	return forum, nil
+}
+
+func (s *storage) GetForums() ([]*model.Forum, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	var forums []*model.Forum
+	if err := s.DB.Model(&model.Forum{}).Find(&forums).Error; err != nil {
+		return nil, err
+	}
+	return forums, nil
 }
