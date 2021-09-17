@@ -14,13 +14,13 @@ const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/5
 
 type webClient struct {
 	client      *http.Client
-	mu          sync.Mutex
 	rateLimiter *rate.Limiter
 }
 
 type WebReader interface {
 	Get(ctx context.Context, url string) (*http.Response, error)
 	Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error)
+        Do(ctx context.Context, req *http.Request) (*http.Response, error)
 }
 
 var (
@@ -69,5 +69,13 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Add("User-Agent", defaultUserAgent)
+	return wc.client.Do(req)
+}
+
+func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
+	err := wc.rateLimiter.Wait(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return wc.client.Do(req)
 }
