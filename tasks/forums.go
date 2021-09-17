@@ -25,4 +25,5 @@ func InitForums(ctx context.Context) {
 	}
 }
 
-func UpdateForums() {}
+func UpdateForums(ctx context.Context) {
+}
