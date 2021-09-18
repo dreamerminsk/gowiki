@@ -9,6 +9,7 @@ import (
 
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/storage"
+	"github.com/dreamerminsk/gowiki/web"
 )
 
 func UpdateTopics(ctx context.Context) {
@@ -18,21 +19,21 @@ func UpdateTopics(ctx context.Context) {
 	}
 	defer s.Close()
 	for i := 1; i < 200; i++ {
-		processTopicPage(ctx, s, Music, i)
+		processTopicPage(ctx, s, web.Music, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, HDMusic, i)
+		processTopicPage(ctx, s, web.HDMusic, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, MusicCollections, i)
+		processTopicPage(ctx, s, web.MusicCollections, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, AnimeAndManga, i)
+		processTopicPage(ctx, s, web.AnimeAndManga, i)
 		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, BooksAndMediaMaterials, i)
+		processTopicPage(ctx, s, web.BooksAndMediaMaterials, i)
 		time.Sleep(RandDuration(32, 128))
 	}
 }
 
-func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID NnmClubCategory, page int) {
-	topics := GetTopics(ctx, catID, page)
+func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) {
+	topics := web.GetTopics(ctx, catID, page)
 	for key, topic := range topics {
 		fmt.Println("ID: ", key)
 		fmt.Println("Title: ", topic.Title)

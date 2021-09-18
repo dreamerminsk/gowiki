@@ -1,4 +1,4 @@
-package tasks
+package web
 
 import (
 	"context"
@@ -14,10 +14,9 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
-	"github.com/dreamerminsk/gowiki/web"
 )
 
-var client web.WebReader = web.New()
+var client WebReader = New()
 
 type NnmClubCategory int
 

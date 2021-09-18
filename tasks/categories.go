@@ -6,11 +6,12 @@ import (
 	"fmt"
 
 	"github.com/dreamerminsk/gowiki/storage"
+	"github.com/dreamerminsk/gowiki/web"
 	"gorm.io/gorm"
 )
 
 func InitCategories(ctx context.Context) {
-	cats, err := GetCategories(ctx)
+	cats, err := web.GetCategories(ctx)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}

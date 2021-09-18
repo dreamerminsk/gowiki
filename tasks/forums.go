@@ -6,11 +6,12 @@ import (
 	"fmt"
 
 	"github.com/dreamerminsk/gowiki/storage"
+	"github.com/dreamerminsk/gowiki/web"
 	"gorm.io/gorm"
 )
 
 func InitForums(ctx context.Context) {
-	forums, err := GetForums(ctx)
+	forums, err := web.GetForums(ctx)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
