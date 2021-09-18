@@ -27,7 +27,7 @@ type WebReader interface {
 
 var (
 	instance *webClient
-	requests *uint64
+	requests *uint64 = new(uint64)
 	once     sync.Once
 )
 
