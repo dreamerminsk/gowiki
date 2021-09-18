@@ -47,7 +47,7 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	fmt.Println(time.Now(), "[webClient->Get]", url)
+	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", url)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
