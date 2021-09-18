@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -26,6 +27,7 @@ type WebReader interface {
 
 var (
 	instance *webClient
+	requests *uint64
 	once     sync.Once
 )
 
@@ -47,7 +49,7 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", url)
+	fmt.Printf("[%s] [%s] %d - %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", atomic.AddUint64(requests, 1), url)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", err)
