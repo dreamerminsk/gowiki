@@ -19,6 +19,7 @@ type Storage interface {
 	GetCategoryByID(ID uint) (*model.Category, error)
 	GetForumByID(ID uint) (*model.Forum, error)
 	GetForums() ([]*model.Forum, error)
+	UpdateForum(*model.Forum) error
 }
 
 var (
@@ -80,4 +81,13 @@ func (s *storage) GetForums() ([]*model.Forum, error) {
 		return nil, err
 	}
 	return forums, nil
+}
+
+func (s *storage) UpdateForum(forum *model.Forum) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if err := s.DB.Model(&forum).Save(&forum).Error; err != nil {
+		return err
+	}
+	return nil
 }

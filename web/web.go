@@ -2,9 +2,11 @@ package web
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -25,6 +27,7 @@ type WebReader interface {
 
 var (
 	instance *webClient
+	requests *uint64 = new(uint64)
 	once     sync.Once
 )
 
@@ -33,7 +36,7 @@ func newReader() *webClient {
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
-		rateLimiter: rate.NewLimiter(rate.Every(20*time.Second), 1),
+		rateLimiter: rate.NewLimiter(rate.Every(60*time.Second), 1),
 	}
 }
 
@@ -46,8 +49,10 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
+	fmt.Printf("[%s] [%s] %d - %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", atomic.AddUint64(requests, 1), url)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
+		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", err)
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
@@ -55,8 +60,10 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
+	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Post", url)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
+		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Post", err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
@@ -65,8 +72,10 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 }
 
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
+	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Do", req.URL)
 	err := wc.rateLimiter.Wait(ctx)
 	if err != nil {
+		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Do", err)
 		return nil, err
 	}
 	return wc.client.Do(req)

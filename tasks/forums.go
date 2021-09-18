@@ -4,13 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/dreamerminsk/gowiki/storage"
+	"github.com/dreamerminsk/gowiki/web"
 	"gorm.io/gorm"
 )
 
 func InitForums(ctx context.Context) {
-	forums, err := GetForums(ctx)
+	forums, err := web.GetForums(ctx)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
@@ -33,5 +35,11 @@ func UpdateForums(ctx context.Context) {
 	}
 	for _, forum := range forums {
 		fmt.Println("FORUM : ", forum)
+		newForum, err := web.GetForum(ctx, forum.ID)
+		if err != nil {
+			fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "tasks->UpdateForums", err)
+
+		}
+		g.UpdateForum(newForum)
 	}
 }

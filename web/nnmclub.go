@@ -1,4 +1,4 @@
-package tasks
+package web
 
 import (
 	"context"
@@ -14,10 +14,9 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
-	"github.com/dreamerminsk/gowiki/web"
 )
 
-var client web.WebReader = web.New()
+var client WebReader = New()
 
 type NnmClubCategory int
 
@@ -145,6 +144,41 @@ func GetForums(ctx context.Context) (map[uint]*model.Forum, error) {
 		}
 	})
 	return forums, nil
+}
+
+func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
+	forum := &model.Forum{
+		Model: gorm.Model{ID: forumID},
+		CatID: 0,
+		Title: "",
+	}
+	res, err := client.Get(ctx, fmt.Sprintf("https://nnmclub.to/forum/viewforum.php?f=%d", forumID))
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return nil, err
+	}
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
+		decoder := charmap.Windows1251.NewDecoder()
+		forum.Title, _ = decoder.String(s.Text())
+	})
+	doc.Find("span.nav a[href]").Each(func(i int, s *goquery.Selection) {
+		if ref, ok := s.Attr("href"); ok {
+			if strings.Contains(ref, "index.php?c=") {
+				u, _ := url.Parse(ref)
+				m, _ := url.ParseQuery(u.RawQuery)
+				CatID, _ := strconv.ParseInt(m["c"][0], 10, 32)
+				forum.CatID = uint(CatID)
+			}
+		}
+	})
+	return forum, nil
 }
 
 func GetTopics(ctx context.Context, catID NnmClubCategory, page int) map[uint]*model.Topic {
