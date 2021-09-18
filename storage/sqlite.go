@@ -86,7 +86,7 @@ func (s *storage) GetForums() ([]*model.Forum, error) {
 func (s *storage) UpdateForum(forum *model.Forum) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if err := s.DB.Model(&model.Forum{}).Save(forum).Error; err != nil {
+	if err := s.DB.Model(&forum).Save(&forum).Error; err != nil {
 		return err
 	}
 	return nil
