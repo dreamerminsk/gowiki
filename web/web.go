@@ -2,6 +2,7 @@ package web
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"sync"
@@ -46,6 +47,7 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
+	fmt.Println(time.Now(), "[webClient->Get]", url)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
