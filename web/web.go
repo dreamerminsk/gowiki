@@ -13,6 +13,7 @@ import (
 )
 
 const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
+const timeFormat = "2006-01-02T15:04:05"
 
 type webClient struct {
 	client      *http.Client
@@ -49,10 +50,10 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	fmt.Printf("[%s] [%s] %d - %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", atomic.AddUint64(requests, 1), url)
+	fmt.Printf("[%s] [%s] %d - %s\r\n", time.Now().Format(timeFormat), "webClient->Get", atomic.AddUint64(requests, 1), url)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Get", err)
+		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(timeFormat), "webClient->Get", err)
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
@@ -63,7 +64,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Post", url)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
-		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Post", err)
+		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(timeFormat), "webClient->Post", err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
@@ -72,10 +73,10 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 }
 
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
-	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Do", req.URL)
+	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(timeFormat), "webClient->Do", req.URL)
 	err := wc.rateLimiter.Wait(ctx)
 	if err != nil {
-		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Do", err)
+		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(timeFormat), "webClient->Do", err)
 		return nil, err
 	}
 	return wc.client.Do(req)
