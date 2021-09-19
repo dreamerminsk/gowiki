@@ -34,12 +34,13 @@ func UpdateForums(ctx context.Context) {
 		fmt.Println("ERROR : ", err)
 	}
 	for _, forum := range forums {
-		fmt.Println("FORUM : ", forum)
-		newForum, err := web.GetForum(ctx, forum.ID)
-		if err != nil {
-			fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "tasks->UpdateForums", err)
+		if forum.CatID == 0 {
+		    newForum, err := web.GetForum(ctx, forum.ID)
+		    if err != nil {
+			    fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "tasks->UpdateForums", err)
 
-		}
-		g.UpdateForum(newForum)
+		    }
+		    g.UpdateForum(newForum)
+                }
 	}
 }
