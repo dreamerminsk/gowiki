@@ -14,6 +14,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
+        "github.com/dreamerminsk/gowiki/log"
 )
 
 var client WebReader = New()
