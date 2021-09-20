@@ -3,7 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
-        "http"
+        "net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -104,7 +104,7 @@ func GetCategories(ctx context.Context) ([]*model.Category, error) {
 				m, _ := url.ParseQuery(u.RawQuery)
 				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
 				categoryTitle, _ := decoder.String(s.Text())
-				append(categories, &model.Category{
+				categories = append(categories, &model.Category{
 					Model: gorm.Model{ID: uint(categoryID)},
 					Title: categoryTitle,
 				})
@@ -136,7 +136,7 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 				m, _ := url.ParseQuery(u.RawQuery)
 				forumID, _ := strconv.ParseInt(m["f"][0], 10, 32)
 				forumTitle, _ := decoder.String(s.Text())
-				append(forums, &model.Forum{
+				forums = append(forums, &model.Forum{
 					Model: gorm.Model{ID: uint(forumID)},
 					CatID: 0,
 					Title: forumTitle,
@@ -213,7 +213,7 @@ func GetTopics(ctx context.Context, catID NnmClubCategory, page int) ([]*model.T
 		return isTopic(s)
 	}).Each(func(i int, s *goquery.Selection) {
 		topic := getTopic(s)
-		append(topics, topic)
+		topics = append(topics, topic)
 	})
 	return topics, nil
 }
