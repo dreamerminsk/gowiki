@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"golang.org/x/time/rate"
+
+"github.com/dreamerminsk/gowiki/log"
 )
 
 const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
@@ -50,10 +52,11 @@ func New() WebReader {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	fmt.Printf("[%s] [%s] %d - %s\r\n", time.Now().Format(timeFormat), "webClient->Get", atomic.AddUint64(requests, 1), url)
+        reqID := atomic.AddUint64(requests, 1)
+	log.log(fmt.Sprintf("%d - %s", reqID, url))
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(timeFormat), "webClient->Get", err)
+		log.log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
@@ -61,10 +64,11 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
-	fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(time.RFC3339), "webClient->Post", url)
+        reqID := atomic.AddUint64(requests, 1)
+	log.log(fmt.Sprintf("%d - %s", reqID, url))
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
-		fmt.Printf("[%s] [%s] %s\r\n", time.Now().Format(timeFormat), "webClient->Post", err)
+		log.log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
