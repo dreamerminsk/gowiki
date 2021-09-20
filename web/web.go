@@ -61,7 +61,7 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Do(ctx, req)
+	return wc.Do(ctx2, req)
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
@@ -75,7 +75,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Do(ctx, req)
+	return wc.Do(ctx2, req)
 }
 
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
