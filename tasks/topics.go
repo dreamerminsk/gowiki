@@ -84,6 +84,7 @@ func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.N
                 }
 		fmt.Println("-------------------------")
 	}
+        return nil
 }
 
 func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) error {
