@@ -48,7 +48,12 @@ func UpdateTopics2(ctx context.Context) {
         }
 
         for cat, page := range cats {
-            processTopicPage(ctx, s, cat, page)
+            err := processTopicPage(ctx, s, cat, page)
+            if err != nil {
+                cats[cat] = -1
+                continue
+            }
+            cats[cat] = cats[cat] + 1
         }
 }
 
