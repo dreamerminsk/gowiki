@@ -44,7 +44,10 @@ func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.N
 		fmt.Println("Published: ", topic.Published.Format(time.RFC3339))
 		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("Magnet: ", topic.Magnet)
-		insertOrUpdate(s, topic)
+		err = insertOrUpdate(s, topic)
+                if err != nil {
+                    return err
+                }
 		fmt.Println("-------------------------")
 	}
 }
