@@ -3,7 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
-	"log"
+        "net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -14,6 +14,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
+        "github.com/dreamerminsk/gowiki/log"
 )
 
 var client WebReader = New()
@@ -81,19 +82,22 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-func GetCategories(ctx context.Context) (map[uint]*model.Category, error) {
-	categories := make(map[uint]*model.Category)
+func GetCategories(ctx context.Context) ([]*model.Category, error) {
+	categories := make([]*model.Category, 0)
 	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
+                log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
+                log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+                log.Log(fmt.Sprintf("%s", err))
+		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -103,29 +107,32 @@ func GetCategories(ctx context.Context) (map[uint]*model.Category, error) {
 				m, _ := url.ParseQuery(u.RawQuery)
 				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
 				categoryTitle, _ := decoder.String(s.Text())
-				categories[uint(categoryID)] = &model.Category{
+				categories = append(categories, &model.Category{
 					Model: gorm.Model{ID: uint(categoryID)},
 					Title: categoryTitle,
-				}
+				})
 			}
 		}
 	})
 	return categories, nil
 }
 
-func GetForums(ctx context.Context) (map[uint]*model.Forum, error) {
-	forums := make(map[uint]*model.Forum)
+func GetForums(ctx context.Context) ([]*model.Forum, error) {
+	forums := make([]*model.Forum, 0)
 	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
+                log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
+                log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+                log.Log(fmt.Sprintf("%s", err))
+		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -135,11 +142,11 @@ func GetForums(ctx context.Context) (map[uint]*model.Forum, error) {
 				m, _ := url.ParseQuery(u.RawQuery)
 				forumID, _ := strconv.ParseInt(m["f"][0], 10, 32)
 				forumTitle, _ := decoder.String(s.Text())
-				forums[uint(forumID)] = &model.Forum{
+				forums = append(forums, &model.Forum{
 					Model: gorm.Model{ID: uint(forumID)},
 					CatID: 0,
 					Title: forumTitle,
-				}
+				})
 			}
 		}
 	})
@@ -154,15 +161,18 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	}
 	res, err := client.Get(ctx, fmt.Sprintf("https://nnmclub.to/forum/viewforum.php?f=%d", forumID))
 	if err != nil {
+                log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
+                log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+                log.Log(fmt.Sprintf("%s", err))
+		return nil, err
 	}
 	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
 		decoder := charmap.Windows1251.NewDecoder()
@@ -181,8 +191,8 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	return forum, nil
 }
 
-func GetTopics(ctx context.Context, catID NnmClubCategory, page int) map[uint]*model.Topic {
-	topics := make(map[uint]*model.Topic)
+func GetTopics(ctx context.Context, catID NnmClubCategory, page int) ([]*model.Topic, error) {
+	topics := make([]*model.Topic, 0)
 	var urlBuilder strings.Builder
 	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
 	urlBuilder.WriteString(strconv.FormatInt(int64(catID.EnumIndex()), 10))
@@ -196,25 +206,28 @@ func GetTopics(ctx context.Context, catID NnmClubCategory, page int) map[uint]*m
 	fmt.Println(url)
 	res, err := client.Get(ctx, url)
 	if err != nil {
-		log.Fatal(err)
+                log.Log(fmt.Sprintf("%s", err))
+		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	if res.StatusCode != http.StatusOK {
+                log.Log(fmt.Sprintf("%s", err))
+		return nil, err
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+                log.Log(fmt.Sprintf("%s", err))
+		return nil, err
 	}
 
 	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
 		return isTopic(s)
 	}).Each(func(i int, s *goquery.Selection) {
 		topic := getTopic(s)
-		topics[topic.ID] = topic
+		topics = append(topics, topic)
 	})
-	return topics
+	return topics, nil
 }
 
 func isTopic(s *goquery.Selection) bool {

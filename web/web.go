@@ -15,7 +15,6 @@ import (
 )
 
 const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
-const timeFormat = "2006-01-02T15:04:05"
 
 type webClient struct {
 	client      *http.Client
@@ -54,33 +53,33 @@ func New() WebReader {
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
         reqID := atomic.AddUint64(requests, 1)
 	log.Log(fmt.Sprintf("%d - %s", reqID, url))
-        ctx2 := context.WithValue(ctx, "reqID", reqID)
-	req, err := http.NewRequestWithContext(ctx2, "GET", url, nil)
+        ctx = context.WithValue(ctx, "reqID", reqID)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		log.Log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Do(ctx2, req)
+	return wc.Do(ctx, req)
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
         reqID := atomic.AddUint64(requests, 1)
 	log.Log(fmt.Sprintf("%d - %s", reqID, url))
-        ctx2 := context.WithValue(ctx, "reqID", reqID)
-	req, err := http.NewRequestWithContext(ctx2, "POST", url, body)
+        ctx = context.WithValue(ctx, "reqID", reqID)
+	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
 		log.Log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Do(ctx2, req)
+	return wc.Do(ctx, req)
 }
 
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
         reqID := ctx.Value("reqID").(uint64)
-        log.Log(fmt.Sprintf("%d - %s", reqID, req.URL.Path))
+        log.Log(fmt.Sprintf("%d - %s", reqID, req.URL))
 	err := wc.rateLimiter.Wait(ctx)
 	if err != nil {
 	        log.Log(fmt.Sprintf("%d - %s", reqID, err))

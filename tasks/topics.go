@@ -12,7 +12,7 @@ import (
 	"github.com/dreamerminsk/gowiki/web"
 )
 
-func UpdateTopics(ctx context.Context) {
+func UpdateTopicsOld(ctx context.Context) {
 	s, err := storage.NewSqliteStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
@@ -32,37 +32,81 @@ func UpdateTopics(ctx context.Context) {
 	}
 }
 
-func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) {
-	topics := web.GetTopics(ctx, catID, page)
-	for key, topic := range topics {
-		fmt.Println("ID: ", key)
+func UpdateTopics(ctx context.Context) {
+	s, err := storage.NewSqliteStorage()
+	if err != nil {
+		fmt.Printf("Storage: %s", err.Error())
+	}
+	defer s.Close()
+
+        var cats = map[web.NnmClubCategory]int{
+	    web.Music: 1,
+	    web.HDMusic: 1,
+            web.MusicCollections: 1,
+            web.AnimeAndManga: 1,
+            web.BooksAndMediaMaterials: 1,
+        }
+
+        for {
+            existValidPage := false
+            for cat, page := range cats {
+                if page > 0 {
+                    err := processTopicPage(ctx, s, cat, page)
+                    if err != nil {
+                        cats[cat] = -1
+                        continue
+                    }
+                    cats[cat] = cats[cat] + 1
+                    existValidPage = true
+                }
+            }
+            if !existValidPage {
+                break
+            }
+        }
+}
+
+func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) error {
+	topics, err := web.GetTopics(ctx, catID, page)
+        if err != nil {
+            return err
+        }
+	for _, topic := range topics {
+		fmt.Println("ID: ", topic.ID)
 		fmt.Println("Title: ", topic.Title)
 		fmt.Println("Author: ", topic.Author)
 		fmt.Println("Published: ", topic.Published.Format(time.RFC3339))
 		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("Magnet: ", topic.Magnet)
-		insertOrUpdate(s, topic)
+		err = insertOrUpdate(s, topic)
+                if err != nil {
+                    return err
+                }
 		fmt.Println("-------------------------")
 	}
 }
 
-func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) {
-	oldTopic, selectErr := s.GetTopic(int(topic.ID))
-	if selectErr != nil {
-		fmt.Println("SELECT ERROR: ", reflect.TypeOf(selectErr), selectErr)
+func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) error {
+	oldTopic, err := s.GetTopic(int(topic.ID))
+	if err != nil {
+		fmt.Println("SELECT ERROR: ", reflect.TypeOf(err), err)
+                return err
 	}
 	if oldTopic.ID == 0 {
-		insertErr := s.AddTopic(topic)
-		if insertErr != nil {
-			fmt.Println("INSERT ERROR: ", reflect.TypeOf(insertErr), insertErr)
+		err = s.AddTopic(topic)
+		if err != nil {
+			fmt.Println("INSERT ERROR: ", reflect.TypeOf(err), err)
+                        return err
 		}
 	} else if topic.Likes > oldTopic.Likes {
 		fmt.Printf("\tDIFF LIKES: %d\r\n", topic.Likes-oldTopic.Likes)
-		updateErr := s.UpdateTopic(topic)
-		if updateErr != nil {
-			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(updateErr), updateErr)
+		err = s.UpdateTopic(topic)
+		if err != nil {
+			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(err), err)
+                        return err
 		}
 	}
+    return nil
 }
 
 func RandDuration(min, max int) time.Duration {
