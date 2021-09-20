@@ -32,8 +32,11 @@ func UpdateTopics(ctx context.Context) {
 	}
 }
 
-func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) {
-	topics := web.GetTopics(ctx, catID, page)
+func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) error {
+	topics, err := web.GetTopics(ctx, catID, page)
+        if err != nil {
+            return err
+        }
 	for _, topic := range topics {
 		fmt.Println("ID: ", topic.ID)
 		fmt.Println("Title: ", topic.Title)
