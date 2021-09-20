@@ -47,13 +47,22 @@ func UpdateTopics2(ctx context.Context) {
             web.BooksAndMediaMaterials: 1,
         }
 
-        for cat, page := range cats {
-            err := processTopicPage(ctx, s, cat, page)
-            if err != nil {
-                cats[cat] = -1
-                continue
+        for {
+            existValidPage := false
+            for cat, page := range cats {
+                if page > 0 {
+                    err := processTopicPage(ctx, s, cat, page)
+                    if err != nil {
+                        cats[cat] = -1
+                        continue
+                    }
+                    cats[cat] = cats[cat] + 1
+                    existValidPage = true
+                }
             }
-            cats[cat] = cats[cat] + 1
+            if !existValidPage {
+                break
+            }
         }
 }
 
