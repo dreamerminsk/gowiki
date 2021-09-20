@@ -32,6 +32,27 @@ func UpdateTopics(ctx context.Context) {
 	}
 }
 
+func UpdateTopics2(ctx context.Context) {
+	s, err := storage.NewSqliteStorage()
+	if err != nil {
+		fmt.Printf("Storage: %s", err.Error())
+	}
+	defer s.Close()
+        cats := map[web.NnmClubCategory]int
+	for i := 1; i < 200; i++ {
+		processTopicPage(ctx, s, web.Music, i)
+		time.Sleep(RandDuration(32, 128))
+		processTopicPage(ctx, s, web.HDMusic, i)
+		time.Sleep(RandDuration(32, 128))
+		processTopicPage(ctx, s, web.MusicCollections, i)
+		time.Sleep(RandDuration(32, 128))
+		processTopicPage(ctx, s, web.AnimeAndManga, i)
+		time.Sleep(RandDuration(32, 128))
+		processTopicPage(ctx, s, web.BooksAndMediaMaterials, i)
+		time.Sleep(RandDuration(32, 128))
+	}
+}
+
 func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) error {
 	topics, err := web.GetTopics(ctx, catID, page)
         if err != nil {
