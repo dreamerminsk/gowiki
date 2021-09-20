@@ -34,8 +34,8 @@ func UpdateTopics(ctx context.Context) {
 
 func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) {
 	topics := web.GetTopics(ctx, catID, page)
-	for key, topic := range topics {
-		fmt.Println("ID: ", key)
+	for _, topic := range topics {
+		fmt.Println("ID: ", topic.ID)
 		fmt.Println("Title: ", topic.Title)
 		fmt.Println("Author: ", topic.Author)
 		fmt.Println("Published: ", topic.Published.Format(time.RFC3339))
