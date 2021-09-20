@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
+        "http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -114,7 +115,7 @@ func GetCategories(ctx context.Context) ([]*model.Category, error) {
 }
 
 func GetForums(ctx context.Context) ([]*model.Forum, error) {
-	forums := make([]*model.Forum)
+	forums := make([]*model.Forum, 0)
 	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
 		return nil, err
@@ -182,7 +183,7 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 }
 
 func GetTopics(ctx context.Context, catID NnmClubCategory, page int) ([]*model.Topic, error) {
-	topics := make([]*model.Topic)
+	topics := make([]*model.Topic, 0)
 	var urlBuilder strings.Builder
 	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
 	urlBuilder.WriteString(strconv.FormatInt(int64(catID.EnumIndex()), 10))
