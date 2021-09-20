@@ -49,23 +49,27 @@ func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.N
 	}
 }
 
-func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) {
-	oldTopic, selectErr := s.GetTopic(int(topic.ID))
-	if selectErr != nil {
-		fmt.Println("SELECT ERROR: ", reflect.TypeOf(selectErr), selectErr)
+func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) error {
+	oldTopic, err := s.GetTopic(int(topic.ID))
+	if err != nil {
+		fmt.Println("SELECT ERROR: ", reflect.TypeOf(err), err)
+                return err
 	}
 	if oldTopic.ID == 0 {
-		insertErr := s.AddTopic(topic)
-		if insertErr != nil {
-			fmt.Println("INSERT ERROR: ", reflect.TypeOf(insertErr), insertErr)
+		err = s.AddTopic(topic)
+		if err != nil {
+			fmt.Println("INSERT ERROR: ", reflect.TypeOf(err), err)
+                        return err
 		}
 	} else if topic.Likes > oldTopic.Likes {
 		fmt.Printf("\tDIFF LIKES: %d\r\n", topic.Likes-oldTopic.Likes)
-		updateErr := s.UpdateTopic(topic)
-		if updateErr != nil {
-			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(updateErr), updateErr)
+		err = s.UpdateTopic(topic)
+		if err != nil {
+			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(err), err)
+                        return err
 		}
 	}
+    return nil
 }
 
 func RandDuration(min, max int) time.Duration {
