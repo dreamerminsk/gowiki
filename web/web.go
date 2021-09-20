@@ -54,8 +54,8 @@ func New() WebReader {
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
         reqID := atomic.AddUint64(requests, 1)
 	log.Log(fmt.Sprintf("%d - %s", reqID, url))
-        ctx := context.WithValue(ctx, "reqID", reqID)
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+        ctx2 := context.WithValue(ctx, "reqID", reqID)
+	req, err := http.NewRequestWithContext(ctx2, "GET", url, nil)
 	if err != nil {
 		log.Log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
@@ -67,8 +67,8 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
         reqID := atomic.AddUint64(requests, 1)
 	log.Log(fmt.Sprintf("%d - %s", reqID, url))
-        ctx := context.WithValue(ctx, "reqID", reqID)
-	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
+        ctx2 := context.WithValue(ctx, "reqID", reqID)
+	req, err := http.NewRequestWithContext(ctx2, "POST", url, body)
 	if err != nil {
 		log.Log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
@@ -80,7 +80,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
         reqID := ctx.Value("reqID").(uint64)
-        log.Log(fmt.Sprintf("%d - %s", reqID, url))
+        log.Log(fmt.Sprintf("%d - %s", reqID, req.URL.Path))
 	err := wc.rateLimiter.Wait(ctx)
 	if err != nil {
 	        log.Log(fmt.Sprintf("%d - %s", reqID, err))
