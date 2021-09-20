@@ -1,6 +1,7 @@
 package log
 
 import (
+"time"
 "fmt"
 "runtime"
 )
