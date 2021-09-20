@@ -12,7 +12,7 @@ import (
 	"github.com/dreamerminsk/gowiki/web"
 )
 
-func UpdateTopics(ctx context.Context) {
+func UpdateTopicsOld(ctx context.Context) {
 	s, err := storage.NewSqliteStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
@@ -32,7 +32,7 @@ func UpdateTopics(ctx context.Context) {
 	}
 }
 
-func UpdateTopics2(ctx context.Context) {
+func UpdateTopics(ctx context.Context) {
 	s, err := storage.NewSqliteStorage()
 	if err != nil {
 		fmt.Printf("Storage: %s", err.Error())
