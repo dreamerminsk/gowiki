@@ -3,7 +3,6 @@ package web
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -89,12 +88,12 @@ func GetCategories(ctx context.Context) (map[uint]*model.Category, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -121,12 +120,12 @@ func GetForums(ctx context.Context) (map[uint]*model.Forum, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -158,12 +157,12 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
 		decoder := charmap.Windows1251.NewDecoder()
@@ -197,16 +196,16 @@ func GetTopics(ctx context.Context, catID NnmClubCategory, page int) map[uint]*m
 	fmt.Println(url)
 	res, err := client.Get(ctx, url)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	if res.StatusCode != http.StatusOK {
+		return nil, err
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
