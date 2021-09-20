@@ -46,18 +46,10 @@ func UpdateTopics2(ctx context.Context) {
             web.AnimeAndManga: 1,
             web.BooksAndMediaMaterials: 1,
         }
-	for i := 1; i < 200; i++ {
-		processTopicPage(ctx, s, web.Music, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.HDMusic, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.MusicCollections, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.AnimeAndManga, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.BooksAndMediaMaterials, i)
-		time.Sleep(RandDuration(32, 128))
-	}
+
+        for cat, page := range cats {
+            processTopicPage(ctx, s, cat, page)
+        }
 }
 
 func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) error {
