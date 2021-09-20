@@ -38,7 +38,14 @@ func UpdateTopics2(ctx context.Context) {
 		fmt.Printf("Storage: %s", err.Error())
 	}
 	defer s.Close()
-        var cats map[web.NnmClubCategory]int = {}
+
+        var cats = map[web.NnmClubCategory]int{
+	    web.Music: 1,
+	    web.HDMusic: 1,
+            web.MusicCollections: 1,
+            web.AnimeAndManga: 1,
+            web.BooksAndMediaMaterials: 1,
+        }
 	for i := 1; i < 200; i++ {
 		processTopicPage(ctx, s, web.Music, i)
 		time.Sleep(RandDuration(32, 128))
