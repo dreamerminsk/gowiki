@@ -3,7 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
-        "net/http"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -12,9 +12,9 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
-        "github.com/dreamerminsk/gowiki/log"
 )
 
 var client WebReader = New()
@@ -86,17 +86,17 @@ func GetCategories(ctx context.Context) ([]*model.Category, error) {
 	categories := make([]*model.Category, 0)
 	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
@@ -121,17 +121,17 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 	forums := make([]*model.Forum, 0)
 	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
@@ -161,17 +161,17 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	}
 	res, err := client.Get(ctx, fmt.Sprintf("https://nnmclub.to/forum/viewforum.php?f=%d", forumID))
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
@@ -206,18 +206,18 @@ func GetTopics(ctx context.Context, catID NnmClubCategory, page int) ([]*model.T
 	fmt.Println(url)
 	res, err := client.Get(ctx, url)
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-                log.Log(fmt.Sprintf("%s", err))
+		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
 

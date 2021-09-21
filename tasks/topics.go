@@ -39,38 +39,38 @@ func UpdateTopics(ctx context.Context) {
 	}
 	defer s.Close()
 
-        var cats = map[web.NnmClubCategory]int{
-	    web.Music: 1,
-	    web.HDMusic: 1,
-            web.MusicCollections: 1,
-            web.AnimeAndManga: 1,
-            web.BooksAndMediaMaterials: 1,
-        }
+	var cats = map[web.NnmClubCategory]int{
+		web.Music:                  1,
+		web.HDMusic:                1,
+		web.MusicCollections:       1,
+		web.AnimeAndManga:          1,
+		web.BooksAndMediaMaterials: 1,
+	}
 
-        for {
-            existValidPage := false
-            for cat, page := range cats {
-                if page > 0 {
-                    err := processTopicPage(ctx, s, cat, page)
-                    if err != nil {
-                        cats[cat] = -1
-                        continue
-                    }
-                    cats[cat] = cats[cat] + 1
-                    existValidPage = true
-                }
-            }
-            if !existValidPage {
-                break
-            }
-        }
+	for {
+		existValidPage := false
+		for cat, page := range cats {
+			if page > 0 {
+				err := processTopicPage(ctx, s, cat, page)
+				if err != nil {
+					cats[cat] = -1
+					continue
+				}
+				cats[cat] = cats[cat] + 1
+				existValidPage = true
+			}
+		}
+		if !existValidPage {
+			break
+		}
+	}
 }
 
 func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) error {
 	topics, err := web.GetTopics(ctx, catID, page)
-        if err != nil {
-            return err
-        }
+	if err != nil {
+		return err
+	}
 	for _, topic := range topics {
 		fmt.Println("ID: ", topic.ID)
 		fmt.Println("Title: ", topic.Title)
@@ -79,35 +79,35 @@ func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.N
 		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("Magnet: ", topic.Magnet)
 		err = insertOrUpdate(s, topic)
-                if err != nil {
-                    return err
-                }
+		if err != nil {
+			return err
+		}
 		fmt.Println("-------------------------")
 	}
-        return nil
+	return nil
 }
 
 func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) error {
 	oldTopic, err := s.GetTopic(int(topic.ID))
 	if err != nil {
 		fmt.Println("SELECT ERROR: ", reflect.TypeOf(err), err)
-                return err
+		return err
 	}
 	if oldTopic.ID == 0 {
 		err = s.AddTopic(topic)
 		if err != nil {
 			fmt.Println("INSERT ERROR: ", reflect.TypeOf(err), err)
-                        return err
+			return err
 		}
 	} else if topic.Likes > oldTopic.Likes {
 		fmt.Printf("\tDIFF LIKES: %d\r\n", topic.Likes-oldTopic.Likes)
 		err = s.UpdateTopic(topic)
 		if err != nil {
 			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(err), err)
-                        return err
+			return err
 		}
 	}
-    return nil
+	return nil
 }
 
 func RandDuration(min, max int) time.Duration {
