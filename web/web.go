@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
+"math/rand"
 	"io"
 	"net/http"
 	"sync"
@@ -31,6 +32,7 @@ var (
 	instance *webClient
 	requests *uint64 = new(uint64)
 	once     sync.Once
+        r := rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
 func newReader() *webClient {
@@ -80,7 +82,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
 	reqID := ctx.Value("reqID").(uint64)
 	log.Log(fmt.Sprintf("%d - %s", reqID, req.URL))
-	err := wc.rateLimiter.WaitN(ctx, 32000)
+	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000) + 32000)
 	if err != nil {
 		log.Log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
