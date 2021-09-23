@@ -38,7 +38,7 @@ func newReader() *webClient {
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
-		rateLimiter: rate.NewLimiter(rate.Every(60*time.Second), 1),
+		rateLimiter: rate.NewLimiter(1000, 100000),
 	}
 }
 
@@ -80,7 +80,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
 	reqID := ctx.Value("reqID").(uint64)
 	log.Log(fmt.Sprintf("%d - %s", reqID, req.URL))
-	err := wc.rateLimiter.Wait(ctx)
+	err := wc.rateLimiter.WaitN(ctx, 32000)
 	if err != nil {
 		log.Log(fmt.Sprintf("%d - %s", reqID, err))
 		return nil, err
