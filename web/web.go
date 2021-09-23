@@ -32,7 +32,7 @@ var (
 	instance *webClient
 	requests *uint64 = new(uint64)
 	once     sync.Once
-        r := rand.New(rand.NewSource(time.Now().UnixNano()))
+        r *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
 func newReader() *webClient {
