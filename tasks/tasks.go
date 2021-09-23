@@ -7,3 +7,7 @@ type Task struct {
 	Start  time.Time
 	Finish time.Time
 }
+
+type TaskRunner interface {
+   Run()
+}
