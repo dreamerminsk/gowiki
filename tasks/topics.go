@@ -12,26 +12,6 @@ import (
 	"github.com/dreamerminsk/gowiki/web"
 )
 
-func UpdateTopicsOld(ctx context.Context) {
-	s, err := storage.NewSqliteStorage()
-	if err != nil {
-		fmt.Printf("Storage: %s", err.Error())
-	}
-	defer s.Close()
-	for i := 1; i < 200; i++ {
-		processTopicPage(ctx, s, web.Music, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.HDMusic, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.MusicCollections, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.AnimeAndManga, i)
-		time.Sleep(RandDuration(32, 128))
-		processTopicPage(ctx, s, web.BooksAndMediaMaterials, i)
-		time.Sleep(RandDuration(32, 128))
-	}
-}
-
 func UpdateTopics(ctx context.Context) {
 	s, err := storage.NewSqliteStorage()
 	if err != nil {
