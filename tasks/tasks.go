@@ -2,6 +2,8 @@ package tasks
 
 import (
 	"context"
+	"reflect"
+	"runtime"
 	"time"
 )
 
@@ -13,5 +15,14 @@ type Task struct {
 }
 
 type TaskRunner interface {
-	Run()
+	Run(ctx context.Context)
+}
+
+func (t *Task) GetName() string {
+	return runtime.FuncForPC(reflect.ValueOf(t.Work).Pointer()).Name()
+}
+
+func (t *Task) Run(ctx context.Context) {
+	t.Start = time.Now()
+	go t.Work(ctx)
 }

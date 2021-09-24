@@ -24,9 +24,7 @@ func main() {
 	defer cancel()
 
 	t := tasks.Task{Work: tasks.InitCategories}
-	t.Work(ctx)
-
-	go tasks.InitCategories(ctx)
+	t.Run(ctx)
 
 	go tasks.InitForums(ctx)
 
@@ -44,7 +42,7 @@ func main() {
 		case <-ticker.C:
 			current := time.Now()
 			fmt.Println("working ", (current.Sub(start)))
-
+			fmt.Println("task ", t)
 		}
 	}
 
