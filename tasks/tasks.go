@@ -18,6 +18,13 @@ type TaskRunner interface {
 	Run(ctx context.Context)
 }
 
+func New(f func(ctx context.Context)) *Task {
+	return &Task{
+		Title: runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name(),
+		Work:  f,
+	}
+}
+
 func (t *Task) GetName() string {
 	return runtime.FuncForPC(reflect.ValueOf(t.Work).Pointer()).Name()
 }
