@@ -23,10 +23,10 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	t := tasks.New(tasks.InitCategories)
-	t.Run(ctx)
-
-	go tasks.InitForums(ctx)
+	queue := [...]*tasks.Task{tasks.New(tasks.InitCategories), tasks.New(tasks.InitForums)}
+	for _, t := range queue {
+		t.Run(ctx)
+	}
 
 	go tasks.UpdateForums(ctx)
 
