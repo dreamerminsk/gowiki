@@ -4,6 +4,7 @@ import (
 	"context"
 	"reflect"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -20,13 +21,14 @@ type TaskRunner interface {
 
 func New(f func(ctx context.Context)) *Task {
 	return &Task{
-		Title: runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name(),
+		Title: getShortName(f),
 		Work:  f,
 	}
 }
 
-func (t *Task) GetName() string {
-	return runtime.FuncForPC(reflect.ValueOf(t.Work).Pointer()).Name()
+func  getShortName(f interface{}) string {
+	fullName := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+	return fullName[strings.LastIndex(fullName, "/")+1:]
 }
 
 func (t *Task) Run(ctx context.Context) {
