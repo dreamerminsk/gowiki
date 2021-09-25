@@ -12,3 +12,4 @@ table.forumline
 	span.seedmed [ <span class="seedmed" title="Seeders"><b>89</b></span> ]
 	span.leechmed [ <span class="leechmed" title="Leechers"><b>0</b></span> ]
 	[ <div class="gensmall" style="margin-top: 2px"><a href="download.php?id=1179392" rel="nofollow" class="gensmall">21.3&nbsp;MB</a></div> ]
+	[ <td class="row3" align="center"><span class="name"><a href="profile.php?mode=viewprofile&amp;u=1421402" rel="nofollow">Варяг</a></span></td> ]
