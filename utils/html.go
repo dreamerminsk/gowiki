@@ -1,10 +1,13 @@
 package utils
+import (
+"net/url"
+)
 
 
 
 
 
-func GetParam(ref, name string)(string, error) {
+func GetParam(ref, name string)(*string, error) {
     u, err := url.Parse(ref)
     if err != nil {
         return nil, err
