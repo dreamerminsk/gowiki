@@ -13,3 +13,6 @@ table.forumline
 	span.leechmed [ <span class="leechmed" title="Leechers"><b>0</b></span> ]
 	[ <div class="gensmall" style="margin-top: 2px"><a href="download.php?id=1179392" rel="nofollow" class="gensmall">21.3&nbsp;MB</a></div> ]
 	[ <td class="row3" align="center"><span class="name"><a href="profile.php?mode=viewprofile&amp;u=1421402" rel="nofollow">Варяг</a></span></td> ]
+	[ <span class="genmed" title="Отв.">5</span> ]
+	[ <span class="genmed" title="Просм.">1834</span> ]
+	[ <span class="postdetails">24 Сен 2021 19:56:28<br><a href="profile.php?mode=viewprofile&amp;u=13865496" rel="nofollow">vlacrat</a> <a href="viewtopic.php?p=11300260#11300260"><img src="https://nnmclub.ch/forum/templates/smartBlue/images/icon_latest_reply.gif" alt="Посмотреть последнее сообщение" title="Посмотреть последнее сообщение" border="0" width="18" height="9"></a></span> ]
