@@ -26,7 +26,7 @@ func New(f func(ctx context.Context)) *Task {
 	}
 }
 
-func  getShortName(f interface{}) string {
+func getShortName(f interface{}) string {
 	fullName := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 	return fullName[strings.LastIndex(fullName, "/")+1:]
 }
