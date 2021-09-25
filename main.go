@@ -23,7 +23,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	t := tasks.Task{Work: tasks.InitCategories}
+	t := tasks.New(tasks.InitCategories)
 	t.Run(ctx)
 
 	go tasks.InitForums(ctx)
