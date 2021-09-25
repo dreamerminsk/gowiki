@@ -42,7 +42,9 @@ func main() {
 		case <-ticker.C:
 			current := time.Now()
 			fmt.Println("working ", (current.Sub(start)))
-			fmt.Println("task ", t)
+			for _, t := range queue {
+				fmt.Println("task ", t)
+			}
 		}
 	}
 
