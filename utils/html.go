@@ -16,5 +16,5 @@ func GetParam(ref, name string)(*string, error) {
     if err != nil {
         return nil, err
     }
-    return q[name][0], nil
+    return &q[name][0], nil
 }
