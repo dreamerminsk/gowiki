@@ -6,3 +6,5 @@ table.pline
 
 
 <a class="genmed" href="portal.php?c=1" title="Аниме и Манга">Аниме и Манга</a>
+
+table.forumline
