@@ -9,3 +9,4 @@ table.pline
 
 table.forumline
 	a.topictitle [ <a href="viewtopic.php?t=1496559" class="topictitle">Владимир Дронов | Javascript. Дополнительные уроки для начинающих (2022) [PDF]</a> ]
+	span.seedmed [<span class="seedmed" title="Seeders"><b>89</b></span>]
