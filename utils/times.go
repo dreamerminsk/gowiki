@@ -61,14 +61,15 @@ const timePattern = `.*?(?P<Day>\d{2}) (?P<Month>\D{3}) (?P<Year>\d{4}) (?P<Hour
 var timeRegEx = regexp.MustCompile(timePattern)
 
 func ParseTime(timeString string) time.Time {
-
 	match := timeRegEx.FindStringSubmatch(timeString)
 	d, _ := strconv.ParseInt(match[1], 10, 32)
 	y, _ := strconv.ParseInt(match[3], 10, 32)
 	h, _ := strconv.ParseInt(match[4], 10, 32)
 	m, _ := strconv.ParseInt(match[5], 10, 32)
 	s, _ := strconv.ParseInt(match[6], 10, 32)
-	return time.Date(int(y), time.Month(Find(shortMonthNames, match[2])+1), int(d), int(h), int(m), int(s), 0, time.UTC)
+	return time.Date(
+		int(y), time.Month(Find(shortMonthNames, match[2])+1), int(d),
+		int(h), int(m), int(s), 0, time.UTC)
 }
 
 func Find(a []string, x string) int {
