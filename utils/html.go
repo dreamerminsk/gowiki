@@ -4,14 +4,14 @@ import (
 	"net/url"
 )
 
-func GetParam(ref, name string) (*string, error) {
+func GetParam(ref, name string) (value string, ok bool) {
 	u, err := url.Parse(ref)
 	if err != nil {
-		return nil, err
+		return "", false
 	}
 	q, err := url.ParseQuery(u.RawQuery)
 	if err != nil {
-		return nil, err
+		return "", false
 	}
-	return &q[name][0], nil
+	return q.Get(name), true
 }

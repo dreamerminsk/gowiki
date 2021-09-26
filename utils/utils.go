@@ -39,7 +39,7 @@ func OrDone(done, c <-chan interface{}) <-chan interface{} {
 			case <-done:
 				return
 			case v, ok := <-c:
-				if ok == false {
+				if !ok {
 					return
 				}
 				select {
