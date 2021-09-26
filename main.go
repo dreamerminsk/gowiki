@@ -44,7 +44,7 @@ func main() {
 			current := time.Now()
 			fmt.Println("working ", (current.Sub(start)))
 			for _, t := range queue {
-				fmt.Println("task ", t)
+				fmt.Println(t)
 			}
 		}
 	}
