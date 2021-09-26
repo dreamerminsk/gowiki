@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"runtime"
 	"strings"
@@ -34,4 +35,12 @@ func getShortName(f interface{}) string {
 func (t *Task) Run(ctx context.Context) {
 	t.Start = time.Now()
 	go t.Work(ctx)
+}
+
+func (t *Task) String() string {
+	s := fmt.Sprintf("&{%s, %s, %s}",
+		t.Title,
+		t.Start.Format("2006-01-02 15:04:05"),
+		t.Finish.Format("2006-01-02 15:04:05"))
+	return s
 }
