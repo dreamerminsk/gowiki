@@ -25,7 +25,7 @@ type webClient struct {
 type WebReader interface {
 	Get(ctx context.Context, url string) (*http.Response, error)
 	Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error)
-	Do(ctx context.Context, req *http.Request) (*http.Response, error)
+	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
 }
 
 var (
@@ -62,7 +62,7 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Do(ctx, req)
+	return wc.doReq(ctx, req)
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
@@ -76,10 +76,10 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 	}
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Add("User-Agent", defaultUserAgent)
-	return wc.Do(ctx, req)
+	return wc.doReq(ctx, req)
 }
 
-func (wc *webClient) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
+func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Response, error) {
 	reqID := ctx.Value("reqID").(uint64)
 	log.Log(fmt.Sprintf("%d - %s", reqID, req.URL))
 	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000)+32000)
