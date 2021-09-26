@@ -62,14 +62,14 @@ var timeRegEx = regexp.MustCompile(timePattern)
 
 func ParseTime(timeString string) time.Time {
 	match := timeRegEx.FindStringSubmatch(timeString)
-	d, _ := strconv.ParseInt(match[1], 10, 32)
-	y, _ := strconv.ParseInt(match[3], 10, 32)
-	h, _ := strconv.ParseInt(match[4], 10, 32)
-	m, _ := strconv.ParseInt(match[5], 10, 32)
-	s, _ := strconv.ParseInt(match[6], 10, 32)
+	d, _ := strconv.Atoi(match[1])
+	y, _ := strconv.Atoi(match[3])
+	h, _ := strconv.Atoi(match[4])
+	m, _ := strconv.Atoi(match[5])
+	s, _ := strconv.Atoi(match[6])
 	return time.Date(
-		int(y), time.Month(Find(shortMonthNames, match[2])+1), int(d),
-		int(h), int(m), int(s), 0, time.UTC)
+		y, time.Month(Find(shortMonthNames, match[2])+1), d,
+		h, m, s, 0, time.UTC)
 }
 
 func Find(a []string, x string) int {
