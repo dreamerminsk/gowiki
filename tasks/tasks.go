@@ -34,7 +34,10 @@ func getShortName(f interface{}) string {
 
 func (t *Task) Run(ctx context.Context) {
 	t.Start = time.Now()
-	go t.Work(ctx)
+        go func() {
+           defer t.Finish = time.Now()
+           t.Work(ctx)
+        }()
 }
 
 func (t *Task) String() string {
