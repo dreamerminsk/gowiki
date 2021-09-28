@@ -23,8 +23,6 @@ const (
 	keyReqID key = iota
 )
 
-
-
 type webClient struct {
 	client      *http.Client
 	rateLimiter *rate.Limiter
