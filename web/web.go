@@ -3,7 +3,6 @@ package web
 import (
 "errors"
 	"context"
-	"fmt"
 	"io"
 	"math/rand"
 	"net/http"
@@ -63,11 +62,11 @@ func New() WebReader {
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
 	reqID := atomic.AddUint64(requests, 1)
-	log.Log(fmt.Sprintf("%d - %s", reqID, url))
+	log.Logf("%d - %s", reqID, url)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		log.Log(fmt.Sprintf("%d - %s", reqID, err))
+		log.Logf("%d - %s", reqID, err)
 		return nil, err
 	}
 	req.Header.Add("User-Agent", defaultUserAgent)
@@ -76,11 +75,11 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
 	reqID := atomic.AddUint64(requests, 1)
-	log.Log(fmt.Sprintf("%d - %s", reqID, url))
+	log.Logf("%d - %s", reqID, url)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
-		log.Log(fmt.Sprintf("%d - %s", reqID, err))
+		log.Logf("%d - %s", reqID, err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
@@ -90,10 +89,10 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 
 func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Response, error) {
 	reqID := ctx.Value(keyReqID).(uint64)
-	log.Log(fmt.Sprintf("%d - %s", reqID, req.URL))
+	log.Logf("%d - %s", reqID, req.URL)
 	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000)+32000)
 	if err != nil {
-		log.Log(fmt.Sprintf("%d - %s", reqID, err))
+		log.Logf("%d - %s", reqID, err)
 		return nil, err
 	}
 	return wc.client.Do(req)
@@ -111,12 +110,12 @@ func NewDocumentFromReader(res *http.Response) (doc *goquery.Document, err error
 		return nil, errors.New("response.Request is nil")
 	}
 	if res.StatusCode != http.StatusOK {
-		log.Log(fmt.Sprintf("%s", err))
+		log.Logf("%s", err)
 		return nil, err
 	}
 	doc, err = goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Log(fmt.Sprintf("%s", err))
+		log.Logf("%s", err)
 		return nil, err
 	}
 	decoder := charmap.Windows1251.NewDecoder()
