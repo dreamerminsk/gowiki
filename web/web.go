@@ -95,3 +95,28 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 	}
 	return wc.client.Do(req)
 }
+
+
+
+
+func NewDocumentFromReader(res *http.Response) (doc *goquery.Document, err error) {
+	if res == nil {
+		return nil, errors.New("response is nil")
+	}
+	defer res.Body.Close()
+	if res.Request == nil {
+		return nil, errors.New("response.Request is nil")
+	}
+	if res.StatusCode != http.StatusOK {
+		log.Log(fmt.Sprintf("%s", err))
+		return nil, err
+	}
+	doc, err = goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Log(fmt.Sprintf("%s", err))
+		return nil, err
+	}
+	decoder := charmap.Windows1251.NewDecoder()
+	decoder.Reader(res.Body)
+	return
+}
