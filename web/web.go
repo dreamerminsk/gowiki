@@ -23,7 +23,7 @@ const (
 	keyReqID key = iota
 )
 
-const defaultUserAgent = "Mozilla/5.0 (Linux; Android 10; LM-X420) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
+
 
 type webClient struct {
 	client      *http.Client
@@ -69,7 +69,7 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 		log.Logf("%d - %s", reqID, err)
 		return nil, err
 	}
-	req.Header.Add("User-Agent", defaultUserAgent)
+	req.Header.Add("User-Agent", randomUserAgent())
 	return wc.doReq(ctx, req)
 }
 
@@ -83,7 +83,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 		return nil, err
 	}
 	req.Header.Set("Content-Type", contentType)
-	req.Header.Add("User-Agent", defaultUserAgent)
+	req.Header.Add("User-Agent", randomUserAgent())
 	return wc.doReq(ctx, req)
 }
 
