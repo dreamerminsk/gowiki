@@ -2,7 +2,6 @@ package log
 
 import (
 	"fmt"
-	"reflect"
 	"runtime"
 	"strings"
 	"time"
@@ -16,7 +15,7 @@ func Log(msg string) {
 	fmt.Printf("[%s] [%s]\r\n\t%s\r\n", time.Now().Format(timeFormat), funcName, msg)
 }
 
-func getShortName(f interface{}) string {
-	fullName := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+func getShortName(f uintptr) string {
+	fullName := runtime.FuncForPC(f).Name()
 	return fullName[strings.LastIndex(fullName, "/")+1:]
 }
