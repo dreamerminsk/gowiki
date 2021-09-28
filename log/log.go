@@ -2,8 +2,9 @@ package log
 
 import (
 	"fmt"
+	"reflect"
 	"runtime"
-"reflect"
+	"strings"
 	"time"
 )
 
@@ -14,9 +15,6 @@ func Log(msg string) {
 	funcName := getShortName(pc)
 	fmt.Printf("[%s] [%s]\r\n\t%s\r\n", time.Now().Format(timeFormat), funcName, msg)
 }
-
-
-
 
 func getShortName(f interface{}) string {
 	fullName := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
