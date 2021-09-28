@@ -29,6 +29,7 @@ type webClient struct {
 }
 
 type WebReader interface {
+        GetDocument(ctx context.Context, url string) (*goquery.Document, error)
 	Get(ctx context.Context, url string) (*http.Response, error)
 	Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error)
 	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
@@ -56,6 +57,29 @@ func New() WebReader {
 	})
 
 	return instance
+}
+
+
+
+
+
+
+func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Document, error){
+        res, err := Get(ctx, url)
+        if err != nil {
+		return nil, errors.New("response is nil")
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		log.Logf("%s", err)
+		return nil, err
+	}
+	doc, err = goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Logf("%s", err)
+		return nil, err
+	}
+	return        doc, nil
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
