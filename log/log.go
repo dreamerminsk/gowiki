@@ -9,10 +9,9 @@ import (
 
 const timeFormat = "2006-01-02 15:04:05"
 
-
 func Logf(format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
-        Log(msg)
+	Log(msg)
 }
 
 func Log(msg string) {
