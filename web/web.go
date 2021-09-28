@@ -1,6 +1,7 @@
 package web
 
 import (
+"errors"
 	"context"
 	"fmt"
 	"io"
@@ -11,6 +12,7 @@ import (
 	"time"
 
 	"golang.org/x/time/rate"
+"golang.org/x/text/encoding/charmap"
 
 	"github.com/dreamerminsk/gowiki/log"
 )
