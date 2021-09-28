@@ -82,41 +82,6 @@ func (c NnmClubCategory) EnumIndex() int {
 	return int(c)
 }
 
-func GetCategories(ctx context.Context) ([]*model.Category, error) {
-	categories := make([]*model.Category, 0)
-	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
-	if err != nil {
-		log.Log(fmt.Sprintf("%s", err))
-		return nil, err
-	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		log.Log(fmt.Sprintf("%s", err))
-		return nil, err
-	}
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Log(fmt.Sprintf("%s", err))
-		return nil, err
-	}
-	decoder := charmap.Windows1251.NewDecoder()
-	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		if ref, ok := s.Attr("href"); ok {
-			if strings.Contains(ref, "index.php?c=") {
-				u, _ := url.Parse(ref)
-				m, _ := url.ParseQuery(u.RawQuery)
-				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
-				categoryTitle, _ := decoder.String(s.Text())
-				categories = append(categories, &model.Category{
-					Model: gorm.Model{ID: uint(categoryID)},
-					Title: categoryTitle,
-				})
-			}
-		}
-	})
-	return categories, nil
-}
-
 func GetForums(ctx context.Context) ([]*model.Forum, error) {
 	forums := make([]*model.Forum, 0)
 	res, err := client.Get(ctx, "https://nnmclub.to/forum/index.php")
