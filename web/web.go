@@ -65,16 +65,17 @@ func New() WebReader {
 
 
 func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Document, error){
-        res, err := Get(ctx, url)
+        res, err := wc.Get(ctx, url)
         if err != nil {
-		return nil, errors.New("response is nil")
+                log.Logf("%s", err)
+		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		log.Logf("%s", err)
 		return nil, err
 	}
-	doc, err = goquery.NewDocumentFromReader(res.Body)
+	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
 		log.Logf("%s", err)
 		return nil, err
