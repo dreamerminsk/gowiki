@@ -1,8 +1,8 @@
 package web
 
 import (
-"errors"
 	"context"
+	"errors"
 	"io"
 	"math/rand"
 	"net/http"
@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/text/encoding/charmap"
 	"golang.org/x/time/rate"
-"github.com/PuerkitoBio/goquery"
-"golang.org/x/text/encoding/charmap"
 
 	"github.com/dreamerminsk/gowiki/log"
 )
@@ -97,9 +97,6 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 	}
 	return wc.client.Do(req)
 }
-
-
-
 
 func NewDocumentFromReader(res *http.Response) (doc *goquery.Document, err error) {
 	if res == nil {
