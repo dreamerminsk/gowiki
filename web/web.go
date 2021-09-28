@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"golang.org/x/time/rate"
+"github.com/PuerkitoBio/goquery"
 "golang.org/x/text/encoding/charmap"
 
 	"github.com/dreamerminsk/gowiki/log"
