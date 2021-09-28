@@ -13,7 +13,6 @@ import(
 
 
 var uaRand        *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-)
 
 
 var userAgents = [...]string{
@@ -27,5 +26,5 @@ var userAgents = [...]string{
 
 
 func randomUserAgent()string{
-return userAgents[uaRand.Intn(len(userAgents)]
+return userAgents[uaRand.Intn(len(userAgents))]
 }
