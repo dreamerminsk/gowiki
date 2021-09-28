@@ -9,7 +9,7 @@ import (
 
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/storage"
-	"github.com/dreamerminsk/gowiki/web"
+	"github.com/dreamerminsk/gowiki/web/nnmclub"
 )
 
 func UpdateTopics(ctx context.Context) {
@@ -19,12 +19,12 @@ func UpdateTopics(ctx context.Context) {
 	}
 	defer s.Close()
 
-	var cats = map[web.NnmClubCategory]int{
-		web.Music:                  1,
-		web.HDMusic:                1,
-		web.MusicCollections:       1,
-		web.AnimeAndManga:          1,
-		web.BooksAndMediaMaterials: 1,
+	var cats = map[nnmclub.Category]int{
+		nnmclub.Music:                  1,
+		nnmclub.HDMusic:                1,
+		nnmclub.MusicCollections:       1,
+		nnmclub.AnimeAndManga:          1,
+		nnmclub.BooksAndMediaMaterials: 1,
 	}
 
 	for {
@@ -46,8 +46,8 @@ func UpdateTopics(ctx context.Context) {
 	}
 }
 
-func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID web.NnmClubCategory, page int) error {
-	topics, err := web.GetTopics(ctx, catID, page)
+func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID nnmclub.Category, page int) error {
+	topics, err := nnmclub.GetTopics(ctx, catID, page)
 	if err != nil {
 		return err
 	}
