@@ -1,12 +1,8 @@
 package utils
 
 import (
-	"fmt"
 	"net/url"
 	"strconv"
-
-	"github.com/PuerkitoBio/goquery"
-	"github.com/dreamerminsk/gowiki/log"
 )
 
 func GetParam(ref, name string) (value string, ok bool) {
