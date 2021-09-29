@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"io"
@@ -11,7 +12,10 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
+	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/time/rate"
 
 	"github.com/dreamerminsk/gowiki/log"
@@ -29,7 +33,7 @@ type webClient struct {
 }
 
 type WebReader interface {
-        GetDocument(ctx context.Context, url string) (*goquery.Document, error)
+	GetDocument(ctx context.Context, url string) (*goquery.Document, error)
 	Get(ctx context.Context, url string) (*http.Response, error)
 	Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error)
 	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
@@ -59,15 +63,10 @@ func New() WebReader {
 	return instance
 }
 
-
-
-
-
-
-func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Document, error){
-        res, err := wc.Get(ctx, url)
-        if err != nil {
-                log.Logf("%s", err)
+func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Document, error) {
+	res, err := wc.Get(ctx, url)
+	if err != nil {
+		log.Logf("%s", err)
 		return nil, err
 	}
 	defer res.Body.Close()
@@ -80,7 +79,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 		log.Logf("%s", err)
 		return nil, err
 	}
-	return        doc, nil
+	return doc, nil
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
@@ -141,4 +140,34 @@ func NewDocumentFromReader(res *http.Response) (doc *goquery.Document, err error
 	decoder := charmap.Windows1251.NewDecoder()
 	decoder.Reader(res.Body)
 	return
+}
+
+func detectContentCharset(body io.Reader) string {
+	r := bufio.NewReader(body)
+	if data, err := r.Peek(1024); err == nil {
+		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
+			return name
+		}
+	}
+	return "utf-8"
+}
+
+func Decode(body io.Reader, charset string) (interface{}, error) {
+	if charset == "" {
+		charset = detectContentCharset(body)
+	}
+	e, err := htmlindex.Get(charset)
+	if err != nil {
+		return nil, err
+	}
+
+	if name, _ := htmlindex.Name(e); name != "utf-8" {
+		body = e.NewDecoder().Reader(body)
+	}
+
+	node, err := html.Parse(body)
+	if err != nil {
+		return nil, err
+	}
+	return node, nil
 }
