@@ -3,7 +3,6 @@ package nnmclub
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -27,20 +26,7 @@ func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, e
 		urlBuilder.WriteString("#pagestart")
 	}
 	url := urlBuilder.String()
-	fmt.Println()
-	fmt.Println(url)
-	res, err := web.New().Get(ctx, url)
-	if err != nil {
-		log.Log(fmt.Sprintf("%s", err))
-		return nil, err
-	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		log.Log(fmt.Sprintf("%s", err))
-		return nil, err
-	}
-
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := web.New().GetDocument(ctx, url)
 	if err != nil {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err

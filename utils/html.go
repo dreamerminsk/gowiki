@@ -5,6 +5,18 @@ import (
 	"strconv"
 )
 
+func GetParams(ref string) (url.Values, error) {
+	u, err := url.Parse(ref)
+	if err != nil {
+		return nil, err
+	}
+	q, err := url.ParseQuery(u.RawQuery)
+	if err != nil {
+		return nil, err
+	}
+	return q, nil
+}
+
 func GetParam(ref, name string) (value string, ok bool) {
 	u, err := url.Parse(ref)
 	if err != nil {
