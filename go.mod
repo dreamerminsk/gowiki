@@ -5,12 +5,12 @@ go 1.17
 require (
 	github.com/PuerkitoBio/goquery v1.7.1
 	github.com/mattn/go-sqlite3 v1.14.8
-	golang.org/x/text v0.3.6
+	golang.org/x/text v0.3.7
 )
 
 require (
-	github.com/andybalholm/cascadia v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
+	golang.org/x/net v0.0.0-20210928044308-7d9f5e0b762b // indirect
 	gorm.io/driver/sqlite v1.1.5
 	gorm.io/gorm v1.21.15
 )
