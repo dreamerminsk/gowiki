@@ -17,10 +17,10 @@ func Logf(format string, a ...interface{}) {
 func Log(msg string) {
 	pc, _, _, _ := runtime.Caller(1)
 	funcName := getShortName(pc)
-        if funcName == "log.Logf" {
-pc, _, _, _ = runtime.Caller(1)
-	funcName = getShortName(pc)
-}
+	if funcName == "log.Logf" {
+		pc, _, _, _ = runtime.Caller(1)
+		funcName = getShortName(pc)
+	}
 	fmt.Printf("[%s] [%s]\r\n\t%s\r\n", time.Now().Format(timeFormat), funcName, msg)
 }
 
