@@ -26,6 +26,7 @@ const (
 
 type webClient struct {
 	client      *http.Client
+lastRequestId *uint64 = new(uint64)
 	rateLimiter *rate.Limiter
 }
 
@@ -38,7 +39,6 @@ type WebReader interface {
 
 var (
 	instance *webClient
-	requests *uint64 = new(uint64)
 	once     sync.Once
 	r        *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
@@ -113,7 +113,7 @@ func detectContentCharset(body io.Reader) string {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	reqID := atomic.AddUint64(requests, 1)
+	reqID := atomic.AddUint64(wc.lastRequestId, 1)
 	log.Logf("%d - %s", reqID, url)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
@@ -126,7 +126,7 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 }
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
-	reqID := atomic.AddUint64(requests, 1)
+	reqID := atomic.AddUint64(wc.lastRequestId, 1)
 	log.Logf("%d - %s", reqID, url)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
