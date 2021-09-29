@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/net/html"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/time/rate"
@@ -72,12 +71,45 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 		log.Logf("%s", err)
 		return nil, err
 	}
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := decode(res.Body, "")
 	if err != nil {
 		log.Logf("%s", err)
 		return nil, err
 	}
 	return doc, nil
+}
+
+func decode(body io.Reader, charset string) (*goquery.Document, error) {
+	if charset == "" {
+		charset = detectContentCharset(body)
+	}
+
+	e, err := htmlindex.Get(charset)
+	if err != nil {
+		return nil, err
+	}
+
+	if name, _ := htmlindex.Name(e); name != "utf-8" {
+		body = e.NewDecoder().Reader(body)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(body)
+	if err != nil {
+		log.Logf("%s", err)
+		return nil, err
+	}
+
+	return doc, nil
+}
+
+func detectContentCharset(body io.Reader) string {
+	r := bufio.NewReader(body)
+	if data, err := r.Peek(1024); err == nil {
+		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
+			return name
+		}
+	}
+	return "utf-8"
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
@@ -116,34 +148,4 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 		return nil, err
 	}
 	return wc.client.Do(req)
-}
-
-func Decode(body io.Reader, charset string) (interface{}, error) {
-	if charset == "" {
-		charset = detectContentCharset(body)
-	}
-	e, err := htmlindex.Get(charset)
-	if err != nil {
-		return nil, err
-	}
-
-	if name, _ := htmlindex.Name(e); name != "utf-8" {
-		body = e.NewDecoder().Reader(body)
-	}
-
-	node, err := html.Parse(body)
-	if err != nil {
-		return nil, err
-	}
-	return node, nil
-}
-
-func detectContentCharset(body io.Reader) string {
-	r := bufio.NewReader(body)
-	if data, err := r.Peek(1024); err == nil {
-		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
-			return name
-		}
-	}
-	return "utf-8"
 }
