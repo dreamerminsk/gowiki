@@ -1,8 +1,8 @@
 package web
 
 import (
+	"bufio"
 	"context"
-	"errors"
 	"io"
 	"math/rand"
 	"net/http"
@@ -11,7 +11,8 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/net/html/charset"
+	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/time/rate"
 
 	"github.com/dreamerminsk/gowiki/log"
@@ -29,6 +30,7 @@ type webClient struct {
 }
 
 type WebReader interface {
+	GetDocument(ctx context.Context, url string) (*goquery.Document, error)
 	Get(ctx context.Context, url string) (*http.Response, error)
 	Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error)
 	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
@@ -56,6 +58,58 @@ func New() WebReader {
 	})
 
 	return instance
+}
+
+func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Document, error) {
+	res, err := wc.Get(ctx, url)
+	if err != nil {
+		log.Logf("%s", err)
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		log.Logf("%s", err)
+		return nil, err
+	}
+	doc, err := decode(res.Body, "")
+	if err != nil {
+		log.Logf("%s", err)
+		return nil, err
+	}
+	return doc, nil
+}
+
+func decode(body io.Reader, charset string) (*goquery.Document, error) {
+	if charset == "" {
+		charset = detectContentCharset(body)
+	}
+
+	e, err := htmlindex.Get(charset)
+	if err != nil {
+		return nil, err
+	}
+
+	if name, _ := htmlindex.Name(e); name != "utf-8" {
+		body = e.NewDecoder().Reader(body)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(body)
+	if err != nil {
+		log.Logf("%s", err)
+		return nil, err
+	}
+
+	return doc, nil
+}
+
+func detectContentCharset(body io.Reader) string {
+	r := bufio.NewReader(body)
+	if data, err := r.Peek(1024); err == nil {
+		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
+			return name
+		}
+	}
+	return "utf-8"
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
@@ -94,26 +148,4 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 		return nil, err
 	}
 	return wc.client.Do(req)
-}
-
-func NewDocumentFromReader(res *http.Response) (doc *goquery.Document, err error) {
-	if res == nil {
-		return nil, errors.New("response is nil")
-	}
-	defer res.Body.Close()
-	if res.Request == nil {
-		return nil, errors.New("response.Request is nil")
-	}
-	if res.StatusCode != http.StatusOK {
-		log.Logf("%s", err)
-		return nil, err
-	}
-	doc, err = goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Logf("%s", err)
-		return nil, err
-	}
-	decoder := charmap.Windows1251.NewDecoder()
-	decoder.Reader(res.Body)
-	return
 }
