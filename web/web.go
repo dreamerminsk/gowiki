@@ -3,7 +3,6 @@ package web
 import (
 	"bufio"
 	"context"
-	"errors"
 	"io"
 	"math/rand"
 	"net/http"
@@ -14,7 +13,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/charset"
-	"golang.org/x/text/encoding/charmap"
 	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/time/rate"
 
@@ -120,38 +118,6 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 	return wc.client.Do(req)
 }
 
-func NewDocumentFromReader(res *http.Response) (doc *goquery.Document, err error) {
-	if res == nil {
-		return nil, errors.New("response is nil")
-	}
-	defer res.Body.Close()
-	if res.Request == nil {
-		return nil, errors.New("response.Request is nil")
-	}
-	if res.StatusCode != http.StatusOK {
-		log.Logf("%s", err)
-		return nil, err
-	}
-	doc, err = goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Logf("%s", err)
-		return nil, err
-	}
-	decoder := charmap.Windows1251.NewDecoder()
-	decoder.Reader(res.Body)
-	return
-}
-
-func detectContentCharset(body io.Reader) string {
-	r := bufio.NewReader(body)
-	if data, err := r.Peek(1024); err == nil {
-		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
-			return name
-		}
-	}
-	return "utf-8"
-}
-
 func Decode(body io.Reader, charset string) (interface{}, error) {
 	if charset == "" {
 		charset = detectContentCharset(body)
@@ -170,4 +136,14 @@ func Decode(body io.Reader, charset string) (interface{}, error) {
 		return nil, err
 	}
 	return node, nil
+}
+
+func detectContentCharset(body io.Reader) string {
+	r := bufio.NewReader(body)
+	if data, err := r.Peek(1024); err == nil {
+		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
+			return name
+		}
+	}
+	return "utf-8"
 }
