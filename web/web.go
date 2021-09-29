@@ -48,7 +48,7 @@ func newReader() *webClient {
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
-lastRequestId: new(uint64)
+lastRequestId: new(uint64),
 		rateLimiter: rate.NewLimiter(1000, 100000),
 	}
 }
