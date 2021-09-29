@@ -18,7 +18,7 @@ func Log(msg string) {
 	pc, _, _, _ := runtime.Caller(1)
 	funcName := getShortName(pc)
 	if funcName == "log.Logf" {
-		pc, _, _, _ = runtime.Caller(1)
+		pc, _, _, _ = runtime.Caller(2)
 		funcName = getShortName(pc)
 	}
 	fmt.Printf("[%s] [%s]\r\n\t%s\r\n", time.Now().Format(timeFormat), funcName, msg)
