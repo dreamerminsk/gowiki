@@ -25,9 +25,9 @@ const (
 )
 
 type webClient struct {
-	client      *http.Client
-lastRequestId *uint64
-	rateLimiter *rate.Limiter
+	client        *http.Client
+	lastRequestId *uint64
+	rateLimiter   *rate.Limiter
 }
 
 type WebReader interface {
@@ -48,8 +48,8 @@ func newReader() *webClient {
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
-lastRequestId: new(uint64),
-		rateLimiter: rate.NewLimiter(1000, 100000),
+		lastRequestId: new(uint64),
+		rateLimiter:   rate.NewLimiter(1000, 100000),
 	}
 }
 
