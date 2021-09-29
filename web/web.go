@@ -26,7 +26,7 @@ const (
 
 type webClient struct {
 	client      *http.Client
-lastRequestId *uint64 = new(uint64)
+lastRequestId *uint64
 	rateLimiter *rate.Limiter
 }
 
@@ -48,6 +48,7 @@ func newReader() *webClient {
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
+lastRequestId: new(uint64)
 		rateLimiter: rate.NewLimiter(1000, 100000),
 	}
 }
