@@ -8,8 +8,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/model"
+	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
-"github.com/dreamerminsk/gowiki/utils"
 )
 
 func GetForums(ctx context.Context) ([]*model.Forum, error) {
@@ -20,20 +20,12 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 		return nil, err
 	}
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-                if f, ok := ParseForum(ctx, s); ok {
+		if f, ok := ParseForum(ctx, s); ok {
 			forums = append(forums, f)
 		}
 	})
 	return forums, nil
 }
-
-
-
-
-
-
-
-
 
 func ParseForum(ctx context.Context, s *goquery.Selection) (*model.Forum, bool) {
 	if ref, ok := s.Attr("href"); ok {
