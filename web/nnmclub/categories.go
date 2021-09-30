@@ -3,13 +3,12 @@ package nnmclub
 import (
 	"context"
 	"fmt"
-	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/model"
+	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
 )
 
@@ -84,18 +83,23 @@ func GetCategories(ctx context.Context) ([]*model.Category, error) {
 		return nil, err
 	}
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		if ref, ok := s.Attr("href"); ok {
-			if strings.Contains(ref, "index.php?c=") {
-				u, _ := url.Parse(ref)
-				m, _ := url.ParseQuery(u.RawQuery)
-				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
-				categoryTitle := s.Text()
-				categories = append(categories, &model.Category{
-					ID:    uint(categoryID),
-					Title: categoryTitle,
-				})
-			}
+		if cat, ok := GetCategory(ctx, s); ok {
+			categories = append(categories, cat)
 		}
 	})
 	return categories, nil
+}
+
+func GetCategory(ctx context.Context, s *goquery.Selection) (*model.Category, bool) {
+	if ref, ok := s.Attr("href"); ok {
+		if strings.Contains(ref, "index.php?c=") {
+			if catID, ok := utils.GetIntParam(ref, "c"); ok {
+				return &model.Category{
+					ID:    uint(catID),
+					Title: strings.TrimSpace(s.Text()),
+				}, true
+			}
+		}
+	}
+	return nil, false
 }
