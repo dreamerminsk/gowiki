@@ -83,6 +83,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 func decode(body io.Reader, charset string) (*goquery.Document, error) {
 	if charset == "" {
 		charset = detectContentCharset(body)
+		log.Logf("%s", charset)
 	}
 
 	e, err := htmlindex.Get(charset)
@@ -106,7 +107,7 @@ func decode(body io.Reader, charset string) (*goquery.Document, error) {
 func detectContentCharset(body io.Reader) string {
 	r := bufio.NewReader(body)
 	if data, err := r.Peek(1024); err == nil {
-		if _, name, ok := charset.DetermineEncoding(data, ""); ok {
+		if _, name, _ := charset.DetermineEncoding(data, ""); name != "" {
 			return name
 		}
 	}

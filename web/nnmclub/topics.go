@@ -12,7 +12,6 @@ import (
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
-	"golang.org/x/text/encoding/charmap"
 )
 
 func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, error) {
@@ -55,10 +54,9 @@ func isTopic(s *goquery.Selection) bool {
 
 func getTopic(s *goquery.Selection) *model.Topic {
 	var topic = new(model.Topic)
-	decoder := charmap.Windows1251.NewDecoder()
 	s.Find("td.pcatHead a").Each(func(i int, sl *goquery.Selection) {
 		if title, ok := sl.Attr("title"); ok {
-			titleString, _ := decoder.String(title)
+			titleString := title
 			topic.Title = titleString
 		}
 		if href, ok := sl.Attr("href"); ok {
@@ -69,11 +67,11 @@ func getTopic(s *goquery.Selection) *model.Topic {
 		}
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed > b").Each(func(i int, sl *goquery.Selection) {
-		authorString, _ := decoder.String(sl.Text())
+		authorString := sl.Text()
 		topic.Author = authorString
 	})
 	s.Find("tbody > tr:nth-child(2) > td > span.genmed").Each(func(i int, sl *goquery.Selection) {
-		timeString, _ := decoder.String(sl.Text())
+		timeString := sl.Text()
 		topic.Published = utils.ParseTime(timeString)
 	})
 	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
