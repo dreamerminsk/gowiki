@@ -38,6 +38,28 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 	return forums, nil
 }
 
+
+
+
+
+
+
+
+
+func ParseForum(ctx context.Context, s *goquery.Selection) (*model.Forum, bool) {
+	if ref, ok := s.Attr("href"); ok {
+		if strings.Contains(ref, "viewforum.php?f=") {
+			if fID, ok := utils.GetIntParam(ref, "f"); ok {
+				return &model.Forum{
+					ID:    uint(fID),
+					Title: strings.TrimSpace(s.Text()),
+				}, true
+			}
+		}
+	}
+	return nil, false
+}
+
 func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	forum := &model.Forum{
 		ID:    forumID,
