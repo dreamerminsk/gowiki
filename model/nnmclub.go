@@ -1,28 +1,36 @@
 package model
 
 import (
+	"database/sql"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Category struct {
-	gorm.Model
-	Title  string
-	Forums []Forum `gorm:"foreignKey:CatID"`
+	ID        uint `gorm:"primarykey"`
+	Title     string
+	Forums    []Forum `gorm:"foreignKey:CatID"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt sql.NullTime `gorm:"index"`
 }
 
 type Forum struct {
-	gorm.Model
-	CatID uint
-	Title string
+	ID        uint `gorm:"primarykey"`
+	CatID     uint
+	Title     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt sql.NullTime `gorm:"index"`
 }
 
 type Topic struct {
-	gorm.Model
+	ID        uint `gorm:"primarykey"`
 	Title     string
 	Author    string
 	Published time.Time
 	Magnet    string
 	Likes     int64
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt sql.NullTime `gorm:"index"`
 }

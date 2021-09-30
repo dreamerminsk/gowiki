@@ -12,7 +12,6 @@ import (
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/web"
 	"golang.org/x/text/encoding/charmap"
-	"gorm.io/gorm"
 )
 
 func GetForums(ctx context.Context) ([]*model.Forum, error) {
@@ -30,7 +29,7 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 				forumID, _ := strconv.ParseInt(m["f"][0], 10, 32)
 				forumTitle := s.Text()
 				forums = append(forums, &model.Forum{
-					Model: gorm.Model{ID: uint(forumID)},
+					ID:    uint(forumID),
 					CatID: 0,
 					Title: forumTitle,
 				})
@@ -42,7 +41,7 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 
 func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	forum := &model.Forum{
-		Model: gorm.Model{ID: forumID},
+		ID:    forumID,
 		CatID: 0,
 		Title: "",
 	}

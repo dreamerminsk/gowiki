@@ -11,7 +11,6 @@ import (
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/web"
-	"gorm.io/gorm"
 )
 
 type Category int
@@ -92,7 +91,7 @@ func GetCategories(ctx context.Context) ([]*model.Category, error) {
 				categoryID, _ := strconv.ParseInt(m["c"][0], 10, 32)
 				categoryTitle := s.Text()
 				categories = append(categories, &model.Category{
-					Model: gorm.Model{ID: uint(categoryID)},
+					ID:    uint(categoryID),
 					Title: categoryTitle,
 				})
 			}
