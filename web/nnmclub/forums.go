@@ -21,18 +21,8 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 		return nil, err
 	}
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		if ref, ok := s.Attr("href"); ok {
-			if strings.Contains(ref, "viewforum.php?f=") {
-				u, _ := url.Parse(ref)
-				m, _ := url.ParseQuery(u.RawQuery)
-				forumID, _ := strconv.ParseInt(m["f"][0], 10, 32)
-				forumTitle := s.Text()
-				forums = append(forums, &model.Forum{
-					ID:    uint(forumID),
-					CatID: 0,
-					Title: forumTitle,
-				})
-			}
+                if f, ok := ParseForum(ctx, s); ok {
+			forums = append(forums, f)
 		}
 	})
 	return forums, nil
