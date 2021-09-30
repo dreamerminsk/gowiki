@@ -143,7 +143,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Response, error) {
 	reqID := ctx.Value(keyReqID).(uint64)
 	log.Logf("%d - %s", reqID, req.URL)
-	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000)+32000)
+	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000)+16000)
 	if err != nil {
 		log.Logf("%d - %s", reqID, err)
 		return nil, err
