@@ -65,7 +65,7 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 		forum.Title = strings.TrimSpace(s.Text())
 	})
 	doc.Find("span.nav a[href]").Each(func(i int, s *goquery.Selection) {
-		if cat, ok := GetCategory(ctx, s); ok {
+		if cat, ok := ParseCategory(ctx, s); ok {
 			forum.CatID = cat.ID
 		}
 	})
