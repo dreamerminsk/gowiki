@@ -83,14 +83,14 @@ func GetCategories(ctx context.Context) ([]*model.Category, error) {
 		return nil, err
 	}
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		if cat, ok := GetCategory(ctx, s); ok {
+		if cat, ok := ParseCategory(ctx, s); ok {
 			categories = append(categories, cat)
 		}
 	})
 	return categories, nil
 }
 
-func GetCategory(ctx context.Context, s *goquery.Selection) (*model.Category, bool) {
+func ParseCategory(ctx context.Context, s *goquery.Selection) (*model.Category, bool) {
 	if ref, ok := s.Attr("href"); ok {
 		if strings.Contains(ref, "index.php?c=") {
 			if catID, ok := utils.GetIntParam(ref, "c"); ok {
