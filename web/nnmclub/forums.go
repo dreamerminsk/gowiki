@@ -3,14 +3,13 @@ package nnmclub
 import (
 	"context"
 	"fmt"
-	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/web"
+"github.com/dreamerminsk/gowiki/utils"
 )
 
 func GetForums(ctx context.Context) ([]*model.Forum, error) {
