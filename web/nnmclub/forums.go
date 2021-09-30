@@ -11,7 +11,6 @@ import (
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/web"
-	"golang.org/x/text/encoding/charmap"
 )
 
 func GetForums(ctx context.Context) ([]*model.Forum, error) {
@@ -51,17 +50,11 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 		return nil, err
 	}
 	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
-		decoder := charmap.Windows1251.NewDecoder()
-		forum.Title, _ = decoder.String(s.Text())
+		forum.Title = strings.TrimSpace(s.Text())
 	})
 	doc.Find("span.nav a[href]").Each(func(i int, s *goquery.Selection) {
-		if ref, ok := s.Attr("href"); ok {
-			if strings.Contains(ref, "index.php?c=") {
-				u, _ := url.Parse(ref)
-				m, _ := url.ParseQuery(u.RawQuery)
-				CatID, _ := strconv.ParseInt(m["c"][0], 10, 32)
-				forum.CatID = uint(CatID)
-			}
+		if cat, ok := GetCategory(ctx, s); ok {
+			forum.CatID = cat.ID
 		}
 	})
 	return forum, nil
