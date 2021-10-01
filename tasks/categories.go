@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
+	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/storage"
 	"github.com/dreamerminsk/gowiki/web/nnmclub"
 	"gorm.io/gorm"
-"github.com/dreamerminsk/gowiki/log"
 )
 
 func InitCategories(ctx context.Context) {
