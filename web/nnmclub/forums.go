@@ -47,7 +47,7 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 		CatID: 0,
 		Title: "",
 	}
-	doc, err := web.New().GetDocument(ctx, fmt.Sprintf("https://nnmclub.to/forum/viewforum.php?f=%d", forumID))
+	doc, err := web.New().GetDocument(ctx, GetViewForumUrl(forumID))
 	if err != nil {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
