@@ -17,7 +17,7 @@ import (
 func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, error) {
 	topics := make([]*model.Topic, 0)
 
-	doc, err := web.New().GetDocument(ctx, GetCatTopicsUrl(catID.EnumIndex(), page))
+	doc, err := web.New().GetDocument(ctx, GetTopicsByCatUrl(catID.EnumIndex(), page))
 	if err != nil {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
