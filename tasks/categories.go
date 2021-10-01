@@ -13,7 +13,7 @@ import (
 func InitCategories(ctx context.Context) {
 	cats, err := nnmclub.GetCategories(ctx)
 	if err != nil {
-		fmt.Println("ERROR : ", err)
+		log.Logf("ERROR : %s", err)
 	}
 	g := storage.New()
 	for _, cat := range cats {
