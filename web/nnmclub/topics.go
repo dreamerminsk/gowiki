@@ -16,16 +16,8 @@ import (
 
 func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, error) {
 	topics := make([]*model.Topic, 0)
-	var urlBuilder strings.Builder
-	urlBuilder.WriteString("https://nnmclub.to/forum/portal.php?c=")
-	urlBuilder.WriteString(strconv.FormatInt(int64(catID.EnumIndex()), 10))
-	if page > 1 {
-		urlBuilder.WriteString("&start=")
-		urlBuilder.WriteString(strconv.FormatInt(int64(page-1)*20, 10))
-		urlBuilder.WriteString("#pagestart")
-	}
-	url := urlBuilder.String()
-	doc, err := web.New().GetDocument(ctx, url)
+
+	doc, err := web.New().GetDocument(ctx, GetCatTopicsUrl(catID.EnumIndex(), page))
 	if err != nil {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
