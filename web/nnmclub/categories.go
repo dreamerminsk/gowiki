@@ -77,7 +77,7 @@ func (c Category) EnumIndex() int {
 
 func GetCategories(ctx context.Context) ([]*model.Category, error) {
 	categories := make([]*model.Category, 0)
-	doc, err := web.New().GetDocument(ctx, "https://nnmclub.to/forum/index.php")
+	doc, err := web.New().GetDocument(ctx, GetForumUrl())
 	if err != nil {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
