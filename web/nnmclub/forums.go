@@ -21,7 +21,9 @@ func GetForums(ctx context.Context) ([]*model.Forum, error) {
 	}
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		if f, ok := ParseForum(ctx, s); ok {
-			forums = append(forums, f)
+			if len(f.Title) > 0 {
+				forums = append(forums, f)
+			}
 		}
 	})
 	return forums, nil
