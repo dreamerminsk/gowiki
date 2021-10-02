@@ -1,1 +1,1 @@
-package  metacritic
+package metacritic
