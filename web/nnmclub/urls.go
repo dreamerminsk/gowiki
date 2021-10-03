@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	timeFormat = "02-01-2006"
+)
+
 func GetForumUrl() string {
 	return "https://nnmclub.to/forum/index.php"
 }
@@ -21,7 +25,6 @@ func GetTopicsByCatUrl(catID, page int) string {
 }
 
 func GetTopicsByDateUrl(date time.Time, page int) string {
-	const timeFormat = "02-01-2006"
 	if page > 1 {
 		return fmt.Sprintf("https://nnmclub.to/?d=%s&start=%d#pagestart", date.Format(timeFormat), (page-1)*20)
 	}
