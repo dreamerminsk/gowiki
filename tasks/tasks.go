@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+const (
+	timeFormat = "2006-01-02 15:04:05"
+)
+
 type Task struct {
 	Title  string
 	Start  time.Time
@@ -43,7 +47,7 @@ func (t *Task) Run(ctx context.Context) {
 func (t *Task) String() string {
 	s := fmt.Sprintf("&{%s, %s, %s}",
 		t.Title,
-		t.Start.Format("2006-01-02 15:04:05"),
-		t.Finish.Format("2006-01-02 15:04:05"))
+		t.Start.Format(timeFormat),
+		t.Finish.Format(timeFormat))
 	return s
 }
