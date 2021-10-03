@@ -45,9 +45,13 @@ func (t *Task) Run(ctx context.Context) {
 }
 
 func (t *Task) String() string {
+	d := time.Since(t.Start)
+	if t.Finish.After(t.Start) {
+		d = t.Finish.Sub(t.Start)
+	}
 	s := fmt.Sprintf("&{%s, %s, %s}",
 		t.Title,
 		t.Start.Format(timeFormat),
-		t.Finish.Format(timeFormat))
+		d)
 	return s
 }
