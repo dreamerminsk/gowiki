@@ -71,5 +71,12 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 			forum.CatID = cat.ID
 		}
 	})
+        if forum.CatID == 0 {
+doc.Find("a[href]").Each(func(i int, s *goquery.Selection) {
+		if cat, ok := ParseCategory(ctx, s); ok {
+			forum.CatID = cat.ID
+		}
+	})
+}
 	return forum, nil
 }
