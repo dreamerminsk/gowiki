@@ -49,7 +49,7 @@ func (t *Task) String() string {
 	if t.Finish.After(t.Start) {
 		d = t.Finish.Sub(t.Start)
 	}
-	s := fmt.Sprintf("&{%s, %s, %s}",
+	s := fmt.Sprintf("&{%s,/t%s,/t%s}",
 		t.Title,
 		t.Start.Format(timeFormat),
 		d)
