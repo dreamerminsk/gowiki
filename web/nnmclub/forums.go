@@ -60,7 +60,7 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	if len(forum.Title) == 0 {
 		doc.Find("a[href]").Each(func(i int, s *goquery.Selection) {
 			if ref, ok := s.Attr("href"); ok {
-				if strings.Contains(ref, fmt.Sprintf("viewforum.php?f=%d", forumId)) {
+				if strings.Contains(ref, fmt.Sprintf("viewforum.php?f=%d", forumID)) {
 					forum.Title = strings.TrimSpace(s.Text())
 				}
 			}
