@@ -57,15 +57,15 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
 		forum.Title = strings.TrimSpace(s.Text())
 	})
-        if len(forum.Title)==0 {
-            doc.Find("a[href]").Each(func(i int, s *goquery.Selection) {
-		if ref, ok := s.Attr("href"); ok {
-		if strings.Contains(ref, fmt.Sprintf("viewforum.php?f=%d", forumId)) {
-			forum.Title = strings.TrimSpace(s.Text())
-		}
+	if len(forum.Title) == 0 {
+		doc.Find("a[href]").Each(func(i int, s *goquery.Selection) {
+			if ref, ok := s.Attr("href"); ok {
+				if strings.Contains(ref, fmt.Sprintf("viewforum.php?f=%d", forumId)) {
+					forum.Title = strings.TrimSpace(s.Text())
+				}
+			}
+		})
 	}
-	    })
-        }
 	doc.Find("span.nav a[href]").Each(func(i int, s *goquery.Selection) {
 		if cat, ok := ParseCategory(ctx, s); ok {
 			forum.CatID = cat.ID
