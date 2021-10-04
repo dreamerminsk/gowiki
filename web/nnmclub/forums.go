@@ -54,6 +54,8 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
+	html,_:= doc.Html()
+	log.Log(fmt.Sprintf("forumID: %d - %d", forumID, len(html)))
 	doc.Find("a.maintitle").Each(func(i int, s *goquery.Selection) {
 		forum.Title = strings.TrimSpace(s.Text())
 	})
