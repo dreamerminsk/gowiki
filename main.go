@@ -33,16 +33,14 @@ func main() {
 		t.Run(ctx)
 	}
 
-	start := time.Now()
-
 	for {
 		select {
 		case <-keyChan:
-			fmt.Println("\nCTRL-C: Завершаю работу.")
+			for _, t := range queue {
+				fmt.Println(t)
+			}
 			return
 		case <-ticker.C:
-			current := time.Now()
-			fmt.Println("working ", (current.Sub(start)))
 			for _, t := range queue {
 				fmt.Println(t)
 			}
