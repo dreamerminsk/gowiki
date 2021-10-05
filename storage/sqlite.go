@@ -33,6 +33,7 @@ func newStorage() (*storage, error) {
 		return nil, err
 	}
 	s := &storage{DB: db, mu: &sync.Mutex{}}
+        db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Forum{})
 	db.AutoMigrate(&model.Topic{})
