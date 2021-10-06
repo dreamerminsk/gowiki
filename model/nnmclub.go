@@ -5,15 +5,13 @@ import (
 	"time"
 )
 
-
 type User struct {
-	ID        uint `gorm:"primarykey"`
-	Name     string
+	ID        uint   `gorm:"primarykey"`
+	Name      string `gorm:"uniqueIndex"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt sql.NullTime `gorm:"index"`
 }
-
 
 type Category struct {
 	ID        uint `gorm:"primarykey"`
