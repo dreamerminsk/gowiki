@@ -26,6 +26,7 @@ func main() {
 	queue := [...]*tasks.Task{
 		tasks.New(tasks.InitCategories),
 		tasks.New(tasks.InitForums),
+		tasks.New(tasks.InitUsers),
 		tasks.New(tasks.UpdateForums),
 		tasks.New(tasks.UpdateTopics),
 	}

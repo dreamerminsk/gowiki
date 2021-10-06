@@ -20,6 +20,7 @@ type Storage interface {
 	GetForumByID(ID uint) (*model.Forum, error)
 	GetForums() ([]*model.Forum, error)
 	UpdateForum(*model.Forum) error
+	GetUserByID(ID uint) (*model.User, error)
 }
 
 var (
@@ -33,7 +34,7 @@ func newStorage() (*storage, error) {
 		return nil, err
 	}
 	s := &storage{DB: db, mu: &sync.Mutex{}}
-        db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Forum{})
 	db.AutoMigrate(&model.Topic{})
@@ -94,4 +95,14 @@ func (s *storage) UpdateForum(forum *model.Forum) error {
 		return err
 	}
 	return nil
+}
+
+func (s *storage) GetUserByID(ID uint) (*model.User, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	user := &model.User{}
+	if err := s.DB.Model(&model.User{}).First(&user, ID).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }
