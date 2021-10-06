@@ -17,7 +17,7 @@ func InitUsers(ctx context.Context) {
 		log.Logf("ERROR : %s", err)
 	}
 	for _, forum := range forums {
-		users, err := nnmclub.GetForumUsers(ctx, forum.ID)
+		users, err := nnmclub.GetForumUsers2(ctx, forum.ID)
 		if err != nil {
 			log.Logf("ERROR : %s", err)
 
