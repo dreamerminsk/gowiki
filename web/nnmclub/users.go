@@ -31,7 +31,7 @@ func GetForumUsers(ctx context.Context, forumID uint) ([]*model.User, error) {
 
 func ParseUser(ctx context.Context, s *goquery.Selection) (*model.User, bool) {
 	if ref, ok := s.Attr("href"); ok {
-		if strings.Contains(ref, html.UnescapeString("profile.php?mode=viewprofile&u=")) {
+		if strings.Contains(ref, html.UnescapeString("profile.php")) {
 			if userID, ok := utils.GetIntParam(ref, "u"); ok {
 				return &model.User{
 					ID:   uint(userID),
@@ -41,4 +41,18 @@ func ParseUser(ctx context.Context, s *goquery.Selection) (*model.User, bool) {
 		}
 	}
 	return nil, false
+}
+
+func GetForumUsers2(ctx context.Context, forumID uint) ([]*model.User, error) {
+	users := make([]*model.User, 0)
+	doc, err := web.New().GetDocument(ctx, GetViewForumUrl(forumID))
+	if err != nil {
+		log.Log(fmt.Sprintf("%s", err))
+		return nil, err
+	}
+
+	doc.Find("span.name").Each(func(i int, s *goquery.Selection) {
+		users = append(users, &model.User{Name: s.Text()})
+	})
+	return users, nil
 }
