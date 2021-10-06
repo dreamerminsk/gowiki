@@ -2,12 +2,10 @@ package tasks
 
 import (
 	"context"
-	"errors"
 
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/storage"
 	"github.com/dreamerminsk/gowiki/web/nnmclub"
-	"gorm.io/gorm"
 )
 
 func InitUsers(ctx context.Context) {
@@ -23,12 +21,12 @@ func InitUsers(ctx context.Context) {
 
 		}
 		for _, user := range users {
-			if _, err := g.GetUserByID(user.ID); err != nil {
-				if errors.Is(err, gorm.ErrRecordNotFound) {
-					g.Create(user)
-					log.Logf("INSERT USER: %d - %s", user.ID, user.Name)
-				}
-			}
+			//if _, err := g.GetUserByID(user.ID); err != nil {
+			//if errors.Is(err, gorm.ErrRecordNotFound) {
+			g.Create(user)
+			log.Logf("INSERT USER: %d - %s", user.ID, user.Name)
+			//}
+			//}
 		}
 	}
 }
