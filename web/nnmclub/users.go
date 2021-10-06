@@ -10,6 +10,7 @@ import (
 	"github.com/dreamerminsk/gowiki/model"
 	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
+	"golang.org/x/net/html"
 )
 
 func GetForumUsers(ctx context.Context, forumID uint) ([]*model.User, error) {
@@ -30,7 +31,7 @@ func GetForumUsers(ctx context.Context, forumID uint) ([]*model.User, error) {
 
 func ParseUser(ctx context.Context, s *goquery.Selection) (*model.User, bool) {
 	if ref, ok := s.Attr("href"); ok {
-		if strings.Contains(ref, "profile.php?mode=viewprofile&u=") {
+		if strings.Contains(ref, html.UnescapeString("profile.php?mode=viewprofile&u=")) {
 			if userID, ok := utils.GetIntParam(ref, "u"); ok {
 				return &model.User{
 					ID:   uint(userID),

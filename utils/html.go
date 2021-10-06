@@ -3,10 +3,12 @@ package utils
 import (
 	"net/url"
 	"strconv"
+
+	"golang.org/x/net/html"
 )
 
 func GetParams(ref string) (url.Values, error) {
-	u, err := url.Parse(ref)
+	u, err := url.Parse(html.UnescapeString(ref))
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +20,7 @@ func GetParams(ref string) (url.Values, error) {
 }
 
 func GetParam(ref, name string) (value string, ok bool) {
-	u, err := url.Parse(ref)
+	u, err := url.Parse(html.UnescapeString(ref))
 	if err != nil {
 		return "", false
 	}
