@@ -23,8 +23,11 @@ func InitUsers(ctx context.Context) {
 		for _, user := range users {
 			//if _, err := g.GetUserByID(user.ID); err != nil {
 			//if errors.Is(err, gorm.ErrRecordNotFound) {
-			g.Create(user)
-			log.Logf("INSERT USER: %d - %s", user.ID, user.Name)
+			if err := g.Create(user).Error; err != nil {
+
+			} else {
+				log.Logf("INSERT USER: %d - %s", user.ID, user.Name)
+			}
 			//}
 			//}
 		}
