@@ -2,6 +2,8 @@ package tasks
 
 import (
 	"context"
+	"math/rand"
+	"time"
 
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/storage"
@@ -14,6 +16,10 @@ func InitUsers(ctx context.Context) {
 	if err != nil {
 		log.Logf("ERROR : %s", err)
 	}
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(forums), func(i, j int) {
+		forums[i], forums[j] = forums[j], forums[i]
+	})
 	for _, forum := range forums {
 		users, err := nnmclub.GetForumUsers2(ctx, forum.ID)
 		if err != nil {
