@@ -123,9 +123,7 @@ func (s *storage) UpdateTopic(topic *model.Topic) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if err := s.DB.Model(&topic).Updates(
-		model.Topic{Title: topic.Title, Likes: topic.Likes},
-	).Error; err != nil {
+	if err := s.DB.Model(&topic).Save(&topic).Error; err != nil {
 		return err
 	}
 	return nil
