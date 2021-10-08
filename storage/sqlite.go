@@ -21,6 +21,8 @@ type Storage interface {
 	GetForums() ([]*model.Forum, error)
 	UpdateForum(*model.Forum) error
 	GetUserByID(ID uint) (*model.User, error)
+	GetTopicByID(ID uint) (*model.Topic, error)
+	UpdateTopic(*model.Topic) error
 }
 
 var (
@@ -29,7 +31,7 @@ var (
 )
 
 func newStorage() (*storage, error) {
-	db, err := gorm.Open(sqlite.Open("nnmclub.gorm.sqlite3"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("nnmclub.sqlite3.db"), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
@@ -105,4 +107,26 @@ func (s *storage) GetUserByID(ID uint) (*model.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s *storage) GetTopicByID(ID uint) (*model.Topic, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	topic := &model.Topic{}
+	if err := s.DB.Model(&model.Topic{}).First(&topic, ID).Error; err != nil {
+		return nil, err
+	}
+	return topic, nil
+}
+
+func (s *storage) UpdateTopic(topic *model.Topic) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if err := s.DB.Model(&topic).Updates(
+		model.Topic{Title: topic.Title, Likes: topic.Likes},
+	).Error; err != nil {
+		return err
+	}
+	return nil
 }

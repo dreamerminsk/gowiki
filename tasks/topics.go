@@ -13,11 +13,7 @@ import (
 )
 
 func UpdateTopics(ctx context.Context) {
-	s, err := storage.NewSqliteStorage()
-	if err != nil {
-		fmt.Printf("Storage: %s", err.Error())
-	}
-	defer s.Close()
+	g := storage.New()
 
 	var cats = map[nnmclub.Category]int{
 		nnmclub.Music:                  1,
@@ -31,7 +27,7 @@ func UpdateTopics(ctx context.Context) {
 		existValidPage := false
 		for cat, page := range cats {
 			if page > 0 {
-				err := processTopicPage(ctx, s, cat, page)
+				err := processTopicPage(ctx, g, cat, page)
 				if err != nil {
 					cats[cat] = -1
 					continue
@@ -46,7 +42,7 @@ func UpdateTopics(ctx context.Context) {
 	}
 }
 
-func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID nnmclub.Category, page int) error {
+func processTopicPage(ctx context.Context, g storage.Storage, catID nnmclub.Category, page int) error {
 	topics, err := nnmclub.GetTopics(ctx, catID, page)
 	if err != nil {
 		return err
@@ -58,7 +54,7 @@ func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID nnmcl
 		fmt.Println("Published: ", topic.Published.Format(time.RFC3339))
 		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("Magnet: ", topic.Magnet)
-		err = insertOrUpdate(s, topic)
+		err = insertOrUpdate(g, topic)
 		if err != nil {
 			return err
 		}
@@ -67,21 +63,21 @@ func processTopicPage(ctx context.Context, s *storage.SqliteStorage, catID nnmcl
 	return nil
 }
 
-func insertOrUpdate(s *storage.SqliteStorage, topic *model.Topic) error {
-	oldTopic, err := s.GetTopic(int(topic.ID))
+func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
+	oldTopic, err := g.GetTopicByID(topic.ID)
 	if err != nil {
 		fmt.Println("SELECT ERROR: ", reflect.TypeOf(err), err)
 		return err
 	}
 	if oldTopic.ID == 0 {
-		err = s.AddTopic(topic)
+		err = g.Create(topic).Error
 		if err != nil {
 			fmt.Println("INSERT ERROR: ", reflect.TypeOf(err), err)
 			return err
 		}
 	} else if topic.Likes > oldTopic.Likes {
 		fmt.Printf("\tDIFF LIKES: %d\r\n", topic.Likes-oldTopic.Likes)
-		err = s.UpdateTopic(topic)
+		err = g.UpdateTopic(topic)
 		if err != nil {
 			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(err), err)
 			return err
