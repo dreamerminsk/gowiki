@@ -67,8 +67,6 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 	oldTopic, err := g.GetTopicByID(topic.ID)
 	if err != nil {
 		fmt.Println("SELECT ERROR: ", reflect.TypeOf(err), err)
-	}
-	if oldTopic.ID == 0 {
 		err = g.Create(topic).Error
 		if err != nil {
 			fmt.Println("INSERT ERROR: ", reflect.TypeOf(err), err)
