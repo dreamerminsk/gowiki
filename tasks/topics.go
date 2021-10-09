@@ -12,7 +12,7 @@ import (
 	"github.com/dreamerminsk/gowiki/web/nnmclub"
 )
 
-func UpdateTopics(ctx context.Context) {
+func UpdateTopics(ctx context.Context, t *Task) {
 	g := storage.New()
 
 	var cats = map[nnmclub.Category]int{

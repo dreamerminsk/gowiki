@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitForums(ctx context.Context) {
+func InitForums(ctx context.Context, t *Task) {
 	forums, err := nnmclub.GetForums(ctx)
 	if err != nil {
 		log.Logf("ERROR : %s", err)
@@ -26,7 +26,7 @@ func InitForums(ctx context.Context) {
 	}
 }
 
-func UpdateForums(ctx context.Context) {
+func UpdateForums(ctx context.Context, t *Task) {
 	g := storage.New()
 	forums, err := g.GetForums()
 	if err != nil {

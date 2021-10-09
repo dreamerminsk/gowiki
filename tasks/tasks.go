@@ -18,14 +18,14 @@ type Task struct {
 	Start   time.Time
 	Finish  time.Time
 	Message chan<- string
-	Work    func(ctx context.Context)
+	Work    func(ctx context.Context, t *Task)
 }
 
 type TaskRunner interface {
 	Run(ctx context.Context)
 }
 
-func New(f func(ctx context.Context)) *Task {
+func New(f func(ctx context.Context, t *Task)) *Task {
 	return &Task{
 		Title: getShortName(f),
 		Work:  f,
@@ -41,7 +41,7 @@ func (t *Task) Run(ctx context.Context) {
 	t.Start = time.Now()
 	go func() {
 		defer func() { t.Finish = time.Now() }()
-		t.Work(ctx)
+		t.Work(ctx, t)
 	}()
 }
 

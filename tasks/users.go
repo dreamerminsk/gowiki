@@ -10,7 +10,7 @@ import (
 	"github.com/dreamerminsk/gowiki/web/nnmclub"
 )
 
-func InitUsers(ctx context.Context) {
+func InitUsers(ctx context.Context, t *Task) {
 	g := storage.New()
 	forums, err := g.GetForums()
 	if err != nil {

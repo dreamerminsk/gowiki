@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitCategories(ctx context.Context) {
+func InitCategories(ctx context.Context, t *Task) {
 	cats, err := nnmclub.GetCategories(ctx)
 	if err != nil {
 		log.Logf("ERROR : %s", err)
