@@ -14,11 +14,11 @@ const (
 )
 
 type Task struct {
-	Title  string
-	Start  time.Time
-	Finish time.Time
+	Title   string
+	Start   time.Time
+	Finish  time.Time
 	Message chan<- string
-	Work   func(ctx context.Context)
+	Work    func(ctx context.Context)
 }
 
 type TaskRunner interface {
