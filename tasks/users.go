@@ -39,8 +39,8 @@ func InitUsers(ctx context.Context, t *Task) {
 			}
 			//}
 			//}
-			t.MsgChan <- fmt.Sprintf("forums: %d from %d, users: %d",
-				idx, len(forums), newUsers)
+			t.MsgChan <- fmt.Sprintf("forums: %d of %d, new users: %d",
+				idx + 1, len(forums), newUsers)
 		}
 	}
 }
