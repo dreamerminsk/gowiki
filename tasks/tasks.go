@@ -17,6 +17,7 @@ type Task struct {
 	Title  string
 	Start  time.Time
 	Finish time.Time
+	Message chan<- string
 	Work   func(ctx context.Context)
 }
 
