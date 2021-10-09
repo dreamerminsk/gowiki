@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -20,22 +21,26 @@ func InitUsers(ctx context.Context, t *Task) {
 	rand.Shuffle(len(forums), func(i, j int) {
 		forums[i], forums[j] = forums[j], forums[i]
 	})
+	newUsers := 0
 	for _, forum := range forums {
 		users, err := nnmclub.GetForumUsers2(ctx, forum.ID)
 		if err != nil {
 			log.Logf("ERROR : %s", err)
 
 		}
-		for _, user := range users {
+		for idx, user := range users {
 			//if _, err := g.GetUserByID(user.ID); err != nil {
 			//if errors.Is(err, gorm.ErrRecordNotFound) {
 			if err := g.Create(user).Error; err != nil {
 
 			} else {
+				newUsers++
 				log.Logf("INSERT USER: %d - %s", user.ID, user.Name)
 			}
 			//}
 			//}
+			t.MsgChan <- fmt.Sprintf("forums: %d from %d, users: %d",
+				idx, len(forums), newUsers)
 		}
 	}
 }

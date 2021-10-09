@@ -31,7 +31,7 @@ func main() {
 		tasks.New(tasks.UpdateTopics),
 	}
 	for _, t := range queue {
-		t.Run(ctx)
+		go t.Run(ctx)
 	}
 
 	for {

@@ -3,6 +3,7 @@ package tasks
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/dreamerminsk/gowiki/log"
 	"github.com/dreamerminsk/gowiki/storage"
@@ -32,6 +33,7 @@ func UpdateForums(ctx context.Context, t *Task) {
 	if err != nil {
 		log.Logf("ERROR : %s", err)
 	}
+	t.MsgChan <- fmt.Sprintf("forums: %d", len(forums))
 	for _, forum := range forums {
 		if forum.CatID == 0 {
 			newForum, err := nnmclub.GetForum(ctx, forum.ID)
