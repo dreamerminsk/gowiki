@@ -22,13 +22,13 @@ func InitUsers(ctx context.Context, t *Task) {
 		forums[i], forums[j] = forums[j], forums[i]
 	})
 	newUsers := 0
-	for _, forum := range forums {
+	for idx, forum := range forums {
 		users, err := nnmclub.GetForumUsers2(ctx, forum.ID)
 		if err != nil {
 			log.Logf("ERROR : %s", err)
 
 		}
-		for idx, user := range users {
+		for _, user := range users {
 			//if _, err := g.GetUserByID(user.ID); err != nil {
 			//if errors.Is(err, gorm.ErrRecordNotFound) {
 			if err := g.Create(user).Error; err != nil {
