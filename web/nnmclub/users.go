@@ -52,7 +52,7 @@ func GetForumUsers2(ctx context.Context, forumID uint) ([]*model.User, error) {
 	}
 
 	doc.Find("span.name").Each(func(i int, s *goquery.Selection) {
-		users = append(users, &model.User{Name: s.Text()})
+		users = append(users, &model.User{Name: strings.TrimSpace(s.Text())})
 	})
 	return users, nil
 }
