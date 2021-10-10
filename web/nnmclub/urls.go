@@ -17,7 +17,10 @@ func GetViewUserUrl(userID uint) string {
 	return fmt.Sprintf("https://nnmclub.to/forum/profile.php?mode=viewprofile&u=%d", userID)
 }
 
-func GetViewForumUrl(forumID uint) string {
+func GetViewForumUrl(forumID, page uint) string {
+	if page > 1 {
+		return fmt.Sprintf("https://nnmclub.to/forum/viewforum.php?f=%d&start=%d#pagestart", forumID, (page-1)*20)
+	}
 	return fmt.Sprintf("https://nnmclub.to/forum/viewforum.php?f=%d", forumID)
 }
 

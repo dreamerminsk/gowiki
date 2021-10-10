@@ -49,7 +49,7 @@ func GetForum(ctx context.Context, forumID uint) (*model.Forum, error) {
 		CatID: 0,
 		Title: "",
 	}
-	doc, err := web.New().GetDocument(ctx, GetViewForumUrl(forumID))
+	doc, err := web.New().GetDocument(ctx, GetViewForumUrl(forumID, 1))
 	if err != nil {
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err

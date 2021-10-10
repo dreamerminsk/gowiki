@@ -28,11 +28,20 @@ func InitUsers(ctx context.Context, t *Task) {
 	newUsers := 0
 	lastUser := &model.User{}
 	for idx, forum := range forums {
-		users, err := nnmclub.GetForumUsers2(ctx, forum.ID)
+		users, next, err := nnmclub.GetForumUsers2(ctx, forum.ID, 1)
 		if err != nil {
 			log.Logf("ERROR : %s", err)
 
 		}
+
+		if next {
+			users2, _, err := nnmclub.GetForumUsers2(ctx, forum.ID, 2)
+			if err != nil {
+				log.Logf("ERROR : %s", err)
+			}
+			users = append(users, users2...)
+		}
+
 		for _, user := range users {
 			//if _, err := g.GetUserByID(user.ID); err != nil {
 			//if errors.Is(err, gorm.ErrRecordNotFound) {
