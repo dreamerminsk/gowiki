@@ -1,8 +1,6 @@
 name: Golang Formatter
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -15,6 +13,6 @@ jobs:
       with:
         fetch-depth: 0
     - name: Golang Formatter
-      uses: sladyn98/auto-go-format@master
+      uses: borkaz/gofmt-github-action@main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
