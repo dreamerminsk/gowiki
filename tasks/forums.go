@@ -39,7 +39,7 @@ func UpdateForums(ctx context.Context, t *Task) {
 			newForum, err := nnmclub.GetForum(ctx, forum.ID)
 			if err != nil {
 				log.Logf("ERROR : %s", err)
-
+continue
 			}
 			g.UpdateForum(newForum)
 		}
