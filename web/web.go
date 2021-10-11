@@ -3,6 +3,7 @@ package web
 import (
 	"bufio"
 	"context"
+	"expvar"
 	"io"
 	"math/rand"
 	"net/http"
@@ -27,6 +28,7 @@ const (
 type webClient struct {
 	client        *http.Client
 	lastRequestId *uint64
+	lrid          *expvar.Int
 	rateLimiter   *rate.Limiter
 }
 
@@ -43,12 +45,17 @@ var (
 	r        *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
+func init() {
+
+}
+
 func newReader() *webClient {
 	return &webClient{
 		client: &http.Client{
 			Timeout: time.Second * 60,
 		},
 		lastRequestId: new(uint64),
+		lrid:          expvar.NewInt("lastRequestId"),
 		rateLimiter:   rate.NewLimiter(1000, 100000),
 	}
 }
@@ -114,7 +121,8 @@ func detectContentCharset(body io.Reader) string {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	reqID := atomic.AddUint64(wc.lastRequestId, 1)
+	wc.lrid.Add(1)
+	reqID := wc.lrid.Value()
 	log.Logf("%d - %s", reqID, url)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
@@ -141,7 +149,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 }
 
 func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Response, error) {
-	reqID := ctx.Value(keyReqID).(uint64)
+	reqID := ctx.Value(keyReqID).(int64)
 	log.Logf("%d - %s", reqID, req.URL)
 	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000)+16000)
 	if err != nil {

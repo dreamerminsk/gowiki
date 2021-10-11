@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	_ "expvar"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,6 +15,8 @@ import (
 )
 
 func main() {
+
+	go http.ListenAndServe(":8080", nil)
 
 	ticker := time.NewTicker(time.Duration(60) * time.Second)
 	defer ticker.Stop()
