@@ -175,7 +175,7 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 	statsM.Lock()
 	wait := float64(time.Since(waitstart).Seconds())
 	stats.WaitTime += wait
-	if wait < stats.WaitTimeMin {
+	if wait > 1.0 && wait < stats.WaitTimeMin {
 		stats.WaitTimeMin = wait
 	}
 	if wait > stats.WaitTimeMax {
