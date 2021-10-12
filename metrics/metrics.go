@@ -1,8 +1,3 @@
 package metrics
 
-
-
-
-
-
-type InMemSink struct {}
+type InMemSink struct{}
