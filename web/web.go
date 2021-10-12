@@ -28,7 +28,6 @@ const (
 type webClient struct {
 	client        *http.Client
 	lastRequestId *uint64
-	lrid          *expvar.Int
 	rateLimiter   *rate.Limiter
 }
 
@@ -39,14 +38,29 @@ type WebReader interface {
 	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
 }
 
+type WebStats struct {
+	Requests    uint64
+	WaitTime    float64
+	WaitTimeAvg float64
+}
+
 var (
 	instance *webClient
 	once     sync.Once
-	r        *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+	stats    *WebStats   = &WebStats{}
+	statsM   *sync.Mutex = &sync.Mutex{}
+	r        *rand.Rand  = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
-func init() {
+func webstats() interface{} {
+	statsM.Lock()
+	defer statsM.Unlock()
+	stats.WaitTimeAvg = stats.WaitTime / float64(stats.Requests)
+	return *stats
+}
 
+func init() {
+	expvar.Publish("WebStats", expvar.Func(webstats))
 }
 
 func newReader() *webClient {
@@ -55,7 +69,6 @@ func newReader() *webClient {
 			Timeout: time.Second * 60,
 		},
 		lastRequestId: new(uint64),
-		lrid:          expvar.NewInt("lastRequestId"),
 		rateLimiter:   rate.NewLimiter(1000, 100000),
 	}
 }
@@ -121,9 +134,7 @@ func detectContentCharset(body io.Reader) string {
 }
 
 func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error) {
-	wc.lrid.Add(1)
-	reqID := wc.lrid.Value()
-	log.Logf("%d - %s", reqID, url)
+	reqID := atomic.AddUint64(wc.lastRequestId, 1)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -136,7 +147,6 @@ func (wc *webClient) Get(ctx context.Context, url string) (*http.Response, error
 
 func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.Reader) (*http.Response, error) {
 	reqID := atomic.AddUint64(wc.lastRequestId, 1)
-	log.Logf("%d - %s", reqID, url)
 	ctx = context.WithValue(ctx, keyReqID, reqID)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, body)
 	if err != nil {
@@ -149,12 +159,24 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 }
 
 func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Response, error) {
-	reqID := ctx.Value(keyReqID).(int64)
+	reqID := ctx.Value(keyReqID).(uint64)
 	log.Logf("%d - %s", reqID, req.URL)
-	err := wc.rateLimiter.WaitN(ctx, r.Intn(64000)+16000)
+
+	defer func() {
+		statsM.Lock()
+		defer statsM.Unlock()
+		stats.Requests++
+	}()
+
+	waitstart := time.Now()
+	err := wc.rateLimiter.WaitN(ctx, r.Intn(32000)+16000)
+	statsM.Lock()
+	stats.WaitTime += float64(time.Since(waitstart).Seconds())
+	statsM.Unlock()
 	if err != nil {
 		log.Logf("%d - %s", reqID, err)
 		return nil, err
 	}
+
 	return wc.client.Do(req)
 }
