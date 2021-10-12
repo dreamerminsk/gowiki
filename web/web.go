@@ -41,7 +41,9 @@ type WebReader interface {
 type WebStats struct {
 	Requests    uint64
 	WaitTime    float64
+WaitTimeMin float64
 	WaitTimeAvg float64
+WaitTimeMax float64
 }
 
 var (
@@ -171,7 +173,14 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 	waitstart := time.Now()
 	err := wc.rateLimiter.WaitN(ctx, r.Intn(32000)+16000)
 	statsM.Lock()
-	stats.WaitTime += float64(time.Since(waitstart).Seconds())
+wait:=float64(time.Since(waitstart).Seconds())
+	stats.WaitTime += wait
+if wait < stats.WaitTimeMin{
+stats.WaitTimeMin = wait
+}
+if wait > stats.WaitTimeMax {
+stats.WaitTimeMax = wait
+}
 	statsM.Unlock()
 	if err != nil {
 		log.Logf("%d - %s", reqID, err)
