@@ -49,7 +49,7 @@ type WebStats struct {
 var (
 	instance *webClient
 	once     sync.Once
-	stats    *WebStats   = &WebStats{}
+	stats    *WebStats   = &WebStats{WaitTimeMin: 1000}
 	statsM   *sync.Mutex = &sync.Mutex{}
 	r        *rand.Rand  = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
