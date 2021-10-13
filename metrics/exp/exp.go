@@ -6,19 +6,17 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/rcrowley/go-metrics"
+	"github.com/dreamerminsk/gowiki/metrics"
 )
 
 type exp struct {
-	expvarLock sync.Mutex // expvar panics if you try to register the same var twice, so we must probe it safely
+	expvarLock sync.Mutex
 	registry   metrics.Registry
 }
 
 func (exp *exp) expHandler(w http.ResponseWriter, r *http.Request) {
-	// load our variables into expvar
 	exp.syncToExpvar()
 
-	// now just run the official expvar handler code (which is not publicly callable, so pasted inline)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(w, "{\n")
 	first := true
@@ -32,17 +30,11 @@ func (exp *exp) expHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "\n}\n")
 }
 
-// Exp will register an expvar powered metrics handler with http.DefaultServeMux on "/debug/vars"
 func Exp(r metrics.Registry) {
 	h := ExpHandler(r)
-	// this would cause a panic:
-	// panic: http: multiple registrations for /debug/vars
-	// http.HandleFunc("/debug/vars", e.expHandler)
-	// haven't found an elegant way, so just use a different endpoint
 	http.Handle("/debug/metrics", h)
 }
 
-// ExpHandler will return an expvar powered metrics handler.
 func ExpHandler(r metrics.Registry) http.Handler {
 	e := exp{sync.Mutex{}, r}
 	return http.HandlerFunc(e.expHandler)
