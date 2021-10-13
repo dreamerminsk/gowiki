@@ -40,14 +40,14 @@ func InitUsers(ctx context.Context, t *Task) {
 				log.Logf("ERROR : %s", err)
 			}
 			users = append(users, users2...)
-		}
 
-		if next {
-			users2, _, err := nnmclub.GetForumUsers2(ctx, forum.ID, 3)
+if next {
+			users3, _, err := nnmclub.GetForumUsers2(ctx, forum.ID, 3)
 			if err != nil {
 				log.Logf("ERROR : %s", err)
 			}
-			users = append(users, users2...)
+			users = append(users, users3...)
+		}
 		}
 
 		for _, user := range users {
