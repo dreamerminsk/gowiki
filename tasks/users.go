@@ -42,7 +42,7 @@ func InitUsers(ctx context.Context, t *Task) {
 			users = append(users, users2...)
 		}
 
-if next2 {
+		if next2 {
 			users3, _, err := nnmclub.GetForumUsers2(ctx, forum.ID, 2)
 			if err != nil {
 				log.Logf("ERROR : %s", err)
