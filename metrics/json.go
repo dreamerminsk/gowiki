@@ -11,7 +11,7 @@ func (r *StandardRegistry) MarshalJSON() ([]byte, error) {
 }
 
 func WriteJSON(r Registry, d time.Duration, w io.Writer) {
-	for _ = range time.Tick(d) {
+	for range time.Tick(d) {
 		WriteJSONOnce(r, w)
 	}
 }
