@@ -17,6 +17,8 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/dreamerminsk/gowiki/log"
+	"github.com/dreamerminsk/gowiki/metrics"
+	"github.com/dreamerminsk/gowiki/metrics/exp"
 )
 
 type key int
@@ -63,6 +65,7 @@ func webstats() interface{} {
 
 func init() {
 	expvar.Publish("WebStats", expvar.Func(webstats))
+	exp.Exp(metrics.DefaultRegistry)
 }
 
 func newReader() *webClient {
@@ -168,6 +171,7 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 		statsM.Lock()
 		defer statsM.Unlock()
 		stats.Requests++
+		metrics.GetOrRegisterCounter("WebStats.Requests", nil).Inc(1)
 	}()
 
 	waitstart := time.Now()
