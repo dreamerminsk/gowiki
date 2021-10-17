@@ -6,13 +6,14 @@ import (
 	"fmt"
 
 	"github.com/dreamerminsk/gowiki/log"
-	"github.com/dreamerminsk/gowiki/storage"
-	"github.com/dreamerminsk/gowiki/web/nnmclub"
+	"github.com/dreamerminsk/gowiki/nnmclub/client"
+	"github.com/dreamerminsk/gowiki/nnmclub/storage"
+	"github.com/dreamerminsk/gowiki/tasks"
 	"gorm.io/gorm"
 )
 
-func InitForums(ctx context.Context, t *Task) {
-	forums, err := nnmclub.GetForums(ctx)
+func InitForums(ctx context.Context, t *tasks.Task) {
+	forums, err := client.GetForums(ctx)
 	if err != nil {
 		log.Logf("ERROR : %s", err)
 	}
@@ -27,7 +28,7 @@ func InitForums(ctx context.Context, t *Task) {
 	}
 }
 
-func UpdateForums(ctx context.Context, t *Task) {
+func UpdateForums(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
 	forums, err := g.GetForums()
@@ -39,7 +40,7 @@ func UpdateForums(ctx context.Context, t *Task) {
 
 	for _, forum := range forums {
 		if forum.CatID == 0 {
-			newForum, err := nnmclub.GetForum(ctx, forum.ID)
+			newForum, err := client.GetForum(ctx, forum.ID)
 			if err != nil {
 				log.Logf("ERROR : %s", err)
 				continue

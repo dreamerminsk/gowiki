@@ -7,12 +7,13 @@ import (
 	"time"
 
 	"github.com/dreamerminsk/gowiki/log"
-	"github.com/dreamerminsk/gowiki/model"
-	"github.com/dreamerminsk/gowiki/storage"
-	"github.com/dreamerminsk/gowiki/web/nnmclub"
+	"github.com/dreamerminsk/gowiki/nnmclub/client"
+	"github.com/dreamerminsk/gowiki/nnmclub/model"
+	"github.com/dreamerminsk/gowiki/nnmclub/storage"
+	"github.com/dreamerminsk/gowiki/tasks"
 )
 
-func InitUsers(ctx context.Context, t *Task) {
+func InitUsers(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
 	forums, err := g.GetForums()
@@ -28,26 +29,26 @@ func InitUsers(ctx context.Context, t *Task) {
 	newUsers := 0
 	lastUser := &model.User{}
 	for idx, forum := range forums {
-		users, next, err := nnmclub.GetForumUsers2(ctx, forum.ID, 1)
+		users, next, err := client.GetForumUsers2(ctx, forum.ID, 1)
 		if err != nil {
 			log.Logf("ERROR : %s", err)
 
 		}
 
 		if next {
-			users2, next, err := nnmclub.GetForumUsers2(ctx, forum.ID, 2)
+			users2, next, err := client.GetForumUsers2(ctx, forum.ID, 2)
 			if err != nil {
 				log.Logf("ERROR : %s", err)
 			}
 			users = append(users, users2...)
 
-if next {
-			users3, _, err := nnmclub.GetForumUsers2(ctx, forum.ID, 3)
-			if err != nil {
-				log.Logf("ERROR : %s", err)
+			if next {
+				users3, _, err := client.GetForumUsers2(ctx, forum.ID, 3)
+				if err != nil {
+					log.Logf("ERROR : %s", err)
+				}
+				users = append(users, users3...)
 			}
-			users = append(users, users3...)
-		}
 		}
 
 		for _, user := range users {

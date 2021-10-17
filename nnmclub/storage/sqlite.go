@@ -3,10 +3,10 @@ package storage
 import (
 	"sync"
 
+	"github.com/dreamerminsk/gowiki/nnmclub/model"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-
-	"github.com/dreamerminsk/gowiki/model"
 )
 
 type storage struct {

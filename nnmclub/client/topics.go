@@ -1,4 +1,4 @@
-package nnmclub
+package client
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/log"
-	"github.com/dreamerminsk/gowiki/model"
+	"github.com/dreamerminsk/gowiki/nnmclub/model"
 	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
 )

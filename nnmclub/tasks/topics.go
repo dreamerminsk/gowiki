@@ -7,20 +7,21 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/dreamerminsk/gowiki/model"
-	"github.com/dreamerminsk/gowiki/storage"
-	"github.com/dreamerminsk/gowiki/web/nnmclub"
+	"github.com/dreamerminsk/gowiki/nnmclub/client"
+	"github.com/dreamerminsk/gowiki/nnmclub/model"
+	"github.com/dreamerminsk/gowiki/nnmclub/storage"
+	"github.com/dreamerminsk/gowiki/tasks"
 )
 
-func UpdateTopics(ctx context.Context, t *Task) {
+func UpdateTopics(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
-	var cats = map[nnmclub.Category]int{
-		nnmclub.Music:                  1,
-		nnmclub.HDMusic:                1,
-		nnmclub.MusicCollections:       1,
-		nnmclub.AnimeAndManga:          1,
-		nnmclub.BooksAndMediaMaterials: 1,
+	var cats = map[client.Category]int{
+		client.Music:                  1,
+		client.HDMusic:                1,
+		client.MusicCollections:       1,
+		client.AnimeAndManga:          1,
+		client.BooksAndMediaMaterials: 1,
 	}
 
 	for {
@@ -42,8 +43,8 @@ func UpdateTopics(ctx context.Context, t *Task) {
 	}
 }
 
-func processTopicPage(ctx context.Context, g storage.Storage, catID nnmclub.Category, page int) error {
-	topics, err := nnmclub.GetTopics(ctx, catID, page)
+func processTopicPage(ctx context.Context, g storage.Storage, catID client.Category, page int) error {
+	topics, err := client.GetTopics(ctx, catID, page)
 	if err != nil {
 		return err
 	}

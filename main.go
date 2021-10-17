@@ -10,7 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	nnmclub "github.com/dreamerminsk/gowiki/nnmclub/tasks"
 	"github.com/dreamerminsk/gowiki/tasks"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -28,11 +30,11 @@ func main() {
 	defer cancel()
 
 	queue := [...]*tasks.Task{
-		tasks.New(tasks.InitCategories),
-		tasks.New(tasks.InitForums),
-		tasks.New(tasks.InitUsers),
-		tasks.New(tasks.UpdateForums),
-		tasks.New(tasks.UpdateTopics),
+		tasks.New(nnmclub.InitCategories),
+		tasks.New(nnmclub.InitForums),
+		tasks.New(nnmclub.InitUsers),
+		tasks.New(nnmclub.UpdateForums),
+		tasks.New(nnmclub.UpdateTopics),
 	}
 	for _, t := range queue {
 		go t.Run(ctx)

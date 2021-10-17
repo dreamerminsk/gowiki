@@ -6,13 +6,14 @@ import (
 	"fmt"
 
 	"github.com/dreamerminsk/gowiki/log"
-	"github.com/dreamerminsk/gowiki/storage"
-	"github.com/dreamerminsk/gowiki/web/nnmclub"
+	"github.com/dreamerminsk/gowiki/nnmclub/client"
+	"github.com/dreamerminsk/gowiki/nnmclub/storage"
+	"github.com/dreamerminsk/gowiki/tasks"
 	"gorm.io/gorm"
 )
 
-func InitCategories(ctx context.Context, t *Task) {
-	cats, err := nnmclub.GetCategories(ctx)
+func InitCategories(ctx context.Context, t *tasks.Task) {
+	cats, err := client.GetCategories(ctx)
 	if err != nil {
 		log.Logf("ERROR : %s", err)
 	}

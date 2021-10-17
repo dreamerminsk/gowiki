@@ -1,4 +1,4 @@
-package nnmclub
+package client
 
 import (
 	"fmt"
