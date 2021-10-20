@@ -34,23 +34,23 @@ func NewRegisteredKeyValue(name string, r Registry) KeyValue {
 }
 
 type KeyValueSnapshot {
-Key string
-Value interface{}
+key string
+value interface{}
 }
 
 func (KeyValueSnapshot) Clear() {
 	panic("Clear called on a CounterSnapshot")
 }
 
-func (c KeyValueSnapshot) Count() int64 { return int64(c) }
+func (c KeyValueSnapshot) Key() string { return c.key }
 
-func (KeyValueSnapshot) Dec(int64) {
-	panic("Dec called on a CounterSnapshot")
+func (c KeyValueSnapshot) Value() string { return c.value }
+
+func (KeyValueSnapshot) SetValue(interface{}) {
+	panic("SetValue called on a KeyValueSnapshot")
 }
 
-func (KeyValueSnapshot) Inc(int64) {
-	panic("Inc called on a CounterSnapshot")
-}
+
 
 func (c KeyValueSnapshot) Snapshot() KeyValue { return c }
 
@@ -58,11 +58,12 @@ type NilKeyValue struct{}
 
 func (NilKeyValue) Clear() {}
 
-func (NilKeyValue) Count() int64 { return 0 }
+func (NilKeyValue) Key() string { return "" }
 
-func (NilKeyValue) Dec(i int64) {}
+func (NilKeyValue) Value()  interface {   return nil;}
 
-func (NilKeyValue) Inc(i int64) {}
+func (NilKeyValue) SetValue(i interface{}) {}
+
 
 func (NilKeyValue) Snapshot() KeyValue { return NilKeyValue{} }
 
@@ -72,21 +73,24 @@ value   interface{}
 }
 
 func (c *StandardKeyValue) Clear() {
-	atomic.StoreInt64(&c.count, 0)
+	atomic.Store(c, struct{})
 }
 
-func (c *StandardKeyValue) Count() int64 {
-	return atomic.LoadInt64(&c.count)
+func (c *StandardKeyValue) Key() string {
+	return atomic.Load(c).key
 }
 
-func (c *StandardKeyValue) Dec(i int64) {
-	atomic.AddInt64(&c.count, -i)
+
+
+func (c *StandardKeyValue) Value() interface{} {
+	return atomic.Load(c).value
 }
 
-func (c *StandardKeyValue) Inc(i int64) {
-	atomic.AddInt64(&c.count, i)
+func (c *StandardKeyValue) SetValue(i interface{}) {
+	atomic.Store(c, {})
 }
+
 
 func (c *StandardKeyValue) Snapshot() KeyValue {
-	return KeyValueSnapshot(c.Count())
+	return KeyValueSnapshot(c.Key(), c.Value())
 }
