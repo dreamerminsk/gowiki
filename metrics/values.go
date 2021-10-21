@@ -109,5 +109,7 @@ func (c *StandardValues) Add(key string, value interface{}) {
 }
 
 func (c *StandardValues) Snapshot() Values {
-	return c.values.Load().(ValuesSnapshot)
+	c.m.RLock()
+	defer c.m.RUnlock()
+	return ValuesSnapshot(c.values.Load().(map[string]interface{}))
 }
