@@ -2,7 +2,16 @@ table.pline
     td.pcatHead a.pgenmed - 
 	tbody > tr:nth-child(2) > td > span.genmed > b
 	tbody > tr:nth-child(2) > td > span.genmed [ | 01 Сен 2021 19:24:55]
+	
+	<var class="portalImg" title="https://nnmclub.ch/forum/image.php?link=%2F%2Fc.radikal.ru%2Fc08%2F2109%2F4a%2F5440af8a5d89.jpg"><img border="0" width="256" align="left" style="margin-bottom:8px;margin-right:8px;" title="pic" src="https://nnmclub.ch/forum/image.php?link=%2F%2Fc.radikal.ru%2Fc08%2F2109%2F4a%2F5440af8a5d89.jpg"></var>
+	
 	<span class="pcomm bold" id="VT1177430">12</span>
+	<a href="viewtopic.php?t=1494735&amp;sid=627043880f5644a2d9ab7bd5ea98c267" class="pcomm tit-b bold" style="text-decoration:none" oldtitle="Ответов" aria-describedby="ui-tooltip-33"><img alt="Комментарии" src="https://nnmclub.ch/forum/images/comments.png" class="pims"> 6</a>
+	<span class="pcomm bold">17.7 GB</span>
+	<span class="seed tit-b pcomm bold" oldtitle="Раздающих">&nbsp;129</span>
+	<span class="seedmed vsub tit-b" oldtitle="Скорость отдачи" aria-describedby="ui-tooltip-36">12.2&nbsp;MB/s</span>
+	<span class="leech tit-b pcomm bold" oldtitle="Качают" aria-describedby="ui-tooltip-37">&nbsp;79</span>
+	<span class="leechmed vsub tit-b" oldtitle="Скорость скачивания" aria-describedby="ui-tooltip-38">1.21&nbsp;MB/s</span>
 
 
 <a class="genmed" href="portal.php?c=1" title="Аниме и Манга">Аниме и Манга</a>
