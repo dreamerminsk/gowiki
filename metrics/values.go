@@ -9,14 +9,14 @@ type Values interface {
 	Snapshot() Values
 }
 
-func GetOrRegisterKeyValue(name string, r Registry) Values {
+func GetOrRegisterValues(name string, r Registry) Values {
 	if nil == r {
 		r = DefaultRegistry
 	}
-	return r.GetOrRegister(name, NewKeyValue).(Values)
+	return r.GetOrRegister(name, NewValues).(Values)
 }
 
-func NewKeyValue() Values {
+func NewValues() Values {
 	if UseNilMetrics {
 		return NilValues{}
 	}
@@ -24,7 +24,7 @@ func NewKeyValue() Values {
 }
 
 func NewRegisteredKeyValue(name string, r Registry) Values {
-	c := NewKeyValue()
+	c := NewValues()
 	if nil == r {
 		r = DefaultRegistry
 	}
@@ -69,6 +69,8 @@ func (c *StandardValues) Get(key string) interface{} {
 }
 
 func (c *StandardValues) Add(key string, value interface{}) {
+	m := c.values.Load().(map[string]interface{})
+	m[key] = value
 	c.values.Store(StandardValues{})
 }
 
