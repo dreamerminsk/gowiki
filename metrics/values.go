@@ -99,7 +99,7 @@ func (c *StandardValues) Add(key string, value interface{}) {
 	defer c.m.Unlock()
 	m := c.values.Load().(map[string]interface{})
 	m[key] = value
-	c.values.Store(StandardValues{})
+	c.values.Store(m)
 }
 
 func (c *StandardValues) Snapshot() Values {
