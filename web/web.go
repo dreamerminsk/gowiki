@@ -67,7 +67,6 @@ func webstats() interface{} {
 func init() {
 	expvar.Publish("WebStats", expvar.Func(webstats))
 	exp.Exp(metrics.DefaultRegistry)
-	metrics.GetOrRegisterValues("WebStats.Request", nil).Clear()
 }
 
 func newReader() *webClient {
