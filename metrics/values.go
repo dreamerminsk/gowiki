@@ -24,10 +24,12 @@ func NewValues() Values {
 	if UseNilMetrics {
 		return NilValues{}
 	}
-	return &StandardValues{}
+	v := &StandardValues{}
+	v.Clear()
+	return v
 }
 
-func NewRegisteredKeyValue(name string, r Registry) Values {
+func NewRegisteredValues(name string, r Registry) Values {
 	c := NewValues()
 	if nil == r {
 		r = DefaultRegistry
