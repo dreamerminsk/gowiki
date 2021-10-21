@@ -1,6 +1,9 @@
 package metrics
 
-import "sync/atomic"
+import (
+	"sync"
+	"sync/atomic"
+)
 
 type Values interface {
 	Clear()
@@ -58,6 +61,7 @@ func (NilValues) Snapshot() Values { return NilValues{} }
 
 type StandardValues struct {
 	values atomic.Value
+	m      sync.RWMutex
 }
 
 func (c *StandardValues) Clear() {
@@ -69,6 +73,8 @@ func (c *StandardValues) Get(key string) interface{} {
 }
 
 func (c *StandardValues) Add(key string, value interface{}) {
+	c.m.Lock()
+	defer c.m.Unlock()
 	m := c.values.Load().(map[string]interface{})
 	m[key] = value
 	c.values.Store(StandardValues{})
