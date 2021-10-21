@@ -68,9 +68,30 @@ func (exp *exp) getFloat(name string) *expvar.Float {
 	return v
 }
 
+func (exp *exp) getString(name string) *expvar.String {
+	var v *expvar.String
+	exp.expvarLock.Lock()
+	p := expvar.Get(name)
+	if p != nil {
+		v = p.(*expvar.String)
+	} else {
+		v = new(expvar.String)
+		expvar.Publish(name, v)
+	}
+	exp.expvarLock.Unlock()
+	return v
+}
+
 func (exp *exp) publishCounter(name string, metric metrics.Counter) {
 	v := exp.getInt(name)
 	v.Set(metric.Count())
+}
+
+func (exp *exp) publishValues(name string, metric metrics.Values) {
+	s := metric.Snapshot()
+	for _, k := range s.Keys() {
+		exp.getString(name + "." + k).Set(fmt.Sprintf("%s", s.Get(k)))
+	}
 }
 
 func (exp *exp) publishGauge(name string, metric metrics.Gauge) {
@@ -129,6 +150,8 @@ func (exp *exp) syncToExpvar() {
 		switch i.(type) {
 		case metrics.Counter:
 			exp.publishCounter(name, i.(metrics.Counter))
+		case metrics.Values:
+			exp.publishValues(name, i.(metrics.Values))
 		case metrics.Gauge:
 			exp.publishGauge(name, i.(metrics.Gauge))
 		case metrics.GaugeFloat64:

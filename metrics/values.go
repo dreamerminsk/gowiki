@@ -7,6 +7,7 @@ import (
 
 type Values interface {
 	Clear()
+	Keys() []string
 	Get(key string) interface{}
 	Add(key string, value interface{})
 	Snapshot() Values
@@ -41,6 +42,14 @@ func (ValuesSnapshot) Clear() {
 	panic("Clear called on a ValuesSnapshot")
 }
 
+func (c ValuesSnapshot) Keys() []string {
+	keys := make([]string, 0)
+	for k := range c {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
 func (c ValuesSnapshot) Get(key string) interface{} { return c[key] }
 
 func (ValuesSnapshot) Add(key string, value interface{}) {
@@ -52,6 +61,8 @@ func (c ValuesSnapshot) Snapshot() Values { return c }
 type NilValues map[string]interface{}
 
 func (NilValues) Clear() {}
+
+func (NilValues) Keys() []string { return make([]string, 0) }
 
 func (NilValues) Get(key string) interface{} { return nil }
 
@@ -66,6 +77,15 @@ type StandardValues struct {
 
 func (c *StandardValues) Clear() {
 	c.values.Store(make(map[string]interface{}))
+}
+
+func (c *StandardValues) Keys() []string {
+	m := c.values.Load().(map[string]interface{})
+	keys := make([]string, 0)
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 func (c *StandardValues) Get(key string) interface{} {
