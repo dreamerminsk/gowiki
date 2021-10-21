@@ -78,10 +78,14 @@ type StandardValues struct {
 }
 
 func (c *StandardValues) Clear() {
+	c.m.Lock()
+	defer c.m.Unlock()
 	c.values.Store(make(map[string]interface{}))
 }
 
 func (c *StandardValues) Keys() []string {
+	c.m.RLock()
+	defer c.m.RUnlock()
 	m := c.values.Load().(map[string]interface{})
 	keys := make([]string, 0)
 	for k := range m {
@@ -91,6 +95,8 @@ func (c *StandardValues) Keys() []string {
 }
 
 func (c *StandardValues) Get(key string) interface{} {
+	c.m.RLock()
+	defer c.m.RUnlock()
 	return c.values.Load().(map[string]interface{})[key]
 }
 
