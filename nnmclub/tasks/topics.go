@@ -56,6 +56,7 @@ func processTopicPage(ctx context.Context, g storage.Storage, catID client.Categ
 		fmt.Println("Likes: ", topic.Likes)
 		fmt.Println("Comments: ", topic.Comments)
 		fmt.Println("Magnet: ", topic.Magnet)
+		fmt.Println("Size: ", topic.Size)
 		err = insertOrUpdate(g, topic)
 		if err != nil {
 			return err
@@ -83,6 +84,13 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 		}
 	} else if topic.Comments != oldTopic.Comments {
 		fmt.Printf("\tDIFF Comments: %d\r\n", topic.Comments-oldTopic.Comments)
+		err = g.UpdateTopic(topic)
+		if err != nil {
+			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
+			return err
+		}
+	} else if topic.Size != oldTopic.Size {
+		fmt.Printf("\tDIFF Size: %s\r\n", topic.Size)
 		err = g.UpdateTopic(topic)
 		if err != nil {
 			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)

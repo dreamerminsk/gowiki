@@ -76,6 +76,14 @@ func getTopic(s *goquery.Selection) *model.Topic {
 	})
 
 	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
+		if strings.HasSuffix(sl.Text(), "GB") ||
+			strings.HasSuffix(sl.Text(), "MB") ||
+			strings.HasSuffix(sl.Text(), "KB") {
+			topic.Size = strings.TrimSpace(sl.Text())
+		}
+	})
+
+	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
 		if _, ok := sl.Attr("id"); ok {
 			topic.Likes, _ = strconv.ParseInt(sl.Text(), 10, 64)
 		}

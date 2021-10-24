@@ -38,7 +38,8 @@ type Topic struct {
 	Published time.Time
 	Magnet    string
 	Likes     int64
-	Comments int64
+	Comments  int64
+	Size      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt sql.NullTime `gorm:"index"`
