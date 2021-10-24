@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/dreamerminsk/gowiki/metrics"
 	"github.com/dreamerminsk/gowiki/nnmclub/client"
 	"github.com/dreamerminsk/gowiki/nnmclub/model"
 	"github.com/dreamerminsk/gowiki/nnmclub/storage"
@@ -77,6 +78,7 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 		}
 	} else {
 		if topic.Likes != oldTopic.Likes {
+			metrics.GetOrRegisterCounter("UpdateTopics.Likes", nil).Inc(topic.Likes - oldTopic.Likes)
 			fmt.Printf("\tDIFF Likes: %d\r\n", topic.Likes-oldTopic.Likes)
 			topic.CreatedAt = oldTopic.CreatedAt
 			err = g.UpdateTopic(topic)
@@ -86,6 +88,7 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 			}
 		}
 		if topic.Comments != oldTopic.Comments {
+			metrics.GetOrRegisterCounter("UpdateTopics.Comments", nil).Inc(topic.Comments - oldTopic.Comments)
 			fmt.Printf("\tDIFF Comments: %d\r\n", topic.Comments-oldTopic.Comments)
 			topic.CreatedAt = oldTopic.CreatedAt
 			err = g.UpdateTopic(topic)
