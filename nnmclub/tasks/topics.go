@@ -75,29 +75,33 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 			fmt.Printf("INSERT ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
 			return err
 		}
-	} else if topic.Likes != oldTopic.Likes {
-		fmt.Printf("\tDIFF Likes: %d\r\n", topic.Likes-oldTopic.Likes)
-		topic.CreatedAt = oldTopic.CreatedAt
-		err = g.UpdateTopic(topic)
-		if err != nil {
-			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
-			return err
+	} else {
+		if topic.Likes != oldTopic.Likes {
+			fmt.Printf("\tDIFF Likes: %d\r\n", topic.Likes-oldTopic.Likes)
+			topic.CreatedAt = oldTopic.CreatedAt
+			err = g.UpdateTopic(topic)
+			if err != nil {
+				fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
+				return err
+			}
 		}
-	} else if topic.Comments != oldTopic.Comments {
-		fmt.Printf("\tDIFF Comments: %d\r\n", topic.Comments-oldTopic.Comments)
-		topic.CreatedAt = oldTopic.CreatedAt
-		err = g.UpdateTopic(topic)
-		if err != nil {
-			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
-			return err
+		if topic.Comments != oldTopic.Comments {
+			fmt.Printf("\tDIFF Comments: %d\r\n", topic.Comments-oldTopic.Comments)
+			topic.CreatedAt = oldTopic.CreatedAt
+			err = g.UpdateTopic(topic)
+			if err != nil {
+				fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
+				return err
+			}
 		}
-	} else if topic.Size != oldTopic.Size {
-		fmt.Printf("\tDIFF Size: %s\r\n", topic.Size)
-		topic.CreatedAt = oldTopic.CreatedAt
-		err = g.UpdateTopic(topic)
-		if err != nil {
-			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
-			return err
+		if topic.Size != oldTopic.Size {
+			fmt.Printf("\tDIFF Size: %s\r\n", topic.Size)
+			topic.CreatedAt = oldTopic.CreatedAt
+			err = g.UpdateTopic(topic)
+			if err != nil {
+				fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
+				return err
+			}
 		}
 	}
 	return nil
