@@ -11,6 +11,7 @@ import (
 	"github.com/dreamerminsk/gowiki/nnmclub/model"
 	"github.com/dreamerminsk/gowiki/nnmclub/storage"
 	"github.com/dreamerminsk/gowiki/tasks"
+"github.com/dreamerminsk/gowiki/metrics"
 )
 
 func UpdateTopics(ctx context.Context, t *tasks.Task) {
