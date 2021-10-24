@@ -54,6 +54,7 @@ func processTopicPage(ctx context.Context, g storage.Storage, catID client.Categ
 		fmt.Println("Author: ", topic.Author)
 		fmt.Println("Published: ", topic.Published.Format(time.RFC3339))
 		fmt.Println("Likes: ", topic.Likes)
+		fmt.Println("Comments: ", topic.Comments)
 		fmt.Println("Magnet: ", topic.Magnet)
 		err = insertOrUpdate(g, topic)
 		if err != nil {
@@ -67,17 +68,24 @@ func processTopicPage(ctx context.Context, g storage.Storage, catID client.Categ
 func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 	oldTopic, err := g.GetTopicByID(topic.ID)
 	if err != nil {
-		fmt.Println("SELECT ERROR: ", reflect.TypeOf(err), err)
+		fmt.Printf("SELECT ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
 		err = g.Create(topic).Error
 		if err != nil {
-			fmt.Println("INSERT ERROR: ", reflect.TypeOf(err), err)
+			fmt.Printf("INSERT ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
 			return err
 		}
-	} else if topic.Likes > oldTopic.Likes {
-		fmt.Printf("\tDIFF LIKES: %d\r\n", topic.Likes-oldTopic.Likes)
+	} else if topic.Likes != oldTopic.Likes {
+		fmt.Printf("\tDIFF Likes: %d\r\n", topic.Likes-oldTopic.Likes)
 		err = g.UpdateTopic(topic)
 		if err != nil {
-			fmt.Println("UPDATE ERROR: ", reflect.TypeOf(err), err)
+			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
+			return err
+		}
+	} else if topic.Comments != oldTopic.Comments {
+		fmt.Printf("\tDIFF Comments: %d\r\n", topic.Comments-oldTopic.Comments)
+		err = g.UpdateTopic(topic)
+		if err != nil {
+			fmt.Printf("UPDATE ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
 			return err
 		}
 	}
