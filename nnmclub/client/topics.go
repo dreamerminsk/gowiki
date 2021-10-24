@@ -68,7 +68,7 @@ func getTopic(s *goquery.Selection) *model.Topic {
 	})
 
 	s.Find("a.pcomm").Each(func(i int, sl *goquery.Selection) {
-		if alt, ok := sl.Attr("oldtitle"); ok {
+		if alt, ok := sl.Attr("title"); ok {
 			if strings.Contains(alt, "Ответов") {
 				topic.Comments, _ = strconv.ParseInt(strings.TrimSpace(sl.Text()), 10, 64)
 			}
