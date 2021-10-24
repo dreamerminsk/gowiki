@@ -66,11 +66,21 @@ func getTopic(s *goquery.Selection) *model.Topic {
 		timeString := sl.Text()
 		topic.Published = utils.ParseTime(timeString)
 	})
+
 	s.Find("span.pcomm").Each(func(i int, sl *goquery.Selection) {
+		if alt, ok := sl.Attr("alt"); ok {
+			if strings.Contains(alt, "Комментарии") {
+				topic.Comments, _ = strconv.ParseInt(strings.TrimSpace(sl.Text()), 10, 64)
+			}
+		}
+	})
+
+	s.Find("img[alt]").Each(func(i int, sl *goquery.Selection) {
 		if _, ok := sl.Attr("id"); ok {
 			topic.Likes, _ = strconv.ParseInt(sl.Text(), 10, 64)
 		}
 	})
+
 	s.Find("a").Each(func(i int, sl *goquery.Selection) {
 		if ref, ok := sl.Attr("href"); ok {
 			if strings.HasPrefix(ref, "magnet:") {
