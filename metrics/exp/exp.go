@@ -110,11 +110,11 @@ func (exp *exp) publishHistogram(name string, metric metrics.Histogram) {
 	exp.getFloat(name + ".max").Set(float64(h.Max()))
 	exp.getFloat(name + ".mean").Set(float64(h.Mean()))
 	exp.getFloat(name + ".std-dev").Set(float64(h.StdDev()))
-	exp.getFloat(name + ".50-percentile").Set(float64(ps[0]))
-	exp.getFloat(name + ".75-percentile").Set(float64(ps[1]))
-	exp.getFloat(name + ".95-percentile").Set(float64(ps[2]))
-	exp.getFloat(name + ".99-percentile").Set(float64(ps[3]))
-	exp.getFloat(name + ".999-percentile").Set(float64(ps[4]))
+	//exp.getFloat(name + ".50-percentile").Set(float64(ps[0]))
+	//exp.getFloat(name + ".75-percentile").Set(float64(ps[1]))
+	//exp.getFloat(name + ".95-percentile").Set(float64(ps[2]))
+	//exp.getFloat(name + ".99-percentile").Set(float64(ps[3]))
+	//exp.getFloat(name + ".999-percentile").Set(float64(ps[4]))
 }
 
 func (exp *exp) publishMeter(name string, metric metrics.Meter) {
@@ -134,15 +134,15 @@ func (exp *exp) publishTimer(name string, metric metrics.Timer) {
 	exp.getFloat(name + ".max").Set(float64(t.Max()))
 	exp.getFloat(name + ".mean").Set(float64(t.Mean()))
 	exp.getFloat(name + ".std-dev").Set(float64(t.StdDev()))
-	exp.getFloat(name + ".50-percentile").Set(float64(ps[0]))
-	exp.getFloat(name + ".75-percentile").Set(float64(ps[1]))
-	exp.getFloat(name + ".95-percentile").Set(float64(ps[2]))
-	exp.getFloat(name + ".99-percentile").Set(float64(ps[3]))
-	exp.getFloat(name + ".999-percentile").Set(float64(ps[4]))
-	exp.getFloat(name + ".one-minute").Set(float64(t.Rate1()))
-	exp.getFloat(name + ".five-minute").Set(float64(t.Rate5()))
-	exp.getFloat(name + ".fifteen-minute").Set(float64((t.Rate15())))
-	exp.getFloat(name + ".mean-rate").Set(float64(t.RateMean()))
+	//exp.getFloat(name + ".50-percentile").Set(float64(ps[0]))
+	//exp.getFloat(name + ".75-percentile").Set(float64(ps[1]))
+	//exp.getFloat(name + ".95-percentile").Set(float64(ps[2]))
+	//exp.getFloat(name + ".99-percentile").Set(float64(ps[3]))
+	//exp.getFloat(name + ".999-percentile").Set(float64(ps[4]))
+	//exp.getFloat(name + ".one-minute").Set(float64(t.Rate1()))
+	//exp.getFloat(name + ".five-minute").Set(float64(t.Rate5()))
+	//exp.getFloat(name + ".fifteen-minute").Set(float64((t.Rate15())))
+	//exp.getFloat(name + ".mean-rate").Set(float64(t.RateMean()))
 }
 
 func (exp *exp) syncToExpvar() {
