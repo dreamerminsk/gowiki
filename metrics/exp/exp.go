@@ -104,7 +104,7 @@ func (exp *exp) publishGaugeFloat64(name string, metric metrics.GaugeFloat64) {
 
 func (exp *exp) publishHistogram(name string, metric metrics.Histogram) {
 	h := metric.Snapshot()
-	ps := h.Percentiles([]float64{0.5, 0.75, 0.95, 0.99, 0.999})
+	//ps := h.Percentiles([]float64{0.5, 0.75, 0.95, 0.99, 0.999})
 	exp.getInt(name + ".count").Set(h.Count())
 	exp.getFloat(name + ".min").Set(float64(h.Min()))
 	exp.getFloat(name + ".max").Set(float64(h.Max()))
@@ -128,7 +128,7 @@ func (exp *exp) publishMeter(name string, metric metrics.Meter) {
 
 func (exp *exp) publishTimer(name string, metric metrics.Timer) {
 	t := metric.Snapshot()
-	ps := t.Percentiles([]float64{0.5, 0.75, 0.95, 0.99, 0.999})
+	//ps := t.Percentiles([]float64{0.5, 0.75, 0.95, 0.99, 0.999})
 	exp.getInt(name + ".count").Set(t.Count())
 	exp.getFloat(name + ".min").Set(float64(t.Min()))
 	exp.getFloat(name + ".max").Set(float64(t.Max()))
