@@ -76,9 +76,9 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 			fmt.Printf("INSERT ERROR: %s, %s\r\n", reflect.TypeOf(err), err)
 			return err
 		} else {
-metrics.GetOrRegisterCounter("UpdateTopics.Likes", nil).Inc(topic.Likes)
-metrics.GetOrRegisterCounter("UpdateTopics.Comments", nil).Inc(topic.Comments)
-}
+			metrics.GetOrRegisterCounter("UpdateTopics.Likes", nil).Inc(topic.Likes)
+			metrics.GetOrRegisterCounter("UpdateTopics.Comments", nil).Inc(topic.Comments)
+		}
 	} else {
 		if topic.Likes != oldTopic.Likes {
 			metrics.GetOrRegisterCounter("UpdateTopics.Likes", nil).Inc(topic.Likes - oldTopic.Likes)
