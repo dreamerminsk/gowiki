@@ -46,7 +46,7 @@ func GoGetTopics(ctx context.Context, catID Category) chan model.Topic {
 			return isTopic(s)
 		}).Each(func(i int, s *goquery.Selection) {
 			topic := getTopic(s)
-			topics <- topic
+			topics <- *topic
 		})
 	}()
 
