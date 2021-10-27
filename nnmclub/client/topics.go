@@ -32,6 +32,24 @@ func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, e
 	return topics, nil
 }
 
+func GoGetTopics(ctx context.Context, catID Category) chan model.Topic {
+	topics := make([]*model.Topic, 0)
+
+	doc, err := web.New().GetDocument(ctx, GetTopicsByCatUrl(catID.EnumIndex(), 1))
+	if err != nil {
+		log.Log(fmt.Sprintf("%s", err))
+		return nil, err
+	}
+
+	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
+		return isTopic(s)
+	}).Each(func(i int, s *goquery.Selection) {
+		topic := getTopic(s)
+		topics = append(topics, topic)
+	})
+	return topics, nil
+}
+
 func isTopic(s *goquery.Selection) bool {
 	isTopic := false
 	s.Find("a").Each(func(i int, sl *goquery.Selection) {
