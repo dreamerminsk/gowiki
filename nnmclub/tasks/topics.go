@@ -80,8 +80,8 @@ func insertOrUpdate(g storage.Storage, topic *model.Topic) error {
 			metrics.GetOrRegisterCounter("UpdateTopics.NewComments", nil).Inc(topic.Comments)
 		}
 	} else {
-metrics.GetOrRegisterCounter("UpdateTopics.Likes", nil).Inc(oldTopic.Likes)
-			metrics.GetOrRegisterCounter("UpdateTopics.Comments", nil).Inc(oldTopic.Comments)
+		metrics.GetOrRegisterCounter("UpdateTopics.Likes", nil).Inc(oldTopic.Likes)
+		metrics.GetOrRegisterCounter("UpdateTopics.Comments", nil).Inc(oldTopic.Comments)
 		if topic.Likes != oldTopic.Likes {
 			metrics.GetOrRegisterCounter("UpdateTopics.NewLikes", nil).Inc(topic.Likes - oldTopic.Likes)
 			fmt.Printf("\tDIFF Likes: %d\r\n", topic.Likes-oldTopic.Likes)

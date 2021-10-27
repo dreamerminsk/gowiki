@@ -50,7 +50,6 @@ func GoGetTopics(ctx context.Context, catID Category) chan model.Topic {
 	return topics, nil
 }
 
-
 func isTopic(s *goquery.Selection) bool {
 	isTopic := false
 	s.Find("a").Each(func(i int, sl *goquery.Selection) {
