@@ -3,7 +3,6 @@ package web
 import (
 	"bufio"
 	"context"
-	"expvar"
 	"fmt"
 	"io"
 	"math/rand"
@@ -41,31 +40,17 @@ type WebReader interface {
 	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
 }
 
-type WebStats struct {
-	Requests    uint64
-	WaitTime    float64
-	WaitTimeMin float64
-	WaitTimeAvg float64
-	WaitTimeMax float64
-}
+
 
 var (
 	instance *webClient
 	once     sync.Once
-	stats    *WebStats   = &WebStats{WaitTimeMin: 1000}
-	statsM   *sync.Mutex = &sync.Mutex{}
 	r        *rand.Rand  = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
-func webstats() interface{} {
-	statsM.Lock()
-	defer statsM.Unlock()
-	stats.WaitTimeAvg = stats.WaitTime / float64(stats.Requests)
-	return *stats
-}
+
 
 func init() {
-	expvar.Publish("WebStats", expvar.Func(webstats))
 	exp.Exp(metrics.DefaultRegistry)
 }
 
@@ -170,25 +155,12 @@ func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Respon
 	log.Logf("%d - %s", reqID, req.URL)
 
 	defer func() {
-		statsM.Lock()
-		defer statsM.Unlock()
-		stats.Requests++
-		metrics.GetOrRegisterCounter("WebStats.Requests", nil).Inc(1)
+		metrics.GetOrRegisterCounter("Web.Requests", nil).Inc(1)
 	}()
 
 	waitstart := time.Now()
 	err := wc.rateLimiter.WaitN(ctx, r.Intn(32000)+8000)
-	statsM.Lock()
-	metrics.GetOrRegisterTimer("WebStats.RequestTime", nil).UpdateSince(waitstart)
-	wait := float64(time.Since(waitstart).Seconds())
-	stats.WaitTime += wait
-	if wait > 1.0 && wait < stats.WaitTimeMin {
-		stats.WaitTimeMin = wait
-	}
-	if wait > stats.WaitTimeMax {
-		stats.WaitTimeMax = wait
-	}
-	statsM.Unlock()
+	metrics.GetOrRegisterTimer("Web.ReqTime", nil).UpdateSince(waitstart)
 	if err != nil {
 		log.Logf("%d - %s", reqID, err)
 		return nil, err
