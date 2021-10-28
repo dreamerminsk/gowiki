@@ -32,7 +32,7 @@ func main() {
 	queue := [...]*tasks.Task{
 		tasks.New(nnmclub.InitCategories),
 		tasks.New(nnmclub.InitForums),
-		tasks.New(nnmclub.InitUsers),
+		//tasks.New(nnmclub.InitUsers),
 		tasks.New(nnmclub.UpdateForums),
 		tasks.New(nnmclub.UpdateTopics),
 	}
