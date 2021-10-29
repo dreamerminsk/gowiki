@@ -48,6 +48,12 @@ func GoGetTopics(ctx context.Context, catID Category) chan model.Topic {
 			topic := getTopic(s)
 			topics <- *topic
 		})
+
+doc.Find("a").FilterFunction(func(i int, s *goquery.Selection) bool {
+			return strings.HasPrefix(s.Text(), "След.")
+		}).Each(func(i int, s *goquery.Selection) {
+	
+		})
 	}()
 
 	return topics
