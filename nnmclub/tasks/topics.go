@@ -47,6 +47,7 @@ client.ForeignTVSeries:1,
 }
 
 func processTopicPage(ctx context.Context, g storage.Storage, catID client.Category, page int) error {
+metrics.GetOrRegisterValues("UpdateTopics", nil).Add("Topic", fmt.Sprintf("%s-%d", catId, page))
 	topics, err := client.GetTopics(ctx, catID, page)
 	if err != nil {
 		return err
