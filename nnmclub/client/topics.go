@@ -36,18 +36,32 @@ func GoGetTopics(ctx context.Context, catID Category) chan model.Topic {
 	topics := make(chan model.Topic, 20)
 
 	go func() {
-		doc, err := web.New().GetDocument(ctx, GetTopicsByCatUrl(catID.EnumIndex(), 1))
-		if err != nil {
-			log.Log(fmt.Sprintf("%s", err))
-			close(topics)
-		}
+		url := GetTopicsByCatUrl(catID.EnumIndex(), 1)
+		for {
+			doc, err := web.New().GetDocument(ctx, url)
+			if err != nil {
+				log.Log(fmt.Sprintf("%s", err))
+				close(topics)
+			}
 
-		doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
-			return isTopic(s)
-		}).Each(func(i int, s *goquery.Selection) {
-			topic := getTopic(s)
-			topics <- *topic
-		})
+			doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
+				return isTopic(s)
+			}).Each(func(i int, s *goquery.Selection) {
+				topic := getTopic(s)
+				topics <- *topic
+			})
+
+			url = ""
+			doc.Find("a").FilterFunction(func(i int, s *goquery.Selection) bool {
+				return strings.HasPrefix(s.Text(), "След.")
+			}).Each(func(i int, s *goquery.Selection) {
+				url = "https://nnmclub.to/forum/portal.php?c=12&start=20#pagestart"
+			})
+			if url == "" {
+				close(topics)
+				return
+			}
+		}
 	}()
 
 	return topics

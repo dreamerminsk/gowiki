@@ -12,8 +12,6 @@ import (
 
 	nnmclub "github.com/dreamerminsk/gowiki/nnmclub/tasks"
 	"github.com/dreamerminsk/gowiki/tasks"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
