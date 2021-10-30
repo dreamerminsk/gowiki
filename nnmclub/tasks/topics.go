@@ -47,7 +47,7 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 }
 
 func processTopicPage(ctx context.Context, g storage.Storage, catID client.Category, page int) error {
-	metrics.GetOrRegisterValues("UpdateTopics", nil).Add("Topic", fmt.Sprintf("%s-%d", catId, page))
+	metrics.GetOrRegisterValues("UpdateTopics", nil).Add("Topic", fmt.Sprintf("%s-%d", catID, page))
 	topics, err := client.GetTopics(ctx, catID, page)
 	if err != nil {
 		return err
