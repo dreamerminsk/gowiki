@@ -40,15 +40,11 @@ type WebReader interface {
 	doReq(ctx context.Context, req *http.Request) (*http.Response, error)
 }
 
-
-
 var (
 	instance *webClient
 	once     sync.Once
-	r        *rand.Rand  = rand.New(rand.NewSource(time.Now().UnixNano()))
+	r        *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
-
-
 
 func init() {
 	exp.Exp(metrics.DefaultRegistry)
