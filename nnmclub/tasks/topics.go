@@ -18,8 +18,8 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
 	var cats = map[client.Category]int{
-client.NewMovies:1,
-client.ForeignTVSeries:1,
+		client.NewMovies:              1,
+		client.ForeignTVSeries:        1,
 		client.Music:                  1,
 		client.HDMusic:                1,
 		client.MusicCollections:       1,
@@ -47,6 +47,7 @@ client.ForeignTVSeries:1,
 }
 
 func processTopicPage(ctx context.Context, g storage.Storage, catID client.Category, page int) error {
+	metrics.GetOrRegisterValues("UpdateTopics", nil).Add("Topic", fmt.Sprintf("%s-%d", catID, page))
 	topics, err := client.GetTopics(ctx, catID, page)
 	if err != nil {
 		return err
