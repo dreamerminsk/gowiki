@@ -52,7 +52,7 @@ func processTopicPage(ctx context.Context, g storage.Storage, catID client.Categ
 	if err != nil {
 		return err
 	}
-        pub := time.Now().AddDate(-100, 0, 0)
+	pub := time.Now().AddDate(-100, 0, 0)
 	for _, topic := range topics {
 		fmt.Println("ID: ", topic.ID)
 		fmt.Println("Title: ", topic.Title)
@@ -67,11 +67,11 @@ func processTopicPage(ctx context.Context, g storage.Storage, catID client.Categ
 			return err
 		}
 		fmt.Println("-------------------------")
-if topic.Published.After(pub) {
-pub=topic.Published
-}
+		if topic.Published.After(pub) {
+			pub = topic.Published
+		}
 	}
-			metrics.GetOrRegisterValues("UpdateTopics.LastPublushed", nil).Add(pub.Format(time.RFC3339))
+	metrics.GetOrRegisterValues("UpdateTopics.LastPublushed", nil).Add(pub.Format(time.RFC3339))
 	return nil
 }
 
