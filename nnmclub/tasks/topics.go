@@ -19,10 +19,10 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 
 	var cats = map[client.Category]int{
 		client.NewMovies:              1,
-client.ForeignMovies:1,
+		client.ForeignMovies:          1,
 		client.ForeignTVSeries:        1,
-client.DomesticTVSeries: 1,
-client.DomesticMovies:1,
+		client.DomesticTVSeries:       1,
+		client.DomesticMovies:         1,
 		client.Music:                  1,
 		client.HDMusic:                1,
 		client.MusicCollections:       1,
