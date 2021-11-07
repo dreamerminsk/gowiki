@@ -77,7 +77,7 @@ func processTopicPage(ctx context.Context, g storage.Storage, catID client.Categ
 			pub = topic.Published
 		}
 	}
-	metrics.GetOrRegisterValues("UpdateTopics.Publushed", nil).Add("Last", pub.Format(time.RFC3339))
+	metrics.GetOrRegisterValues("UpdateTopics.Published", nil).Add("Last", pub.Format(time.RFC3339))
 	return nil
 }
 
