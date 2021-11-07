@@ -29,7 +29,7 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 		client.AnimeAndManga:          1,
 		client.BooksAndMediaMaterials: 1,
 		client.HDUHDAnd3DMovies:       1,
-		client.DocAnTVShows:           1,
+		client.DocAndTVShows:           1,
 		client.SportsAndHumor:         1,
 	}
 
