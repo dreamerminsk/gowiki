@@ -30,7 +30,7 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 		client.BooksAndMediaMaterials: 1,
 client.HDUHDAnd3DMovies:1,
 client.DocAnTVShows:1,
-client.SportsAndHumor:1
+client.SportsAndHumor:1,
 	}
 
 	for {
