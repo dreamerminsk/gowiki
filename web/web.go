@@ -110,7 +110,7 @@ func decode(body io.Reader, charset string) (*goquery.Document, error) {
 	}
 
 	if name, _ := htmlindex.Name(e); name != "utf-8" {
-		r = e.NewDecoder().Reader(r)
+		r = bufio.NewReader(e.NewDecoder().Reader(r))
 	}
 
 	doc, err := goquery.NewDocumentFromReader(r)
