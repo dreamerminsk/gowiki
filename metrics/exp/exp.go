@@ -93,6 +93,7 @@ func (exp *exp) publishValues(name string, metric metrics.Values) {
 		exp.getString(name + "." + k).Set(fmt.Sprintf("%s", s.Get(k)))
 	}
 }
+
 func (exp *exp) publishString(name string, metric metrics.String) {
 	v := exp.getString(name)
 	v.Set(metric.Value())
@@ -102,6 +103,7 @@ func (exp *exp) publishGauge(name string, metric metrics.Gauge) {
 	v := exp.getInt(name)
 	v.Set(metric.Value())
 }
+
 func (exp *exp) publishGaugeFloat64(name string, metric metrics.GaugeFloat64) {
 	exp.getFloat(name).Set(metric.Value())
 }

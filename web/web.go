@@ -89,15 +89,19 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 	}
 
 	html, _ := doc.Html()
-	metrics.GetOrRegisterGauge("Web.Response.Length", nil).Update(int64(len(html)))
+	metrics.GetOrRegisterHistogram("Web.Response.Length", nil, metrics.NewExpDecaySample(1028, 0.015)).Update(int64(len(html)))
 	metrics.GetOrRegisterString("Web.Response.URL", nil).Update(fmt.Sprintf("%s", res.Request.URL))
+	doc.Find("title").Each(func(i int, s *goquery.Selection) {
+		metrics.GetOrRegisterString("Web.Response.Title", nil).Update(s.Text())
+	})
 
 	return doc, nil
 }
 
 func decode(body io.Reader, charset string) (*goquery.Document, error) {
+	r := bufio.NewReader(body)
 	if charset == "" {
-		charset = detectContentCharset(body)
+		charset = detectContentCharset(r)
 	}
 
 	e, err := htmlindex.Get(charset)
@@ -106,10 +110,10 @@ func decode(body io.Reader, charset string) (*goquery.Document, error) {
 	}
 
 	if name, _ := htmlindex.Name(e); name != "utf-8" {
-		body = e.NewDecoder().Reader(body)
+		r = bufio.NewReader(e.NewDecoder().Reader(r))
 	}
 
-	doc, err := goquery.NewDocumentFromReader(body)
+	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		log.Logf("%s", err)
 		return nil, err
@@ -118,8 +122,7 @@ func decode(body io.Reader, charset string) (*goquery.Document, error) {
 	return doc, nil
 }
 
-func detectContentCharset(body io.Reader) string {
-	r := bufio.NewReader(body)
+func detectContentCharset(r *bufio.Reader) string {
 	if data, err := r.Peek(1024); err == nil {
 		if _, name, _ := charset.DetermineEncoding(data, ""); name != "" {
 			return name
