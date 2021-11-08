@@ -76,7 +76,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		log.Logf("%s", err)
+		log.Logf("StatusCode: %d", res.StatusCode)
 		return nil, err
 	}
 	doc, err := decode(res.Body, "")
