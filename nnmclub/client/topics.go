@@ -24,8 +24,6 @@ func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, e
 		return nil, err
 	}
 
-
-
 	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
 		return isTopic(s)
 	}).Each(func(i int, s *goquery.Selection) {
