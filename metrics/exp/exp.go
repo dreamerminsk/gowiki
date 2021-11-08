@@ -93,6 +93,10 @@ func (exp *exp) publishValues(name string, metric metrics.Values) {
 		exp.getString(name + "." + k).Set(fmt.Sprintf("%s", s.Get(k)))
 	}
 }
+func (exp *exp) publishString(name string, metric metrics.String) {
+	v := exp.getString(name)
+	v.Set(metric.Value())
+}
 
 func (exp *exp) publishGauge(name string, metric metrics.Gauge) {
 	v := exp.getInt(name)
@@ -152,6 +156,8 @@ func (exp *exp) syncToExpvar() {
 			exp.publishCounter(name, i)
 		case metrics.Values:
 			exp.publishValues(name, i)
+		case metrics.String:
+			exp.publishString(name, i)
 		case metrics.Gauge:
 			exp.publishGauge(name, i)
 		case metrics.GaugeFloat64:
