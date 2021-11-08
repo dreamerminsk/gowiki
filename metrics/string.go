@@ -1,11 +1,11 @@
 package metrics
 
-import "sync/atomic"
+import "github.com/dreamerminsk/gowiki/atomic"
 
 type String interface {
 	Snapshot() String
-	Update(int64)
-	Value() int64
+	Update(string)
+	Value() string
 }
 
 func GetOrRegisterString(name string, r Registry) Gauge {
@@ -19,7 +19,7 @@ func NewString() String {
 	if UseNilMetrics {
 		return NilString{}
 	}
-	return &StandardString{0}
+	return &StandardString{atomic.NewString("")}
 }
 
 func NewRegisteredGString(name string, r Registry) String {
@@ -31,14 +31,14 @@ func NewRegisteredGString(name string, r Registry) String {
 	return c
 }
 
-func NewFunctionalString(f func() int64) String {
+func NewFunctionalString(f func() string) String {
 	if UseNilMetrics {
 		return NilString{}
 	}
 	return &FunctionalString{value: f}
 }
 
-func NewRegisteredFunctionalString(name string, r Registry, f func() int64) String {
+func NewRegisteredFunctionalString(name string, r Registry, f func() string) String {
 	c := NewFunctionalString(f)
 	if nil == r {
 		r = DefaultRegistry
@@ -47,50 +47,50 @@ func NewRegisteredFunctionalString(name string, r Registry, f func() int64) Stri
 	return c
 }
 
-type StringSnapshot int64
+type StringSnapshot string
 
 func (g StringSnapshot) Snapshot() String { return g }
 
-func (StringSnapshot) Update(int64) {
+func (StringSnapshot) Update(string) {
 	panic("Update called on a GaugeSnapshot")
 }
 
-func (g StringSnapshot) Value() int64 { return int64(g) }
+func (g StringSnapshot) Value() string { return string(g) }
 
 type NilString struct{}
 
 func (NilString) Snapshot() String { return NilString{} }
 
-func (NilString) Update(v int64) {}
+func (NilString) Update(v string) {}
 
-func (NilString) Value() int64 { return 0 }
+func (NilString) Value() string { return "" }
 
 type StandardString struct {
-	value int64
+	value atomic.String
 }
 
 func (g *StandardString) Snapshot() String {
 	return StringSnapshot(g.Value())
 }
 
-func (g *StandardString) Update(v int64) {
-	atomic.StoreInt64(&g.value, v)
+func (g *StandardString) Update(v string) {
+	g.value.Store(v)
 }
 
-func (g *StandardString) Value() int64 {
-	return atomic.LoadInt64(&g.value)
+func (g *StandardString) Value() string {
+	return g.value.Load()
 }
 
 type FunctionalString struct {
-	value func() int64
+	value func() string
 }
 
-func (g FunctionalString) Value() int64 {
+func (g FunctionalString) Value() string {
 	return g.value()
 }
 
 func (g FunctionalString) Snapshot() String { return StringSnapshot(g.Value()) }
 
-func (FunctionalString) Update(int64) {
+func (FunctionalString) Update(string) {
 	panic("Update called on a FunctionalString")
 }
