@@ -66,7 +66,7 @@ func (NilString) Update(v string) {}
 func (NilString) Value() string { return "" }
 
 type StandardString struct {
-	value atomic.String
+	value *atomic.String
 }
 
 func (g *StandardString) Snapshot() String {
