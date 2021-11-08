@@ -9,6 +9,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/log"
+	"github.com/dreamerminsk/gowiki/metrics"
 	"github.com/dreamerminsk/gowiki/nnmclub/model"
 	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
@@ -22,6 +23,10 @@ func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, e
 		log.Log(fmt.Sprintf("%s", err))
 		return nil, err
 	}
+
+	doc.Find("title").Each(func(i int, s *goquery.Selection) {
+		metrics.GetOrRegisterValues("Web.Res", nil).Add("Title", s.Text())
+	})
 
 	doc.Find("table.pline").FilterFunction(func(i int, s *goquery.Selection) bool {
 		return isTopic(s)
