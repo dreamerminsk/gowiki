@@ -93,7 +93,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 	metrics.GetOrRegisterValues("Web.Response", nil).Add("URL", res.Request.URL)
 
 	doc.Find("head").Each(func(i int, s *goquery.Selection) {
-		metrics.GetOrRegisterValues("Web.Response", nil).Add("Title", s.Text())
+		//metrics.GetOrRegisterValues("Web.Response", nil).Add("Title", s.Text())
 	})
 
 	return doc, nil
