@@ -90,7 +90,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 
 	html, _ := doc.Html()
 	metrics.GetOrRegisterGauge("Web.Response.Length", nil).Update(int64(len(html)))
-	metrics.GetOrRegisterString("Web.Response.URL", nil).Update(fmt.Sprintf("%s",res.Request.URL))
+	metrics.GetOrRegisterString("Web.Response.URL", nil).Update(fmt.Sprintf("%s", res.Request.URL))
 
 	return doc, nil
 }
