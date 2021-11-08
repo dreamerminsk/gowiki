@@ -9,7 +9,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dreamerminsk/gowiki/log"
-	"github.com/dreamerminsk/gowiki/metrics"
 	"github.com/dreamerminsk/gowiki/nnmclub/model"
 	"github.com/dreamerminsk/gowiki/utils"
 	"github.com/dreamerminsk/gowiki/web"
