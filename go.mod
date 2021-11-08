@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
-	github.com/mattn/go-sqlite3 v1.14.9
 	golang.org/x/net v0.0.0-20211105192438-b53810dc28af
 	golang.org/x/text v0.3.7
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
@@ -16,4 +15,5 @@ require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/mattn/go-sqlite3 v1.14.9 // indirect
 )
