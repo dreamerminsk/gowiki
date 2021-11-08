@@ -8,11 +8,11 @@ type String interface {
 	Value() string
 }
 
-func GetOrRegisterString(name string, r Registry) Gauge {
+func GetOrRegisterString(name string, r Registry) String {
 	if nil == r {
 		r = DefaultRegistry
 	}
-	return r.GetOrRegister(name, NewGauge).(Gauge)
+	return r.GetOrRegister(name, NewString).(String)
 }
 
 func NewString() String {
@@ -22,7 +22,7 @@ func NewString() String {
 	return &StandardString{atomic.NewString("")}
 }
 
-func NewRegisteredGString(name string, r Registry) String {
+func NewRegisteredString(name string, r Registry) String {
 	c := NewString()
 	if nil == r {
 		r = DefaultRegistry
@@ -52,7 +52,7 @@ type StringSnapshot string
 func (g StringSnapshot) Snapshot() String { return g }
 
 func (StringSnapshot) Update(string) {
-	panic("Update called on a GaugeSnapshot")
+	panic("Update called on a StringSnapshot")
 }
 
 func (g StringSnapshot) Value() string { return string(g) }
