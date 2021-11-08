@@ -89,7 +89,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 	}
 
 	html, _ := doc.Html()
-	metrics.GetOrRegisterHistogram("Web.Response.Length", nil, NewExpDecaySample(1028, 0.015)).Update(int64(len(html)))
+	metrics.GetOrRegisterHistogram("Web.Response.Length", nil, metrics.NewExpDecaySample(1028, 0.015)).Update(int64(len(html)))
 	metrics.GetOrRegisterString("Web.Response.URL", nil).Update(fmt.Sprintf("%s", res.Request.URL))
 doc.Find("title").Each(func(i int, s *goquery.Selection) {
 		metrics.GetOrRegisterString("Web.Response.Title", nil).Update(s.Text())
