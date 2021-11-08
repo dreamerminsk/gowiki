@@ -107,6 +107,10 @@ func decode(body io.Reader, charset string) (*goquery.Document, error) {
 		return nil, err
 	}
 
+	doc.Find("title").Each(func(i int, s *goquery.Selection) {
+		metrics.GetOrRegisterValues("Web.Responce", nil).Add("Title", s.Text())
+	})
+
 	return doc, nil
 }
 
