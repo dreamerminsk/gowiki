@@ -74,16 +74,24 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 		log.Logf("%s", err)
 		return nil, err
 	}
+
 	defer res.Body.Close()
+
 	if res.StatusCode != http.StatusOK {
 		log.Logf("StatusCode: %d", res.StatusCode)
 		return nil, err
 	}
+
 	doc, err := decode(res.Body, "")
 	if err != nil {
 		log.Logf("%s", err)
 		return nil, err
 	}
+
+	doc.Find("title").Each(func(i int, s *goquery.Selection) {
+		metrics.GetOrRegisterValues("Web.Response", nil).Add("Title", s.Text())
+	})
+
 	return doc, nil
 }
 
@@ -106,10 +114,6 @@ func decode(body io.Reader, charset string) (*goquery.Document, error) {
 		log.Logf("%s", err)
 		return nil, err
 	}
-
-	doc.Find("title").Each(func(i int, s *goquery.Selection) {
-		metrics.GetOrRegisterValues("Web.Responce", nil).Add("Title", s.Text())
-	})
 
 	return doc, nil
 }
