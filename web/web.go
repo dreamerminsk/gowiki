@@ -90,7 +90,7 @@ func (wc *webClient) GetDocument(ctx context.Context, url string) (*goquery.Docu
 
 	html, _ := doc.Html()
 	metrics.GetOrRegisterGauge("Web.Response.Length", nil).Update(int64(len(html)))
-	metrics.GetOrRegisterValues("Web.Response", nil).Add("URL", res.Request.URL)
+	metrics.GetOrRegisterString("Web.Response.URL", nil).Update(res.Request.URL)
 
 	return doc, nil
 }
@@ -155,7 +155,7 @@ func (wc *webClient) Post(ctx context.Context, url, contentType string, body io.
 
 func (wc *webClient) doReq(ctx context.Context, req *http.Request) (*http.Response, error) {
 	reqID := ctx.Value(keyReqID).(uint64)
-	metrics.GetOrRegisterValues("Web.Request", nil).Add("URL", fmt.Sprintf("%d - %s", reqID, req.URL))
+	metrics.GetOrRegisterString("Web.Request.URL", nil).Update(fmt.Sprintf("%d - %s", reqID, req.URL))
 	log.Logf("%d - %s", reqID, req.URL)
 
 	defer func() {
