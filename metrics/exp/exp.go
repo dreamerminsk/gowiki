@@ -156,7 +156,7 @@ func (exp *exp) syncToExpvar() {
 			exp.publishCounter(name, i)
 		case metrics.Values:
 			exp.publishValues(name, i)
-case metrics.String:
+		case metrics.String:
 			exp.publishString(name, i)
 		case metrics.Gauge:
 			exp.publishGauge(name, i)

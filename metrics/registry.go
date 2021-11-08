@@ -97,7 +97,7 @@ func (r *StandardRegistry) GetAll() map[string]map[string]interface{} {
 		switch metric := i.(type) {
 		case Counter:
 			values["count"] = metric.Count()
-case String:
+		case String:
 			values["value"] = metric.Value()
 		case Gauge:
 			values["value"] = metric.Value()
