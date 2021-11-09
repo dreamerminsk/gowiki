@@ -32,10 +32,7 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 		client.DocAndTVShows:          32,
 		client.SportsAndHumor:         32,
 	}
-	
-	
-	
-	
+
 	var cats2 = map[client.Category]int{
 		client.NewMovies:              1,
 		client.ForeignMovies:          1,
@@ -61,7 +58,7 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 					cats2[cat] = -1
 					continue
 				}
-				cats2[cat] = (cats2[cat] + 1)%37
+				cats2[cat] = (cats2[cat] + 1) % 37
 				existValidPage = true
 			}
 		}
