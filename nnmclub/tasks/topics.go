@@ -18,6 +18,22 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
 	var cats = map[client.Category]int{
+		client.NewMovies:              32,
+		client.ForeignMovies:          32,
+		client.ForeignTVSeries:        32,
+		client.DomesticTVSeries:       32,
+		client.DomesticMovies:         32,
+		client.Music:                  32,
+		client.HDMusic:                32,
+		client.MusicCollections:       32,
+		client.AnimeAndManga:          32,
+		client.BooksAndMediaMaterials: 32,
+		client.HDUHDAnd3DMovies:       32,
+		client.DocAndTVShows:          32,
+		client.SportsAndHumor:         32,
+	}
+
+	var cats2 = map[client.Category]int{
 		client.NewMovies:              1,
 		client.ForeignMovies:          1,
 		client.ForeignTVSeries:        1,
@@ -35,6 +51,17 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 
 	for {
 		existValidPage := false
+		for cat, page := range cats2 {
+			if page > 0 {
+				err := processTopicPage(ctx, g, cat, page)
+				if err != nil {
+					cats2[cat] = -1
+					continue
+				}
+				cats2[cat] = (cats2[cat] + 1) % 37
+				existValidPage = true
+			}
+		}
 		for cat, page := range cats {
 			if page > 0 {
 				err := processTopicPage(ctx, g, cat, page)
