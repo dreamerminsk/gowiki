@@ -59,9 +59,9 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 					continue
 				}
 				cats2[cat] = (cats2[cat] + 1) % 37
-if cats2[cat] == 0 {
-cats2[cat] = 1
-}
+				if cats2[cat] == 0 {
+					cats2[cat] = 1
+				}
 				existValidPage = true
 			}
 		}
