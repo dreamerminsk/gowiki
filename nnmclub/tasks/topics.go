@@ -14,6 +14,10 @@ import (
 	"github.com/dreamerminsk/gowiki/tasks"
 )
 
+func InitTopics(ctx context.Context, t *tasks.Task) {
+	//g := storage.New()
+}
+
 func UpdateTopics(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
