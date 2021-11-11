@@ -12,9 +12,15 @@ import (
 	"github.com/dreamerminsk/gowiki/nnmclub/model"
 	"github.com/dreamerminsk/gowiki/nnmclub/storage"
 	"github.com/dreamerminsk/gowiki/tasks"
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
 func InitTopics(ctx context.Context, t *tasks.Task) {
+	db, err := leveldb.OpenFile("inittopics.db", nil)
+	if err != nil {
+		return
+	}
+	defer db.Close()
 	//g := storage.New()
 }
 
