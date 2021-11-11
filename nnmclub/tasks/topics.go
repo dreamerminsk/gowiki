@@ -16,7 +16,7 @@ import (
 )
 
 func InitTopics(ctx context.Context, t *tasks.Task) {
-	db, err := leveldb.OpenFile("inittopics.db", nil)
+	db, err := leveldb.OpenFile("data/inittopics.db", nil)
 	if err != nil {
 		return
 	}
