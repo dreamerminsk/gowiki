@@ -27,6 +27,7 @@ func GetTopics(ctx context.Context, catID Category, page int) ([]*model.Topic, e
 		return isTopic(s)
 	}).Each(func(i int, s *goquery.Selection) {
 		topic := getTopic(s)
+		topic.Category = int64(catID)
 		topics = append(topics, topic)
 	})
 	return topics, nil
