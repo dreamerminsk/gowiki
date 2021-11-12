@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 	"math/rand"
 	"reflect"
@@ -15,12 +16,35 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
+var cats2 = map[client.Category]int{
+	client.NewMovies:              1,
+	client.ForeignMovies:          1,
+	client.ForeignTVSeries:        1,
+	client.DomesticTVSeries:       1,
+	client.DomesticMovies:         1,
+	client.Music:                  1,
+	client.HDMusic:                1,
+	client.MusicCollections:       1,
+	client.AnimeAndManga:          1,
+	client.BooksAndMediaMaterials: 1,
+	client.HDUHDAnd3DMovies:       1,
+	client.DocAndTVShows:          1,
+	client.SportsAndHumor:         1,
+}
+
 func InitTopics(ctx context.Context, t *tasks.Task) {
 	db, err := leveldb.OpenFile("data/inittopics.db", nil)
 	if err != nil {
 		return
 	}
 	defer db.Close()
+	for cat, page := range cats2 {
+		key := make([]byte, 4)
+		binary.LittleEndian.PutUint32(key, uint32(cat))
+		value := make([]byte, 4)
+		binary.LittleEndian.PutUint32(value, uint32(page))
+		db.Put(key, value, nil)
+	}
 	//g := storage.New()
 }
 
@@ -41,22 +65,6 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 		client.HDUHDAnd3DMovies:       32,
 		client.DocAndTVShows:          32,
 		client.SportsAndHumor:         32,
-	}
-
-	var cats2 = map[client.Category]int{
-		client.NewMovies:              1,
-		client.ForeignMovies:          1,
-		client.ForeignTVSeries:        1,
-		client.DomesticTVSeries:       1,
-		client.DomesticMovies:         1,
-		client.Music:                  1,
-		client.HDMusic:                1,
-		client.MusicCollections:       1,
-		client.AnimeAndManga:          1,
-		client.BooksAndMediaMaterials: 1,
-		client.HDUHDAnd3DMovies:       1,
-		client.DocAndTVShows:          1,
-		client.SportsAndHumor:         1,
 	}
 
 	for {
