@@ -49,6 +49,11 @@ func InitTopics(ctx context.Context, t *tasks.Task) {
 }
 
 func UpdateTopics(ctx context.Context, t *tasks.Task) {
+	db, err := leveldb.OpenFile("data/updateTopics", nil)
+	if err != nil {
+		return
+	}
+	defer db.Close()
 	g := storage.New()
 
 	var cats = map[client.Category]int{
