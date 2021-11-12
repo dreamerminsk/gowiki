@@ -33,7 +33,7 @@ var cats2 = map[client.Category]int{
 }
 
 func InitTopics(ctx context.Context, t *tasks.Task) {
-	db, err := leveldb.OpenFile("data/inittopics.db", nil)
+	db, err := leveldb.OpenFile("data/initTopics", nil)
 	if err != nil {
 		return
 	}
