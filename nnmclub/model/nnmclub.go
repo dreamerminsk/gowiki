@@ -34,6 +34,7 @@ type Forum struct {
 type Topic struct {
 	ID        uint `gorm:"primarykey"`
 	Title     string
+	Category  int64
 	Author    string
 	Published time.Time
 	Magnet    string
