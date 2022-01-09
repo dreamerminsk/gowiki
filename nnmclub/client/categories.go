@@ -40,6 +40,7 @@ const (
 	DocAndTVShows
 	SportsAndHumor
 	MusicCollections
+        Audiobooks
 )
 
 func (c Category) String() string {
@@ -68,7 +69,8 @@ func (c Category) String() string {
 		"Док. TV-бренды",
 		"Док. и телепередачи",
 		"Спорт и Юмор",
-		"Музыка (сборники)"}[c-1]
+		"Музыка (сборники)",
+                "Аудиокниги"}[c-1]
 }
 
 func (c Category) EnumIndex() int {
