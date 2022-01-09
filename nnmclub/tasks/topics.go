@@ -17,7 +17,7 @@ import (
 )
 
 var cats2 = map[client.Category]int{
-          client.Audiobooks: 1,
+	client.Audiobooks:             1,
 	client.NewMovies:              1,
 	client.ForeignMovies:          1,
 	client.ForeignTVSeries:        1,
@@ -58,7 +58,7 @@ func UpdateTopics(ctx context.Context, t *tasks.Task) {
 	g := storage.New()
 
 	var cats = map[client.Category]int{
-       client.Audiobooks: 32,
+		client.Audiobooks:             32,
 		client.NewMovies:              32,
 		client.ForeignMovies:          32,
 		client.ForeignTVSeries:        32,
