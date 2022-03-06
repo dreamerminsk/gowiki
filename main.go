@@ -28,12 +28,12 @@ func main() {
 	defer cancel()
 
 	queue := [...]*tasks.Task{
-		tasks.New(nnmclub.InitCategories),
-		tasks.New(nnmclub.InitForums),
-		tasks.New(nnmclub.InitTopics),
+		//tasks.New(nnmclub.InitCategories),
+		//tasks.New(nnmclub.InitForums),
+		//tasks.New(nnmclub.InitTopics),
 		//tasks.New(nnmclub.InitUsers),
-		tasks.New(nnmclub.UpdateForums),
-		tasks.New(nnmclub.UpdateTopics),
+		//tasks.New(nnmclub.UpdateForums),
+		//tasks.New(nnmclub.UpdateTopics),
 	}
 	for _, t := range queue {
 		go t.Run(ctx)
