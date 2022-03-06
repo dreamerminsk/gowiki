@@ -28,8 +28,8 @@ func main() {
 	defer cancel()
 
 	queue := [...]*tasks.Task{
-		//tasks.New(nnmclub.InitCategories),
-		//tasks.New(nnmclub.InitForums),
+		tasks.New(nnmclub.InitCategories),
+		tasks.New(nnmclub.InitForums),
 		//tasks.New(nnmclub.InitTopics),
 		//tasks.New(nnmclub.InitUsers),
 		//tasks.New(nnmclub.UpdateForums),
