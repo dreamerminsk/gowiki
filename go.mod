@@ -3,7 +3,7 @@ module github.com/dreamerminsk/gowiki
 go 1.21.5
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/PuerkitoBio/goquery v1.8.1
 	golang.org/x/net v0.0.0-20211105192438-b53810dc28af
 	golang.org/x/text v0.3.7
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
