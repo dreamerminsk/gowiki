@@ -1,6 +1,6 @@
 module github.com/dreamerminsk/gowiki
 
-go 1.17
+go 1.21.5
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
